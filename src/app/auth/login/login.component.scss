@@ -36,7 +36,6 @@ $card-radius: 24px;
 .cat-image {
   position: absolute;
   left: -90px;
-  bottom: 0;
   height: 260px;
   width: auto;
   pointer-events: none;
@@ -46,13 +45,12 @@ $card-radius: 24px;
   margin-left: 40px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  
 }
 
 .login-title {
   margin: 0 0 24px 0;
-  font-size: 28px;
-  font-weight: 700;
   color: $title-color;
 }
 
@@ -70,8 +68,10 @@ $card-radius: 24px;
   gap: 16px;
 
   label {
-    min-width: 110px;
-    font-weight: 600;
+    width: 130px;      
+    flex-shrink: 0;
+    font-size: 24px;
+    font-weight: bold;
     color: $text-color;
   }
 
@@ -95,6 +95,9 @@ $card-radius: 24px;
     }
   }
 }
+
+
+
 
 .messages {
   min-height: 20px;
@@ -120,8 +123,8 @@ $card-radius: 24px;
   border: none;
   background: #31326f;
   color: #ffffff;
-  font-weight: 600;
-  font-size: 14px;
+  
+  font-size: 16px;
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(49, 50, 111, 0.35);
   transition: transform 0.1s, box-shadow 0.1s, opacity 0.1s;
@@ -149,7 +152,7 @@ $card-radius: 24px;
   border: none;
   padding: 0;
   color: $text-color;
-  font-size: 13px;
+  font-size: 16px;
   text-decoration: underline;
   cursor: pointer;
 
