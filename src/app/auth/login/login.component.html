@@ -1,0 +1,65 @@
+<div class="login-page">
+  <div class="login-card">
+    <!-- Gatito -->
+    <img
+      src="/assets/cat-login.svg"
+      alt="Gatito"
+      class="cat-image"
+    />
+
+    <!-- Contenido del formulario -->
+    <div class="login-content">
+      <h1 class="login-title">Iniciar Sesión</h1>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Correo -->
+        <div class="form-group">
+          <label for="correo">Correo:</label>
+          <input
+            id="correo"
+            type="email"
+            formControlName="correo"
+            [class.is-invalid]="f['correo'].invalid && f['correo'].touched"
+          />
+        </div>
+
+        <!-- Contraseña -->
+        <div class="form-group">
+          <label for="contrasena">Contraseña:</label>
+          <input
+            id="contrasena"
+            type="password"
+            formControlName="contrasena"
+            [class.is-invalid]="
+              f['contrasena'].invalid && f['contrasena'].touched
+            "
+          />
+        </div>
+
+        <!-- Mensajes -->
+        <div class="messages">
+          <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+          <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
+        </div>
+
+        <!-- Botón -->
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="cargando"
+        >
+          {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+        </button>
+      </form>
+
+      <!-- Recuperar contraseña -->
+      <button
+        type="button"
+        class="recover-link"
+        (click)="onRecoverPassword()"
+      >
+        Recuperar contraseña
+      </button>
+    </div>
+  </div>
+</div>
