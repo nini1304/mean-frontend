@@ -98,6 +98,8 @@ private passwordsMatchValidator(group: AbstractControl) {
 				this.successMsg = res.message || 'Login exitoso';
 
 				const payload = this.authService.getTokenPayload(res.token);
+				this.rolActual = payload?.rol?.nombre ?? null;
+
 
 
 				 const requiereCambio = !!res.requiereCambioContrasena;
@@ -112,13 +114,11 @@ private passwordsMatchValidator(group: AbstractControl) {
 					}
 
 
-				if (payload?.rol?.nombre === 'ADMIN') {
-					// 👉 admin: ir al menú de administrador
-					this.router.navigate(['/admin/menu']);
-				} else {
-					// 👉 otro rol: por ahora lo mandamos al home
-					this.router.navigate(['/']);
-				}
+				if (this.rolActual === 'ADMIN') {
+    this.router.navigate(['/admin/menu']);
+  } else {
+    this.router.navigate(['/']);
+  }
 			},
 			error: (err) => {
 				this.cargando = false;
