@@ -108,4 +108,57 @@
       </form>
     </div>
   </div>
+
+  <!-- MODAL RESTABLECER CONTRASEÑA -->
+<div class="modal-backdrop" *ngIf="showChangePasswordModal">
+  <div class="modal-card">
+    <!-- opcional: si NO quieres que pueda cerrarlo, quita este botón -->
+    <button class="modal-close" type="button" (click)="closeChangePasswordModal()">
+      ✕
+    </button>
+
+    <h2 class="modal-title">Restablecer Contraseña</h2>
+
+    <form
+      [formGroup]="changePasswordForm"
+      (ngSubmit)="submitChangePassword()"
+      class="modal-form"
+    >
+      <div class="modal-form-group">
+        <label for="new-pass">Ingrese su nueva contraseña:</label>
+        <input
+          id="new-pass"
+          type="password"
+          formControlName="contrasena_nueva"
+          [class.is-invalid]="cpf['contrasena_nueva'].invalid && cpf['contrasena_nueva'].touched"
+        />
+      </div>
+
+      <div class="modal-form-group">
+        <label for="new-pass-2">Repita su nueva contraseña:</label>
+        <input
+          id="new-pass-2"
+          type="password"
+          formControlName="contrasena_nueva_2"
+          [class.is-invalid]="cpf['contrasena_nueva_2'].invalid && cpf['contrasena_nueva_2'].touched"
+        />
+      </div>
+
+      <div class="modal-messages">
+        <p class="error"
+           *ngIf="changePasswordForm.hasError('passwordsMismatch') && changePasswordForm.touched">
+          Las contraseñas no coinciden.
+        </p>
+
+        <p class="error" *ngIf="changeErrorMsg">{{ changeErrorMsg }}</p>
+        <p class="success" *ngIf="changeMsg">{{ changeMsg }}</p>
+      </div>
+
+      <button type="submit" class="btn-primary modal-btn" [disabled]="cargandoChange">
+        {{ cargandoChange ? 'Enviando...' : 'Enviar' }}
+      </button>
+    </form>
+  </div>
+</div>
+
 </div>

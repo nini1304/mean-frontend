@@ -10,6 +10,7 @@ interface LoginRequest {
 interface LoginResponse {
   message: string;
   token: string;
+  requiereCambioContrasena?: boolean; 
 }
 
 export interface UserTokenPayload {
@@ -69,4 +70,12 @@ export class AuthService {
       return null;
     }
   }
+
+  changePassword(contrasena_actual: string, contrasena_nueva: string) {
+  return this.http.post<{ message: string }>(
+    `http://localhost:3000/api/contrasenas/change-password`,
+    { contrasena_actual, contrasena_nueva }
+  );
+}
+
 }
