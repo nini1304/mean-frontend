@@ -62,4 +62,50 @@
       </button>
     </div>
   </div>
+
+
+   <!-- MODAL RECUPERAR CONTRASEÑA -->
+  <div class="modal-backdrop" *ngIf="showRecoverModal">
+    <div class="modal-card">
+      <button class="modal-close" type="button" (click)="closeRecoverModal()">
+        ✕
+      </button>
+
+      <h2 class="modal-title">Recuperar Contraseña</h2>
+
+      <p class="modal-text">
+        Se enviará una contraseña generada automáticamente a su correo
+        registrado. Una vez recibida, inicie sesión y proceda a cambiarla.
+      </p>
+
+      <form
+        [formGroup]="recoverForm"
+        (ngSubmit)="submitRecoverPassword()"
+        class="modal-form"
+      >
+        <div class="modal-form-group">
+          <label for="recuperar-correo">Ingrese su correo:</label>
+          <input
+            id="recuperar-correo"
+            type="email"
+            formControlName="correo"
+            [class.is-invalid]="rf['correo'].invalid && rf['correo'].touched"
+          />
+        </div>
+
+        <div class="modal-messages">
+          <p class="error" *ngIf="resetErrorMsg">{{ resetErrorMsg }}</p>
+          <p class="success" *ngIf="resetMsg">{{ resetMsg }}</p>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-primary modal-btn"
+          [disabled]="cargandoReset"
+        >
+          {{ cargandoReset ? 'Enviando...' : 'Enviar' }}
+        </button>
+      </form>
+    </div>
+  </div>
 </div>

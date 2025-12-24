@@ -25,6 +25,10 @@ export interface UserTokenPayload {
   exp: number;
 }
 
+interface ForgotPasswordResponse {
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -38,6 +42,13 @@ export class AuthService {
       tap((res) => {
         localStorage.setItem('token', res.token);
       })
+    );
+  }
+
+  forgotPassword(correo: string): Observable<ForgotPasswordResponse> {
+    return this.http.post<ForgotPasswordResponse>(
+      `${this.baseUrl}/forgot-password`,
+      { correo }
     );
   }
 

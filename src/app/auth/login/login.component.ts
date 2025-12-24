@@ -13,11 +13,17 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup;
+  recoverForm: FormGroup;
   cargando = false;
   errorMsg = '';
   successMsg = '';
 
-  constructor(
+  showRecoverModal = false;
+  cargandoReset = false;
+  resetMsg = '';
+  resetErrorMsg = '';
+
+   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
@@ -26,11 +32,20 @@ export class LoginComponent {
       correo: ['', [Validators.required, Validators.email]],
       contrasena: ['', [Validators.required]],
     });
+
+    this.recoverForm = this.fb.group({
+      correo: ['', [Validators.required, Validators.email]],
+    });
   }
 
   get f() {
     return this.loginForm.controls;
   }
+
+  get rf() {
+  return this.recoverForm.controls;
+}
+
 
   onSubmit() {
     this.errorMsg = '';
@@ -66,6 +81,39 @@ export class LoginComponent {
   }
 
   onRecoverPassword() {
-    console.log('Recuperar contraseña');
+    this.resetMsg = '';
+    this.resetErrorMsg = '';
+    this.recoverForm.reset();
+    this.showRecoverModal = true;
+  }
+
+  closeRecoverModal() {
+    this.showRecoverModal = false;
+  }
+
+  submitRecoverPassword() {
+    this.resetMsg = '';
+    this.resetErrorMsg = '';
+
+    if (this.recoverForm.invalid) {
+      this.recoverForm.markAllAsTouched();
+      return;
+    }
+
+    this.cargandoReset = true;
+    const correo = this.recoverForm.value.correo;
+
+    this.authService.forgotPassword(correo).subscribe({
+      next: (res) => {
+        this.cargandoReset = false;
+        this.resetMsg =
+          res.message ||
+          'Si el correo existe en el sistema, se ha enviado una contraseña temporal.';
+      },
+      error: () => {
+        this.cargandoReset = false;
+        this.resetErrorMsg = 'Ocurrió un error al procesar la solicitud.';
+      },
+    });
   }
 }
