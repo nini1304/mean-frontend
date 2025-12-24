@@ -12,23 +12,50 @@ interface LoginResponse {
   token: string;
 }
 
+export interface UserTokenPayload {
+  sub: string;
+  nombre_completo: string;
+  correo: string;
+  rol?: {
+    id: string;
+    nombre: string;
+  };
+  requiereCambioContrasena?: boolean;
+  iat: number;
+  exp: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // podrías mover esto a environment más adelante
   private readonly baseUrl = 'http://localhost:3000/api/auth';
 
   constructor(private http: HttpClient) {}
 
   login(data: LoginRequest): Observable<LoginResponse> {
-    return this.http
-      .post<LoginResponse>(`${this.baseUrl}/login`, data)
-      .pipe(
-        tap((res) => {
-          // guarda el token donde prefieras
-          localStorage.setItem('token', res.token);
-        }),
-      );
+    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, data).pipe(
+      tap((res) => {
+        localStorage.setItem('token', res.token);
+      })
+    );
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  getTokenPayload(token: string): UserTokenPayload | null {
+    try {
+      const payloadBase64 = token.split('.')[1];
+
+      // JWT usa base64url, lo normalizamos a base64 estándar
+      const base64 = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
+      const json = atob(base64);
+      return JSON.parse(json) as UserTokenPayload;
+    } catch (e) {
+      console.error('No se pudo decodificar el token', e);
+      return null;
+    }
   }
 }

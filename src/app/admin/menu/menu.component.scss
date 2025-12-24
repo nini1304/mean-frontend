@@ -1,0 +1,81 @@
+// Colores
+$bg-left: #637ab9;
+$bg-right: #31326f;
+$btn-color: #a8fbd3;
+$title-color: #ffffff;
+
+:host {
+  display: block;
+  height: 100vh;
+  width: 100%;
+}
+
+.admin-page {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, $bg-left 0%, $bg-right 100%);
+  display: flex;
+  justify-content: center;
+  font-family: system-ui, sans-serif;
+  color: $title-color;
+}
+
+.admin-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  gap: 32px;
+}
+
+.content{
+  display: flex;
+  flex-direction: row;
+
+  gap: 50px;
+  width: 100%;
+}
+
+.title {
+  
+  text-align: center;
+  width: 100%;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn {
+  background: $btn-color;
+  border: none;
+  padding: 16px 28px;
+  border-radius: 16px;
+  font-size: 18px;
+   font-weight: bold;
+  cursor: pointer;
+  width: 280px;
+  text-align: center;
+  color: #000;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.admin-cat {
+  height: 420px;
+  width: auto;
+}

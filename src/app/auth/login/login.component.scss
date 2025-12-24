@@ -124,7 +124,8 @@ $card-radius: 24px;
   background: #31326f;
   color: #ffffff;
   
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(49, 50, 111, 0.35);
   transition: transform 0.1s, box-shadow 0.1s, opacity 0.1s;
@@ -152,7 +153,7 @@ $card-radius: 24px;
   border: none;
   padding: 0;
   color: $text-color;
-  font-size: 16px;
+  font-size: 18px;
   text-decoration: underline;
   cursor: pointer;
 
