@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PacientesService, UsuarioMascotaDto } from '../paciente.service';
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -22,7 +24,7 @@ export class ListadoPacientesComponent implements OnInit {
   showOwnerModal = false;
   selected: UsuarioMascotaDto | null = null;
 
-  constructor(private pacientesService: PacientesService) {}
+  constructor(private pacientesService: PacientesService, private router: Router) { }
 
   ngOnInit(): void {
     this.cargar();
@@ -85,5 +87,23 @@ export class ListadoPacientesComponent implements OnInit {
 
   formatPeso(peso: number): string {
     return `${peso} kg`;
+  }
+
+  volverMenu() {
+    this.router.navigate(['/recepcionista/menu']);
+  }
+
+  editarPaciente(p: UsuarioMascotaDto) {
+    // TODO: aquí luego abres modal de edición o navegas a /pacientes/editar/:id
+    console.log('Editar paciente:', p.mascota.nombre, p.mascota.id);
+  }
+
+  eliminarPaciente(p: UsuarioMascotaDto) {
+    // Por ahora confirmación simple
+    const ok = confirm(`¿Seguro que deseas eliminar a ${p.mascota.nombre}?`);
+    if (!ok) return;
+
+    // TODO: conectar endpoint delete lógico/físico cuando lo tengas
+    console.log('Eliminar paciente:', p.id_relacion, p.mascota.id);
   }
 }

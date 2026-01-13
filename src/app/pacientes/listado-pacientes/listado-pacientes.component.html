@@ -1,108 +1,150 @@
 <div class="page">
-  <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <h1 class="title">Pacientes</h1>
+    <div class="container">
+        <div class="top-actions">
+            <button class="btn-back" type="button" (click)="volverMenu()">
+                <!-- flecha -->
+                <span class="back-icon">←</span>
+                Volver al menú principal
+            </button>
+        </div>
+        <!-- Header -->
+        <div class="header">
+            <h1>Pacientes</h1>
 
-      <button class="btn-add" type="button" (click)="agregarPaciente()">
-        Agregar <span class="plus">+</span>
-      </button>
-    </div>
-
-    <!-- Buscar -->
-    <div class="search-bar">
-      <span class="search-label">Buscar</span>
-
-      <input
-        type="text"
-        [(ngModel)]="filtro"
-        placeholder=""
-        aria-label="Buscar pacientes"
-      />
-    </div>
-
-    <!-- Estados -->
-    <div class="status" *ngIf="cargando">Cargando...</div>
-    <div class="status error" *ngIf="!cargando && errorMsg">{{ errorMsg }}</div>
-
-    <!-- Tabla -->
-    <div class="table-wrap" *ngIf="!cargando && !errorMsg">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Edad</th>
-            <th>Peso</th>
-            <th>Tipo</th>
-            <th>Raza</th>
-            <th>Historial clinico</th>
-            <th>Mas informacion</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let p of pacientesFiltrados">
-            <td>{{ p.mascota.nombre }}</td>
-            <td>{{ formatEdad(p.mascota.edad) }}</td>
-            <td>{{ formatPeso(p.mascota.peso) }}</td>
-            <td>{{ p.mascota.tipo_mascota }}</td>
-            <td>{{ p.mascota.raza }}</td>
-
-            <td class="center">
-              <button class="btn-view" type="button" (click)="verHistorial(p)">
-                ver
-              </button>
-            </td>
-
-            <td class="center">
-              <button class="btn-view" type="button" (click)="verDueno(p)">
-                ver
-              </button>
-            </td>
-          </tr>
-
-          <tr *ngIf="pacientesFiltrados.length === 0">
-            <td class="empty" colspan="7">No se encontraron pacientes.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- MODAL DUEÑO -->
-  <div class="modal-backdrop" *ngIf="showOwnerModal">
-    <div class="modal-card">
-      <button class="modal-close" type="button" (click)="cerrarModal()">✕</button>
-
-      <h2 class="modal-title">Información del dueño</h2>
-
-      <div class="modal-body" *ngIf="selected as s">
-        <div class="pill">
-          <span class="pill-title">Paciente:</span>
-          <span class="pill-value">{{ s.mascota.nombre }}</span>
+            <button class="btn-add" type="button" (click)="agregarPaciente()">
+                Agregar <span class="plus">+</span>
+            </button>
         </div>
 
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="k">Nombre completo</span>
-            <span class="v">{{ s.dueno.nombre_completo }}</span>
-          </div>
+        <!-- Buscar -->
+        <div class="search-bar">
+            <span class="search-label">Buscar</span>
 
-          <div class="info-item">
-            <span class="k">Correo</span>
-            <span class="v">{{ s.dueno.correo }}</span>
-          </div>
-
-          <div class="info-item">
-            <span class="k">Celular</span>
-            <span class="v">{{ s.dueno.numero_celular }}</span>
-          </div>
+            <input
+                type="text"
+                [(ngModel)]="filtro"
+                placeholder
+                aria-label="Buscar pacientes" />
         </div>
 
-        <button class="btn-primary" type="button" (click)="cerrarModal()">
-          Cerrar
-        </button>
-      </div>
+        <!-- Estados -->
+        <div class="status" *ngIf="cargando">Cargando...</div>
+        <div class="status error" *ngIf="!cargando && errorMsg">{{ errorMsg
+            }}</div>
+
+        <!-- Tabla -->
+        <div class="table-wrap" *ngIf="!cargando && !errorMsg">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Edad</th>
+                        <th>Peso</th>
+                        <th>Tipo</th>
+                        <th>Raza</th>
+                        <th>Historial clinico</th>
+                        <th>Mas informacion</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let p of pacientesFiltrados">
+                        <td>{{ p.mascota.nombre }}</td>
+                        <td>{{ formatEdad(p.mascota.edad) }}</td>
+                        <td>{{ formatPeso(p.mascota.peso) }}</td>
+                        <td>{{ p.mascota.tipo_mascota }}</td>
+                        <td>{{ p.mascota.raza }}</td>
+
+                        <td class="center">
+                            <button class="btn-view" type="button"
+                                (click)="verHistorial(p)">
+                                ver
+                            </button>
+                        </td>
+
+                        <td class="center">
+                            <button class="btn-view" type="button"
+                                (click)="verDueno(p)">
+                                ver
+                            </button>
+                        </td>
+                        <td class="center">
+                            <div class="actions">
+                                <!-- EDITAR -->
+                                <button class="icon-btn" type="button"
+                                    (click)="editarPaciente(p)"
+                                    aria-label="Editar">
+                                    <!-- lápiz -->
+                                    <svg viewBox="0 0 24 24" class="icon"
+                                        aria-hidden="true">
+                                        <path
+                                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"></path>
+                                        <path
+                                            d="M20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"></path>
+                                    </svg>
+                                </button>
+
+                                <!-- ELIMINAR -->
+                                <button class="icon-btn danger" type="button"
+                                    (click)="eliminarPaciente(p)"
+                                    aria-label="Eliminar">
+                                    <!-- basurero -->
+                                    <svg viewBox="0 0 24 24" class="icon"
+                                        aria-hidden="true">
+                                        <path d="M6 7h12l-1 14H7L6 7z"></path>
+                                        <path d="M9 4h6l1 2H8l1-2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr *ngIf="pacientesFiltrados.length === 0">
+                        <td class="empty" colspan="7">No se encontraron
+                            pacientes.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
+
+    <!-- MODAL DUEÑO -->
+    <div class="modal-backdrop" *ngIf="showOwnerModal">
+        <div class="modal-card">
+            <!-- <button class="modal-close" type="button" (click)="cerrarModal()">✕</button> -->
+
+            <h2 class="modal-title">Información del dueño</h2>
+
+            <div class="modal-body" *ngIf="selected as s">
+                <div class="pill">
+                    <span class="pill-title">Paciente:</span>
+                    <span class="pill-value">{{ s.mascota.nombre }}</span>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="k">Nombre completo</span>
+                        <span class="v">{{ s.dueno.nombre_completo }}</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="k">Correo</span>
+                        <span class="v">{{ s.dueno.correo }}</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="k">Celular</span>
+                        <span class="v">{{ s.dueno.numero_celular }}</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary" type="button"
+                    (click)="cerrarModal()">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
