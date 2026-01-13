@@ -6,7 +6,13 @@ $btn-view: #637ab9;
 :host {
   display: block;
   min-height: 100vh;
+  box-sizing: border-box;
 }
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
 
 .page {
   min-height: 100vh;
@@ -62,19 +68,20 @@ $btn-view: #637ab9;
   align-items: center;
   gap: 14px;
   box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-  margin-top: 100px;
-  margin-bottom: 40px;
-  justify-self: center;
-  min-width: 920px;
+  margin: 18px auto 26px;
+  width: 100%;
+  max-width: 920px;
 
   .search-label {
     color: #fff;
     padding: 0 10px;
     font-size: 18px;
+    white-space: nowrap;
   }
 
   input {
     flex: 1;
+    min-width: 0; // clave para que no reviente
     height: 34px;
     border-radius: 999px;
     border: none;
@@ -95,8 +102,12 @@ $btn-view: #637ab9;
 }
 
 .table-wrap {
-  background: transparent;
+  width: 100%;
+  overflow-x: auto;          // scroll horizontal
+  -webkit-overflow-scrolling: touch;
+  border-radius: 6px;
 }
+
 
 .table {
   width: 100%;
@@ -326,4 +337,121 @@ $btn-view: #637ab9;
   width: 18px;
   height: 18px;
   fill: #ffffff;
+}
+
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .page {
+    padding: 28px 16px;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+
+  .header h1 {
+    font-size: 34px;
+  }
+
+  .btn-add {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .search-bar {
+    max-width: 100%;
+  }
+
+  .table th,
+  .table td {
+    font-size: 16px;
+  }
+
+  .btn-view {
+    font-size: 16px;
+    padding: 6px 14px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 640px) {
+  .page {
+    padding: 20px 12px;
+  }
+
+  .top-actions {
+    margin-bottom: 10px;
+  }
+
+  /* Header apilado */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 30px;
+  }
+
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Buscador apilado */
+  .search-bar {
+  width: 100%;
+  max-width: 100%;
+  margin: 14px 0 18px;     // sin auto en móvil
+  border-radius: 18px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 14px;
+}
+
+.search-bar input {
+  width: 100%;
+  min-width: 0;            // IMPORTANTÍSIMO (evita overflow)
+  height: 38px;
+  font-size: 14px;
+}
+  
+
+  /* Tabla: scroll horizontal (ya activado en table-wrap) */
+  .table {
+    min-width: 780px;  // un poco menor para móviles
+  }
+
+  /* Acciones más compactas */
+  .actions {
+    gap: 8px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 32px;
+  }
+
+  .btn-view {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  /* Modal más cómodo en móvil */
+  .modal-card {
+    max-width: 92vw;
+    padding: 20px 18px 18px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+  }
 }
