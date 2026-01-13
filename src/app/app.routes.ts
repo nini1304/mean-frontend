@@ -16,5 +16,11 @@ export const routes: Routes = [
 	loadComponent: () =>
 	import('./admin/menu/menu.component').then(m => m.MenuComponent),
   },
+  {
+  path: 'recepcionista/menu',
+  loadComponent: () =>
+    import('./recepcionista/menu-recepcionista/menu-recepcionista.component').then(m => m.MenuRecepcionistaComponent),
+},
+
 
 ];

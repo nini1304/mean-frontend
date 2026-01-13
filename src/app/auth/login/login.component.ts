@@ -116,7 +116,10 @@ private passwordsMatchValidator(group: AbstractControl) {
 
 				if (this.rolActual === 'ADMIN') {
     this.router.navigate(['/admin/menu']);
-  } else {
+  }else if (this.rolActual === 'RECEPCIONISTA') {
+        this.router.navigate(['/recepcionista/menu']);
+      } 
+	else {
     this.router.navigate(['/']);
   }
 			},
@@ -198,7 +201,10 @@ submitChangePassword() {
       // redirigir según rol
       if (this.rolActual === 'ADMIN') {
         this.router.navigate(['/admin/menu']);
-      } else {
+      }else if (this.rolActual === 'RECEPCIONISTA') {
+        this.router.navigate(['/recepcionista/menu']);
+      }
+			else {
         this.router.navigate(['/']);
       }
     },
