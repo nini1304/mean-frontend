@@ -23,8 +23,10 @@
             <input
                 type="text"
                 [(ngModel)]="filtro"
+                (ngModelChange)="page = 1"
                 placeholder
                 aria-label="Buscar pacientes" />
+
         </div>
 
         <!-- Estados -->
@@ -49,7 +51,7 @@
                 </thead>
 
                 <tbody>
-                    <tr *ngFor="let p of pacientesFiltrados">
+                    <tr *ngFor="let p of pacientesPaginados">
                         <td>{{ p.mascota.nombre }}</td>
                         <td>{{ formatEdad(p.mascota.edad) }}</td>
                         <td>{{ formatPeso(p.mascota.peso) }}</td>
@@ -108,6 +110,24 @@
                 </tbody>
             </table>
         </div>
+        <div class="pagination" >
+            <button type="button" class="pager-btn" (click)="prevPage()"
+                [disabled]="page === 1">
+                ← Anterior
+            </button>
+
+            <span class="pager-info">
+                Página {{ page }} de {{ totalPages }}
+                <span class="pager-total">({{ pacientesFiltrados.length }}
+                    registros)</span>
+            </span>
+
+            <button type="button" class="pager-btn" (click)="nextPage()"
+                [disabled]="page === totalPages">
+                Siguiente →
+            </button>
+        </div>
+
     </div>
 
     <!-- MODAL DUEÑO -->

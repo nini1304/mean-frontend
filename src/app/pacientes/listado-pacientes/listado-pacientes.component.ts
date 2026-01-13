@@ -17,6 +17,10 @@ export class ListadoPacientesComponent implements OnInit {
   cargando = false;
   errorMsg = '';
 
+  pageSize = 20;
+  page = 1;
+
+
   pacientes: UsuarioMascotaDto[] = [];
   filtro = '';
 
@@ -47,17 +51,30 @@ export class ListadoPacientesComponent implements OnInit {
   }
 
   get pacientesFiltrados(): UsuarioMascotaDto[] {
-    const q = this.filtro.trim().toLowerCase();
-    if (!q) return this.pacientes;
+  const q = this.filtro.trim().toLowerCase();
+  if (!q) return this.pacientes;
 
-    return this.pacientes.filter((p) => {
-      const n = p.mascota?.nombre?.toLowerCase() ?? '';
-      const r = p.mascota?.raza?.toLowerCase() ?? '';
-      const t = p.mascota?.tipo_mascota?.toLowerCase() ?? '';
-      const d = p.dueno?.nombre_completo?.toLowerCase() ?? '';
-      return n.includes(q) || r.includes(q) || t.includes(q) || d.includes(q);
-    });
-  }
+  return this.pacientes.filter((p) => {
+    const n = p.mascota?.nombre?.toLowerCase() ?? '';
+    const r = p.mascota?.raza?.toLowerCase() ?? '';
+    const t = p.mascota?.tipo_mascota?.toLowerCase() ?? '';
+    const d = p.dueno?.nombre_completo?.toLowerCase() ?? '';
+    return n.includes(q) || r.includes(q) || t.includes(q) || d.includes(q);
+  });
+}
+
+get totalPages(): number {
+  return Math.max(1, Math.ceil(this.pacientesFiltrados.length / this.pageSize));
+}
+
+get pacientesPaginados(): UsuarioMascotaDto[] {
+  // si la página actual queda fuera (ej. cambias filtro), la corregimos
+  if (this.page > this.totalPages) this.page = this.totalPages;
+
+  const start = (this.page - 1) * this.pageSize;
+  return this.pacientesFiltrados.slice(start, start + this.pageSize);
+}
+
 
   verDueno(p: UsuarioMascotaDto) {
     this.selected = p;
@@ -106,4 +123,19 @@ export class ListadoPacientesComponent implements OnInit {
     // TODO: conectar endpoint delete lógico/físico cuando lo tengas
     console.log('Eliminar paciente:', p.id_relacion, p.mascota.id);
   }
+
+  prevPage() {
+  if (this.page > 1) this.page--;
+}
+
+nextPage() {
+  if (this.page < this.totalPages) this.page++;
+}
+
+goToPage(p: number) {
+  if (p < 1) p = 1;
+  if (p > this.totalPages) p = this.totalPages;
+  this.page = p;
+}
+
 }
