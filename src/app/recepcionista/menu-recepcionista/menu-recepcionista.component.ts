@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-menu-recepcionista',
-  imports: [],
+  standalone: true,
+  imports: [RouterModule],
   templateUrl: './menu-recepcionista.component.html',
   styleUrl: './menu-recepcionista.component.scss'
 })

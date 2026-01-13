@@ -22,5 +22,14 @@ export const routes: Routes = [
     import('./recepcionista/menu-recepcionista/menu-recepcionista.component').then(m => m.MenuRecepcionistaComponent),
 },
 
+{
+  path: 'pacientes',
+  loadComponent: () =>
+    import('./pacientes/listado-pacientes/listado-pacientes.component')
+      .then(m => m.ListadoPacientesComponent),
+},
+
+
+
 
 ];
