@@ -116,13 +116,23 @@ get pacientesPaginados(): UsuarioMascotaDto[] {
   }
 
   eliminarPaciente(p: UsuarioMascotaDto) {
-    // Por ahora confirmación simple
-    const ok = confirm(`¿Seguro que deseas eliminar a ${p.mascota.nombre}?`);
-    if (!ok) return;
+  const ok = confirm(`¿Seguro que deseas eliminar a ${p.mascota.nombre}?`);
+  if (!ok) return;
 
-    // TODO: conectar endpoint delete lógico/físico cuando lo tengas
-    console.log('Eliminar paciente:', p.id_relacion, p.mascota.id);
-  }
+  this.pacientesService.eliminarMascota(p.mascota.id).subscribe({
+    next: () => {
+      // Quitarlo del arreglo local para reflejarlo al instante
+      this.pacientes = this.pacientes.filter(x => x.mascota.id !== p.mascota.id);
+
+      // Ajustar página si te quedas sin registros en la última
+      if (this.page > this.totalPages) this.page = this.totalPages;
+    },
+    error: (err) => {
+      alert(err?.error?.message || 'No se pudo eliminar el paciente.');
+    },
+  });
+}
+
 
   prevPage() {
   if (this.page > 1) this.page--;
