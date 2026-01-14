@@ -175,7 +175,7 @@ export class ModalAgregarPacienteComponent implements OnInit {
     return this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(2)]],
       tipo_mascota: ['', [Validators.required]], // id tipo mascota
-      edad: [0, [Validators.required, Validators.min(0)]],
+      edad: ['', [Validators.required, this.edadValidator()]],
       peso: [0, [Validators.required, Validators.min(0)]],
       sexo: ['MACHO', [Validators.required]],
       raza: ['', [Validators.required]],
@@ -185,6 +185,25 @@ export class ModalAgregarPacienteComponent implements OnInit {
   seleccionarCliente(c: ClienteActivoDto) {
     this.form.patchValue({ idUsuario: c._id });
   }
+
+  edadValidator() {
+  // acepta: "4 años", "4 anios", "6 meses"
+  const re = /^\s*(\d+)\s*(años|anos|meses)\s*$/i;
+
+  return (control: AbstractControl) => {
+    const v = (control.value ?? '').toString().trim().toLowerCase();
+    if (!v) return null;
+
+    const m = v.match(re);
+    if (!m) return { edadFormato: true };
+
+    const num = Number(m[1]);
+    if (Number.isNaN(num) || num < 0) return { edadFormato: true };
+
+    return null;
+  };
+}
+
 
   submit() {
     this.errorMsg = '';

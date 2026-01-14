@@ -1,181 +1,191 @@
 <div class="modal-backdrop">
-  <div class="modal-card">
-    <button class="modal-close" type="button" (click)="cancelar()">✕</button>
+    <div class="modal-card">
+        <button class="modal-close" type="button"
+            (click)="cancelar()">✕</button>
 
-    <h2 class="modal-title">Registrar paciente</h2>
+        <h2 class="modal-title">Registrar paciente</h2>
 
-    <!-- Selector modo -->
-    <div class="mode">
-      <button
-        type="button"
-        class="mode-btn"
-        [class.active]="modo === 'EXISTENTE'"
-        (click)="form.patchValue({ modo: 'EXISTENTE' })"
-      >
-        Asociar a dueño existente
-      </button>
+        <!-- Selector modo -->
+        <div class="mode">
+            <button
+                type="button"
+                class="mode-btn"
+                [class.active]="modo === 'EXISTENTE'"
+                (click)="form.patchValue({ modo: 'EXISTENTE' })">
+                Asociar a dueño existente
+            </button>
 
-      <button
-        type="button"
-        class="mode-btn"
-        [class.active]="modo === 'NUEVO'"
-        (click)="form.patchValue({ modo: 'NUEVO' })"
-      >
-        Crear dueño nuevo
-      </button>
-    </div>
+            <button
+                type="button"
+                class="mode-btn"
+                [class.active]="modo === 'NUEVO'"
+                (click)="form.patchValue({ modo: 'NUEVO' })">
+                Crear dueño nuevo
+            </button>
+        </div>
 
-    <!-- Mensajes -->
-    <div class="messages">
-      <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
-      <p class="success" *ngIf="okMsg">{{ okMsg }}</p>
-    </div>
+        <!-- Mensajes -->
+        <div class="messages">
+            <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+            <p class="success" *ngIf="okMsg">{{ okMsg }}</p>
+        </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <!-- =========================
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <!-- =========================
            SECCIÓN DUEÑO
       ========================== -->
 
-      <!-- Dueño existente -->
-      <div class="section" *ngIf="modo === 'EXISTENTE'">
-        <h3 class="section-title">Seleccione un dueño</h3>
+            <!-- Dueño existente -->
+            <div class="section" *ngIf="modo === 'EXISTENTE'">
+                <h3 class="section-title">Seleccione un dueño</h3>
 
-        <div class="search-client">
-          <input
-            type="text"
-            placeholder="Buscar por nombre, correo o celular..."
-            [(ngModel)]="filtroCliente"
-            [ngModelOptions]="{ standalone: true }"
-          />
-        </div>
+                <div class="search-client">
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre, correo o celular..."
+                        [(ngModel)]="filtroCliente"
+                        [ngModelOptions]="{ standalone: true }" />
+                </div>
 
-        <div class="client-list">
-          <button
-            type="button"
-            class="client-item"
-            *ngFor="let c of clientesFiltrados()"
-            (click)="seleccionarCliente(c)"
-            [class.selected]="form.value.idUsuario === c._id"
-          >
-            <div class="c-name">{{ c.nombre_completo }}</div>
-            <div class="c-sub">{{ c.correo }} · {{ c.numero_celular }}</div>
-          </button>
+                <div class="client-list">
+                    <button
+                        type="button"
+                        class="client-item"
+                        *ngFor="let c of clientesFiltrados()"
+                        (click)="seleccionarCliente(c)"
+                        [class.selected]="form.value.idUsuario === c._id">
+                        <div class="c-name">{{ c.nombre_completo }}</div>
+                        <div class="c-sub">{{ c.correo }} · {{ c.numero_celular
+                            }}</div>
+                    </button>
 
-          <div class="client-empty" *ngIf="clientesFiltrados().length === 0">
-            No hay clientes para mostrar.
-          </div>
-        </div>
+                    <div class="client-empty"
+                        *ngIf="clientesFiltrados().length === 0">
+                        No hay clientes para mostrar.
+                    </div>
+                </div>
 
-        <p class="hint" *ngIf="form.get('idUsuario')?.touched && form.get('idUsuario')?.invalid">
-          Debes seleccionar un dueño.
-        </p>
-      </div>
+                <p class="hint"
+                    *ngIf="form.get('idUsuario')?.touched && form.get('idUsuario')?.invalid">
+                    Debes seleccionar un dueño.
+                </p>
+            </div>
 
-      <!-- Dueño nuevo -->
-      <div class="section" *ngIf="modo === 'NUEVO'" formGroupName="dueno">
-        <h3 class="section-title">Datos del dueño</h3>
+            <!-- Dueño nuevo -->
+            <div class="section" *ngIf="modo === 'NUEVO'" formGroupName="dueno">
+                <h3 class="section-title">Datos del dueño</h3>
 
-        <div class="grid-2">
-          <div class="field">
-            <label>Nombre completo</label>
-            <input type="text" formControlName="nombre_completo" />
-          </div>
+                <div class="grid-2">
+                    <div class="field">
+                        <label>Nombre completo</label>
+                        <input type="text" formControlName="nombre_completo" />
+                    </div>
 
-          <div class="field">
-            <label>Correo</label>
-            <input type="email" formControlName="correo" />
-          </div>
+                    <div class="field">
+                        <label>Correo</label>
+                        <input type="email" formControlName="correo" />
+                    </div>
 
-          <div class="field">
-            <label>Celular</label>
-            <input type="text" formControlName="numero_celular" />
-          </div>
+                    <div class="field">
+                        <label>Celular</label>
+                        <input type="text" formControlName="numero_celular" />
+                    </div>
 
-          <div class="field" [formGroup]="form">
-            <label>Contraseña</label>
-            <input type="password" formControlName="contrasena" />
-          </div>
-        </div>
-      </div>
+                    <div class="field" [formGroup]="form">
+                        <label>Contraseña</label>
+                        <input type="password" formControlName="contrasena" />
+                    </div>
+                </div>
+            </div>
 
-      <!-- =========================
+            <!-- =========================
            CANTIDAD MASCOTAS
       ========================== -->
-      <div class="section">
-        <h3 class="section-title">Cantidad de mascotas</h3>
+            <div class="section">
+                <h3 class="section-title">Cantidad de mascotas</h3>
 
-        <div class="qty-row">
-          <input
-            type="number"
-            min="1"
-            max="10"
-            formControlName="cantidadMascotas"
-            (change)="onCantidadMascotasChange()"
-          />
+                <div class="qty-row">
+                    <input
+                        type="number"
+                        min="1"
+                        max="10"
+                        formControlName="cantidadMascotas"
+                        (change)="onCantidadMascotasChange()" />
 
-          <span class="qty-help">Máximo 10 por registro</span>
-        </div>
-      </div>
+                    <span class="qty-help">Máximo 10 por registro</span>
+                </div>
+            </div>
 
-      <!-- =========================
+            <!-- =========================
            MASCOTAS
       ========================== -->
-      <div class="section">
-        <h3 class="section-title">Datos de las mascotas</h3>
+            <div class="section">
+                <h3 class="section-title">Datos de las mascotas</h3>
 
-        <div class="pet-card" *ngFor="let _ of mascotasFA.controls; let i = index; trackBy: trackByIndex"
-     [formGroup]="mascotaGroupAt(i)">
-          <div class="pet-title">Mascota {{ i + 1 }}</div>
+                <div class="pet-card"
+                    *ngFor="let _ of mascotasFA.controls; let i = index; trackBy: trackByIndex"
+                    [formGroup]="mascotaGroupAt(i)">
+                    <div class="pet-title">Mascota {{ i + 1 }}</div>
 
-          <div class="grid-2">
-            <div class="field">
-              <label>Nombre</label>
-              <input type="text" formControlName="nombre" />
+                    <div class="grid-2">
+                        <div class="field">
+                            <label>Nombre</label>
+                            <input type="text" formControlName="nombre" />
+                        </div>
+
+                        <div class="field">
+                            <label>Tipo</label>
+                            <select formControlName="tipo_mascota">
+                                <option value disabled>Seleccione...</option>
+                                <option *ngFor="let t of tiposMascota"
+                                    [value]="t._id">
+                                    {{ t.tipo_mascota }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>Edad</label>
+                            <input
+                                type="text"
+                                formControlName="edad"
+                                placeholder="Ej: 4 años / 6 meses" />
+                            <small class="hint"
+                                *ngIf="mascotaGroupAt(i).get('edad')?.touched && mascotaGroupAt(i).get('edad')?.invalid">
+                                Formato válido: "4 años" o "6 meses"
+                            </small>
+                        </div>
+
+                        <div class="field">
+                            <label>Peso (kg)</label>
+                            <input type="number" min="0" step="0.1"
+                                formControlName="peso" />
+                        </div>
+
+                        <div class="field">
+                            <label>Sexo</label>
+                            <select formControlName="sexo">
+                                <option value="MACHO">MACHO</option>
+                                <option value="HEMBRA">HEMBRA</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label>Raza</label>
+                            <input type="text" formControlName="raza" />
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="field">
-              <label>Tipo</label>
-              <select formControlName="tipo_mascota">
-                <option value="" disabled>Seleccione...</option>
-                <option *ngFor="let t of tiposMascota" [value]="t._id">
-                  {{ t.tipo_mascota }}
-                </option>
-              </select>
+            <!-- Acciones -->
+            <div class="footer">
+                <button type="button" class="btn-secondary"
+                    (click)="cancelar()">Cancelar</button>
+                <button type="submit" class="btn-primary" [disabled]="cargando">
+                    {{ cargando ? 'Guardando...' : 'Guardar' }}
+                </button>
             </div>
-
-            <div class="field">
-              <label>Edad (años)</label>
-              <input type="number" min="0" formControlName="edad" />
-            </div>
-
-            <div class="field">
-              <label>Peso (kg)</label>
-              <input type="number" min="0" step="0.1" formControlName="peso" />
-            </div>
-
-            <div class="field">
-              <label>Sexo</label>
-              <select formControlName="sexo">
-                <option value="MACHO">MACHO</option>
-                <option value="HEMBRA">HEMBRA</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>Raza</label>
-              <input type="text" formControlName="raza" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Acciones -->
-      <div class="footer">
-        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="cargando">
-          {{ cargando ? 'Guardando...' : 'Guardar' }}
-        </button>
-      </div>
-    </form>
-  </div>
+        </form>
+    </div>
 </div>

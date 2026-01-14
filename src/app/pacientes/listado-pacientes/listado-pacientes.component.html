@@ -53,7 +53,7 @@
                 <tbody>
                     <tr *ngFor="let p of pacientesPaginados">
                         <td>{{ p.mascota.nombre }}</td>
-                        <td>{{ formatEdad(p.mascota.edad) }}</td>
+                        <td>{{ p.mascota.edad }}</td>
                         <td>{{ formatPeso(p.mascota.peso) }}</td>
                         <td>{{ p.mascota.tipo_mascota }}</td>
                         <td>{{ p.mascota.raza }}</td>

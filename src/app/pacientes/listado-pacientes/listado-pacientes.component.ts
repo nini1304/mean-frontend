@@ -96,11 +96,7 @@ get pacientesPaginados(): UsuarioMascotaDto[] {
 
   
 
-  formatEdad(edad: number): string {
-    // Si tu backend manda años como entero, se verá "3 años".
-    // Si en algún momento mandas meses, aquí puedes ajustar la lógica.
-    return `${edad} años`;
-  }
+  
 
   formatPeso(peso: number): string {
     return `${peso} kg`;
