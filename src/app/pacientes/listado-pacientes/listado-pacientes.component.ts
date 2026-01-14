@@ -3,13 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PacientesService, UsuarioMascotaDto } from '../paciente.service';
 import { Router } from '@angular/router';
+import { ModalAgregarPacienteComponent } from '../modal-agregar-paciente/modal-agregar-paciente.component';
 
 
 
 @Component({
   selector: 'app-listado-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalAgregarPacienteComponent],
   templateUrl: './listado-pacientes.component.html',
   styleUrl: './listado-pacientes.component.scss'
 })
@@ -19,6 +20,8 @@ export class ListadoPacientesComponent implements OnInit {
 
   pageSize = 20;
   page = 1;
+
+  showAddModal = false;
 
 
   pacientes: UsuarioMascotaDto[] = [];
@@ -91,10 +94,7 @@ get pacientesPaginados(): UsuarioMascotaDto[] {
     console.log('Historial clínico de:', p.mascota?.nombre, p.mascota?.id);
   }
 
-  agregarPaciente() {
-    // TODO: aquí luego abres modal o navegas a formulario de registro
-    console.log('Agregar paciente');
-  }
+  
 
   formatEdad(edad: number): string {
     // Si tu backend manda años como entero, se verá "3 años".
@@ -147,5 +147,17 @@ goToPage(p: number) {
   if (p > this.totalPages) p = this.totalPages;
   this.page = p;
 }
+
+ agregarPaciente() {
+    this.showAddModal = true;
+  }
+
+  cerrarAddModal() {
+    this.showAddModal = false;
+  }
+
+  onCreated() {
+    this.cargar(); // refresca tabla
+  }
 
 }

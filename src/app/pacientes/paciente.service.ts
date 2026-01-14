@@ -29,10 +29,28 @@ export interface UsuarioMascotaDto {
   updatedAt: string;
 }
 
+export interface ClienteActivoDto {
+  _id: string;
+  nombre_completo: string;
+  correo: string;
+  numero_celular: string;
+  id_rol: { _id: string; nombre: string };
+  eliminado: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TipoMascotaDto {
+  _id: string;
+  tipo_mascota: string; // "GATO" | "PERRO"
+}
+
 @Injectable({ providedIn: 'root' })
 export class PacientesService {
   private readonly baseUrl = 'http://localhost:3000/api/usuario-mascota';
   private readonly basePacientes = 'http://localhost:3000/api/pacientes';
+  private readonly baseUsers = 'http://localhost:3000/api/users';
+  private readonly baseTipoMascota = 'http://localhost:3000/api/tipo-mascota';
 
   constructor(private http: HttpClient) {}
 
@@ -42,5 +60,30 @@ export class PacientesService {
 
    eliminarMascota(idMascota: string): Observable<{ message?: string }> {
     return this.http.delete<{ message?: string }>(`${this.basePacientes}/${idMascota}`);
+  }
+
+  listarClientesActivos(): Observable<ClienteActivoDto[]> {
+    return this.http.get<ClienteActivoDto[]>(`${this.baseUsers}/clientes-activos`);
+  }
+
+  listarTiposMascota(): Observable<TipoMascotaDto[]> {
+    return this.http.get<TipoMascotaDto[]>(`${this.baseTipoMascota}`);
+  }
+
+  // Dueño existente
+  registrarMascotasAUsuario(
+    idUsuario: string,
+    body: { mascotas: Array<{ nombre: string; tipo_mascota: string; edad: number; peso: number; sexo: string; raza: string }> }
+  ): Observable<any> {
+    return this.http.post<any>(`${this.basePacientes}/${idUsuario}/mascotas`, body);
+  }
+
+  // Dueño nuevo
+  crearPaciente(body: {
+    dueno: { nombre_completo: string; correo: string; numero_celular: string };
+    contrasena: string;
+    mascotas: Array<{ nombre: string; tipo_mascota: string; edad: number; peso: number; sexo: string; raza: string }>;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.basePacientes}`, body);
   }
 }

@@ -168,3 +168,10 @@
         </div>
     </div>
 </div>
+
+
+<app-modal-agregar-paciente
+  *ngIf="showAddModal"
+  (close)="cerrarAddModal()"
+  (created)="onCreated()">
+</app-modal-agregar-paciente>
