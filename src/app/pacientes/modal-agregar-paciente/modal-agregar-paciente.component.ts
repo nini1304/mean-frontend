@@ -31,28 +31,34 @@ export class ModalAgregarPacienteComponent implements OnInit {
   clientes: ClienteActivoDto[] = [];
   tiposMascota: TipoMascotaDto[] = [];
 
+  showPassword = false;
+  showPassword2 = false;
+
   filtroCliente = '';
 
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private pacientesService: PacientesService) {
-    this.form = this.fb.group({
-      modo: ['EXISTENTE', Validators.required], // EXISTENTE | NUEVO
+    this.form = this.fb.group(
+      {
+        modo: ['EXISTENTE', Validators.required],
+        idUsuario: [''],
 
-      // EXISTENTE
-      idUsuario: [''],
+        dueno: this.fb.group({
+          nombre_completo: [''],
+          correo: [''],
+          numero_celular: [''],
+        }),
 
-      // NUEVO
-      dueno: this.fb.group({
-        nombre_completo: [''],
-        correo: [''],
-        numero_celular: [''],
-      }),
-      contrasena: [''],
+        contrasena: [''],
+        confirmar_contrasena: [''],
 
-      cantidadMascotas: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
-      mascotas: this.fb.array([]),
-    });
+        cantidadMascotas: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
+        mascotas: this.fb.array([]),
+      },
+      { validators: [this.passwordsMatchValidator] }
+    );
+
   }
 
   ngOnInit(): void {
@@ -60,10 +66,10 @@ export class ModalAgregarPacienteComponent implements OnInit {
     this.setCantidadMascotas(1);
     this.configurarValidacionesPorModo();
   }
-  
+
   mascotaGroupAt(i: number): FormGroup {
-  return this.mascotasFA.at(i) as FormGroup;
-}
+    return this.mascotasFA.at(i) as FormGroup;
+  }
 
 
   get modo(): Modo {
@@ -76,6 +82,28 @@ export class ModalAgregarPacienteComponent implements OnInit {
 
   get duenoFG(): FormGroup {
     return this.form.get('dueno') as FormGroup;
+  }
+
+  private passwordsMatchValidator(group: AbstractControl) {
+    const a = group.get('contrasena')?.value;
+    const b = group.get('confirmar_contrasena')?.value;
+
+    // si aún no escribe, no molestamos
+    if (!a || !b) return null;
+
+    return a === b ? null : { passwordsMismatch: true };
+  }
+
+  // Para mostrar checks en UI
+  passwordRuleState() {
+    const v: string = this.form.get('contrasena')?.value || '';
+    return {
+      len: v.length >= 8,
+      upper: /[A-Z]/.test(v),
+      lower: /[a-z]/.test(v),
+      num: /\d/.test(v),
+      special: /[^A-Za-z0-9]/.test(v),
+    };
   }
 
   clientesFiltrados(): ClienteActivoDto[] {
@@ -101,37 +129,75 @@ export class ModalAgregarPacienteComponent implements OnInit {
   }
 
   private configurarValidacionesPorModo() {
-    this.form.get('modo')?.valueChanges.subscribe((m: Modo) => {
-      this.errorMsg = '';
-      this.okMsg = '';
+  this.form.get('modo')?.valueChanges.subscribe((m: Modo) => {
+    this.errorMsg = '';
+    this.okMsg = '';
 
-      // limpiar selección
-      this.form.patchValue({ idUsuario: '' });
+    // limpiar selección
+    this.form.patchValue({ idUsuario: '' });
 
-      const idUsuario = this.form.get('idUsuario');
-      const contrasena = this.form.get('contrasena');
+    const idUsuario = this.form.get('idUsuario');
+    const contrasena = this.form.get('contrasena');
+    const confirmar = this.form.get('confirmar_contrasena');
 
-      if (m === 'EXISTENTE') {
-        idUsuario?.setValidators([Validators.required]);
-        contrasena?.clearValidators();
+    if (m === 'EXISTENTE') {
+      idUsuario?.setValidators([Validators.required]);
 
-        // dueño no requerido
-        this.setDuenoValidators(false);
-      } else {
-        idUsuario?.clearValidators();
-        contrasena?.setValidators([Validators.required, Validators.minLength(6)]);
+      contrasena?.clearValidators();
+      confirmar?.clearValidators();
 
-        // dueño requerido
-        this.setDuenoValidators(true);
-      }
+      // limpiar campos password
+      this.form.patchValue(
+        { contrasena: '', confirmar_contrasena: '' },
+        { emitEvent: false }
+      );
 
-      idUsuario?.updateValueAndValidity();
-      contrasena?.updateValueAndValidity();
-    });
+      // dueño no requerido
+      this.setDuenoValidators(false);
+    } else {
+      idUsuario?.clearValidators();
 
-    // aplicar estado inicial
-    if (this.modo === 'NUEVO') this.setDuenoValidators(true);
+      contrasena?.setValidators([
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
+      ]);
+
+      confirmar?.setValidators([Validators.required]);
+
+      // dueño requerido
+      this.setDuenoValidators(true);
+    }
+
+    idUsuario?.updateValueAndValidity();
+    contrasena?.updateValueAndValidity();
+    confirmar?.updateValueAndValidity();
+
+    // importante para recalcular el validator de "passwordsMismatch"
+    this.form.updateValueAndValidity({ emitEvent: false });
+  });
+
+  // aplicar estado inicial
+  if (this.modo === 'NUEVO') {
+    this.setDuenoValidators(true);
+
+    // y aplica validaciones iniciales a password también
+    const contrasena = this.form.get('contrasena');
+    const confirmar = this.form.get('confirmar_contrasena');
+
+    contrasena?.setValidators([
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
+    ]);
+    confirmar?.setValidators([Validators.required]);
+
+    contrasena?.updateValueAndValidity();
+    confirmar?.updateValueAndValidity();
+    this.form.updateValueAndValidity({ emitEvent: false });
   }
+}
+
 
   private setDuenoValidators(required: boolean) {
     const nombre = this.duenoFG.get('nombre_completo');
@@ -187,22 +253,22 @@ export class ModalAgregarPacienteComponent implements OnInit {
   }
 
   edadValidator() {
-  // acepta: "4 años", "4 anios", "6 meses"
-  const re = /^\s*(\d+)\s*(años|anos|meses)\s*$/i;
+    // acepta: "4 años", "4 anios", "6 meses"
+    const re = /^\s*(\d+)\s*(años|anos|meses)\s*$/i;
 
-  return (control: AbstractControl) => {
-    const v = (control.value ?? '').toString().trim().toLowerCase();
-    if (!v) return null;
+    return (control: AbstractControl) => {
+      const v = (control.value ?? '').toString().trim().toLowerCase();
+      if (!v) return null;
 
-    const m = v.match(re);
-    if (!m) return { edadFormato: true };
+      const m = v.match(re);
+      if (!m) return { edadFormato: true };
 
-    const num = Number(m[1]);
-    if (Number.isNaN(num) || num < 0) return { edadFormato: true };
+      const num = Number(m[1]);
+      if (Number.isNaN(num) || num < 0) return { edadFormato: true };
 
-    return null;
-  };
-}
+      return null;
+    };
+  }
 
 
   submit() {

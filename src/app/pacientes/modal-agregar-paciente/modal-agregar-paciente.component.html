@@ -93,8 +93,73 @@
 
                     <div class="field" [formGroup]="form">
                         <label>Contraseña</label>
-                        <input type="password" formControlName="contrasena" />
+
+                        <div class="pwd-row">
+                            <input
+                                [type]="showPassword ? 'text' : 'password'"
+                                formControlName="contrasena"
+                                autocomplete="new-password"
+                                placeholder="Mín. 8, mayús/minús, número y especial" />
+
+                            <button
+                                type="button"
+                                class="pwd-toggle"
+                                (click)="showPassword = !showPassword"
+                                [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                                {{ showPassword ? '🙈' : '👁' }}
+                            </button>
+                        </div>
+
+                        <!-- Reglas visuales -->
+                        <div class="pwd-rules" *ngIf="modo === 'NUEVO'">
+                            <div class="rule"
+                                [class.ok]="passwordRuleState().len">• 8+
+                                caracteres</div>
+                            <div class="rule"
+                                [class.ok]="passwordRuleState().upper">• 1
+                                mayúscula</div>
+                            <div class="rule"
+                                [class.ok]="passwordRuleState().lower">• 1
+                                minúscula</div>
+                            <div class="rule"
+                                [class.ok]="passwordRuleState().num">• 1
+                                número</div>
+                            <div class="rule"
+                                [class.ok]="passwordRuleState().special">• 1
+                                especial</div>
+                        </div>
+
+                        <small class="hint"
+                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.invalid">
+                            La contraseña no cumple los requisitos.
+                        </small>
                     </div>
+
+                    <div class="field" [formGroup]="form">
+                        <label>Confirmar contraseña</label>
+
+                        <div class="pwd-row">
+                            <input
+                                [type]="showPassword2 ? 'text' : 'password'"
+                                formControlName="confirmar_contrasena"
+                                autocomplete="new-password"
+                                placeholder="Repita la contraseña" />
+
+                            <button
+                                type="button"
+                                class="pwd-toggle"
+                                (click)="showPassword2 = !showPassword2"
+                                [attr.aria-label]="showPassword2 ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                                {{ showPassword2 ? '🙈' : '👁' }}
+                            </button>
+                        </div>
+
+                        <small class="hint"
+                            *ngIf="form.hasError('passwordsMismatch') && form.get('confirmar_contrasena')?.touched">
+                            Las contraseñas no coinciden.
+                        </small>
+                    </div>
+
                 </div>
             </div>
 

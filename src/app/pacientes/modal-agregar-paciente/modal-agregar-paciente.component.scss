@@ -258,3 +258,57 @@ $mid: #637ab9;
   .modal-card { padding: 18px 14px 14px; }
   .grid-2 { grid-template-columns: 1fr; }
 }
+
+
+/* Password */
+.pwd-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.pwd-toggle {
+  height: 38px;
+  width: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(49, 50, 111, .22);
+  background: rgba(99, 122, 185, .10);
+  cursor: pointer;
+  font-size: 16px;
+
+  &:hover {
+    background: rgba(99, 122, 185, .16);
+  }
+}
+
+.pwd-rules {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(49, 50, 111, .22);
+  background: rgba(79, 183, 179, .10);
+}
+
+.rule {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(49, 50, 111, .70);
+
+  &.ok {
+    color: #1b7f4a;
+  }
+}
+
+@media (max-width: 760px) {
+  .pwd-rules {
+    grid-template-columns: 1fr;
+  }
+}
