@@ -4,13 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { PacientesService, UsuarioMascotaDto } from '../paciente.service';
 import { Router } from '@angular/router';
 import { ModalAgregarPacienteComponent } from '../modal-agregar-paciente/modal-agregar-paciente.component';
+import { ModalEditarPacienteComponent } from '../modal-editar-paciente/modal-editar-paciente.component';
 
 
 
 @Component({
   selector: 'app-listado-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalAgregarPacienteComponent],
+  imports: [CommonModule, FormsModule, ModalAgregarPacienteComponent, ModalEditarPacienteComponent],
   templateUrl: './listado-pacientes.component.html',
   styleUrl: './listado-pacientes.component.scss'
 })
@@ -22,6 +23,9 @@ export class ListadoPacientesComponent implements OnInit {
   page = 1;
 
   showAddModal = false;
+
+  showEditModal = false;
+selectedToEdit: UsuarioMascotaDto | null = null;
 
 
   pacientes: UsuarioMascotaDto[] = [];
@@ -106,10 +110,19 @@ get pacientesPaginados(): UsuarioMascotaDto[] {
     this.router.navigate(['/recepcionista/menu']);
   }
 
-  editarPaciente(p: UsuarioMascotaDto) {
-    // TODO: aquí luego abres modal de edición o navegas a /pacientes/editar/:id
-    console.log('Editar paciente:', p.mascota.nombre, p.mascota.id);
-  }
+ editarPaciente(p: UsuarioMascotaDto) {
+  this.selectedToEdit = p;
+  this.showEditModal = true;
+}
+
+cerrarEditModal() {
+  this.showEditModal = false;
+  this.selectedToEdit = null;
+}
+
+onUpdated() {
+  this.cargar(); // refresca tabla
+}
 
   eliminarPaciente(p: UsuarioMascotaDto) {
   const ok = confirm(`¿Seguro que deseas eliminar a ${p.mascota.nombre}?`);

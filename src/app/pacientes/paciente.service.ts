@@ -86,4 +86,15 @@ export class PacientesService {
   }): Observable<any> {
     return this.http.post<any>(`${this.basePacientes}`, body);
   }
+
+    actualizarPacientePorMascota(
+    idMascota: string,
+    body: {
+      dueno: { nombre_completo?: string; numero_celular?: string };
+      mascota: { nombre?: string; edad?: string; peso?: number; raza?: string };
+    }
+  ): Observable<any> {
+    return this.http.put<any>(`${this.basePacientes}/${idMascota}`, body);
+  }
+
 }

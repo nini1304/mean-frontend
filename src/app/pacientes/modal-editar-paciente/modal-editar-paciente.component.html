@@ -1,0 +1,106 @@
+<div class="backdrop">
+    <div class="card">
+        <div class="top">
+            <div class="title">
+                <div class="badge">✏️</div>
+                <div>
+                    <h2>Editar paciente</h2>
+                    <p class="subtitle" *ngIf="data as d">
+                        {{ d.mascota?.nombre }} · Dueño: {{
+                        d.dueno?.nombre_completo }}
+                    </p>
+                </div>
+            </div>
+
+            <button class="x" type="button" (click)="cancelar()"
+                aria-label="Cerrar">✕</button>
+        </div>
+
+        <div class="messages">
+            <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+            <p class="success" *ngIf="okMsg">{{ okMsg }}</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <!-- DUEÑO -->
+            <section class="panel" formGroupName="dueno">
+                <div class="panel-head">
+                    <span class="dot"></span>
+                    <h3>Datos del dueño</h3>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label>Nombre completo</label>
+                        <input type="text" formControlName="nombre_completo" />
+                        <small class="hint"
+                            *ngIf="form.get('dueno.nombre_completo')?.touched && form.get('dueno.nombre_completo')?.invalid">
+                            Ingresa un nombre válido.
+                        </small>
+                    </div>
+                    <div class="field">
+                        <label>Correo</label>
+                        <input type="email" formControlName="correo" />
+                        <small class="hint"
+                            *ngIf="form.get('dueno.correo')?.touched && form.get('dueno.correo')?.invalid">
+                            Ingresa un correo válido.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Celular</label>
+                        <input type="text" formControlName="numero_celular" />
+                        <small class="hint"
+                            *ngIf="form.get('dueno.numero_celular')?.touched && form.get('dueno.numero_celular')?.invalid">
+                            El celular es obligatorio.
+                        </small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MASCOTA -->
+            <section class="panel" formGroupName="mascota">
+                <div class="panel-head">
+                    <span class="dot dot2"></span>
+                    <h3>Datos del paciente</h3>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label>Nombre</label>
+                        <input type="text" formControlName="nombre" />
+                    </div>
+
+                    <div class="field">
+                        <label>Edad</label>
+                        <input type="text" formControlName="edad"
+                            placeholder="Ej: 4 años / 10 meses" />
+                        <small class="hint"
+                            *ngIf="form.get('mascota.edad')?.touched && form.get('mascota.edad')?.hasError('edadFormato')">
+                            Formato válido: "4 años" o "10 meses"
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Peso (kg)</label>
+                        <input type="number" min="0" step="0.1"
+                            formControlName="peso" />
+                    </div>
+
+                    <div class="field">
+                        <label>Raza</label>
+                        <input type="text" formControlName="raza" />
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <button type="button" class="btn ghost"
+                    (click)="cancelar()">Cancelar</button>
+                <button type="submit" class="btn solid" [disabled]="cargando">
+                    {{ cargando ? 'Guardando...' : 'Guardar cambios' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

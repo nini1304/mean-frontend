@@ -175,3 +175,11 @@
   (close)="cerrarAddModal()"
   (created)="onCreated()">
 </app-modal-agregar-paciente>
+
+
+<app-modal-editar-paciente
+  *ngIf="showEditModal"
+  [data]="selectedToEdit"
+  (close)="cerrarEditModal()"
+  (updated)="onUpdated()">
+</app-modal-editar-paciente>
