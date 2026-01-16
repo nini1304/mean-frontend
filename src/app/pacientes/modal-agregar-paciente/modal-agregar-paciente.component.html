@@ -1,256 +1,272 @@
-<div class="modal-backdrop">
-    <div class="modal-card">
-        <button class="modal-close" type="button"
-            (click)="cancelar()">✕</button>
+<div class="vp-modal">
+  <!-- backdrop -->
+  <div class="vp-backdrop" (click)="cancelar()" aria-hidden="true"></div>
 
-        <h2 class="modal-title">Registrar paciente</h2>
-
-        <!-- Selector modo -->
-        <div class="mode">
-            <button
-                type="button"
-                class="mode-btn"
-                [class.active]="modo === 'EXISTENTE'"
-                (click)="form.patchValue({ modo: 'EXISTENTE' })">
-                Asociar a dueño existente
-            </button>
-
-            <button
-                type="button"
-                class="mode-btn"
-                [class.active]="modo === 'NUEVO'"
-                (click)="form.patchValue({ modo: 'NUEVO' })">
-                Crear dueño nuevo
-            </button>
+  <!-- dialog -->
+  <div class="vp-dialog" role="dialog" aria-modal="true" aria-label="Registrar paciente">
+    <!-- top bar -->
+    <div class="vp-topbar">
+      <div class="vp-title-wrap">
+        <div class="vp-badge">🐾</div>
+        <div>
+          <h2 class="vp-title">Registrar paciente</h2>
+          <p class="vp-subtitle">Asocia un dueño existente o crea uno nuevo</p>
         </div>
+      </div>
 
-        <!-- Mensajes -->
-        <div class="messages">
-            <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
-            <p class="success" *ngIf="okMsg">{{ okMsg }}</p>
-        </div>
-
-        <form [formGroup]="form" (ngSubmit)="submit()">
-            <!-- =========================
-           SECCIÓN DUEÑO
-      ========================== -->
-
-            <!-- Dueño existente -->
-            <div class="section" *ngIf="modo === 'EXISTENTE'">
-                <h3 class="section-title">Seleccione un dueño</h3>
-
-                <div class="search-client">
-                    <input
-                        type="text"
-                        placeholder="Buscar por nombre, correo o celular..."
-                        [(ngModel)]="filtroCliente"
-                        [ngModelOptions]="{ standalone: true }" />
-                </div>
-
-                <div class="client-list">
-                    <button
-                        type="button"
-                        class="client-item"
-                        *ngFor="let c of clientesFiltrados()"
-                        (click)="seleccionarCliente(c)"
-                        [class.selected]="form.value.idUsuario === c._id">
-                        <div class="c-name">{{ c.nombre_completo }}</div>
-                        <div class="c-sub">{{ c.correo }} · {{ c.numero_celular
-                            }}</div>
-                    </button>
-
-                    <div class="client-empty"
-                        *ngIf="clientesFiltrados().length === 0">
-                        No hay clientes para mostrar.
-                    </div>
-                </div>
-
-                <p class="hint"
-                    *ngIf="form.get('idUsuario')?.touched && form.get('idUsuario')?.invalid">
-                    Debes seleccionar un dueño.
-                </p>
-            </div>
-
-            <!-- Dueño nuevo -->
-            <div class="section" *ngIf="modo === 'NUEVO'" formGroupName="dueno">
-                <h3 class="section-title">Datos del dueño</h3>
-
-                <div class="grid-2">
-                    <div class="field">
-                        <label>Nombre completo</label>
-                        <input type="text" formControlName="nombre_completo" />
-                    </div>
-
-                    <div class="field">
-                        <label>Correo</label>
-                        <input type="email" formControlName="correo" />
-                    </div>
-
-                    <div class="field">
-                        <label>Celular</label>
-                        <input type="text" formControlName="numero_celular" />
-                    </div>
-
-                    <div class="field" [formGroup]="form">
-                        <label>Contraseña</label>
-
-                        <div class="pwd-row">
-                            <input
-                                [type]="showPassword ? 'text' : 'password'"
-                                formControlName="contrasena"
-                                autocomplete="new-password"
-                                placeholder="Mín. 8, mayús/minús, número y especial" />
-
-                            <button
-                                type="button"
-                                class="pwd-toggle"
-                                (click)="showPassword = !showPassword"
-                                [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-                                {{ showPassword ? '🙈' : '👁' }}
-                            </button>
-                        </div>
-
-                        <!-- Reglas visuales -->
-                        <div class="pwd-rules" *ngIf="modo === 'NUEVO'">
-                            <div class="rule"
-                                [class.ok]="passwordRuleState().len">• 8+
-                                caracteres</div>
-                            <div class="rule"
-                                [class.ok]="passwordRuleState().upper">• 1
-                                mayúscula</div>
-                            <div class="rule"
-                                [class.ok]="passwordRuleState().lower">• 1
-                                minúscula</div>
-                            <div class="rule"
-                                [class.ok]="passwordRuleState().num">• 1
-                                número</div>
-                            <div class="rule"
-                                [class.ok]="passwordRuleState().special">• 1
-                                especial</div>
-                        </div>
-
-                        <small class="hint"
-                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.invalid">
-                            La contraseña no cumple los requisitos.
-                        </small>
-                    </div>
-
-                    <div class="field" [formGroup]="form">
-                        <label>Confirmar contraseña</label>
-
-                        <div class="pwd-row">
-                            <input
-                                [type]="showPassword2 ? 'text' : 'password'"
-                                formControlName="confirmar_contrasena"
-                                autocomplete="new-password"
-                                placeholder="Repita la contraseña" />
-
-                            <button
-                                type="button"
-                                class="pwd-toggle"
-                                (click)="showPassword2 = !showPassword2"
-                                [attr.aria-label]="showPassword2 ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-                                {{ showPassword2 ? '🙈' : '👁' }}
-                            </button>
-                        </div>
-
-                        <small class="hint"
-                            *ngIf="form.hasError('passwordsMismatch') && form.get('confirmar_contrasena')?.touched">
-                            Las contraseñas no coinciden.
-                        </small>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- =========================
-           CANTIDAD MASCOTAS
-      ========================== -->
-            <div class="section">
-                <h3 class="section-title">Cantidad de mascotas</h3>
-
-                <div class="qty-row">
-                    <input
-                        type="number"
-                        min="1"
-                        max="10"
-                        formControlName="cantidadMascotas"
-                        (change)="onCantidadMascotasChange()" />
-
-                    <span class="qty-help">Máximo 10 por registro</span>
-                </div>
-            </div>
-
-            <!-- =========================
-           MASCOTAS
-      ========================== -->
-            <div class="section">
-                <h3 class="section-title">Datos de las mascotas</h3>
-
-                <div class="pet-card"
-                    *ngFor="let _ of mascotasFA.controls; let i = index; trackBy: trackByIndex"
-                    [formGroup]="mascotaGroupAt(i)">
-                    <div class="pet-title">Mascota {{ i + 1 }}</div>
-
-                    <div class="grid-2">
-                        <div class="field">
-                            <label>Nombre</label>
-                            <input type="text" formControlName="nombre" />
-                        </div>
-
-                        <div class="field">
-                            <label>Tipo</label>
-                            <select formControlName="tipo_mascota">
-                                <option value disabled>Seleccione...</option>
-                                <option *ngFor="let t of tiposMascota"
-                                    [value]="t._id">
-                                    {{ t.tipo_mascota }}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label>Edad</label>
-                            <input
-                                type="text"
-                                formControlName="edad"
-                                placeholder="Ej: 4 años / 6 meses" />
-                            <small class="hint"
-                                *ngIf="mascotaGroupAt(i).get('edad')?.touched && mascotaGroupAt(i).get('edad')?.invalid">
-                                Formato válido: "4 años" o "6 meses"
-                            </small>
-                        </div>
-
-                        <div class="field">
-                            <label>Peso (kg)</label>
-                            <input type="number" min="0" step="0.1"
-                                formControlName="peso" />
-                        </div>
-
-                        <div class="field">
-                            <label>Sexo</label>
-                            <select formControlName="sexo">
-                                <option value="MACHO">MACHO</option>
-                                <option value="HEMBRA">HEMBRA</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label>Raza</label>
-                            <input type="text" formControlName="raza" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Acciones -->
-            <div class="footer">
-                <button type="button" class="btn-secondary"
-                    (click)="cancelar()">Cancelar</button>
-                <button type="submit" class="btn-primary" [disabled]="cargando">
-                    {{ cargando ? 'Guardando...' : 'Guardar' }}
-                </button>
-            </div>
-        </form>
+      <button class="vp-close" type="button" (click)="cancelar()" aria-label="Cerrar">✕</button>
     </div>
+
+    <!-- messages -->
+    <div class="vp-messages" *ngIf="errorMsg || okMsg">
+      <div class="vp-alert error" *ngIf="errorMsg">{{ errorMsg }}</div>
+      <div class="vp-alert success" *ngIf="okMsg">{{ okMsg }}</div>
+    </div>
+
+    <form class="vp-form" [formGroup]="form" (ngSubmit)="submit()">
+      <!-- mode selector -->
+      <div class="vp-tabs">
+        <button
+          type="button"
+          class="vp-tab"
+          [class.active]="modo === 'EXISTENTE'"
+          (click)="form.patchValue({ modo: 'EXISTENTE' })"
+        >
+          Dueño existente
+        </button>
+
+        <button
+          type="button"
+          class="vp-tab"
+          [class.active]="modo === 'NUEVO'"
+          (click)="form.patchValue({ modo: 'NUEVO' })"
+        >
+          Dueño nuevo
+        </button>
+        <div class="vp-tab-indicator" [class.right]="modo === 'NUEVO'"></div>
+      </div>
+
+      <!-- content grid -->
+      <div class="vp-grid">
+        <!-- LEFT: owner -->
+        <section class="vp-card">
+          <div class="vp-card-head">
+            <h3 class="vp-card-title">
+              <span class="vp-icon">👤</span>
+              Datos del dueño
+            </h3>
+            <span class="vp-pill" *ngIf="modo === 'EXISTENTE'">Selecciona un cliente</span>
+            <span class="vp-pill" *ngIf="modo === 'NUEVO'">Nuevo registro</span>
+          </div>
+
+          <!-- EXISTENTE -->
+          <div *ngIf="modo === 'EXISTENTE'" class="vp-owner">
+            <div class="vp-input-icon">
+              <span class="vp-i">🔎</span>
+              <input
+                type="text"
+                placeholder="Buscar por nombre, correo o celular..."
+                [(ngModel)]="filtroCliente"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+
+            <div class="vp-list">
+              <button
+                type="button"
+                class="vp-list-item"
+                *ngFor="let c of clientesFiltrados()"
+                (click)="seleccionarCliente(c)"
+                [class.selected]="form.value.idUsuario === c._id"
+              >
+                <div class="vp-li-main">
+                  <div class="vp-li-title">{{ c.nombre_completo }}</div>
+                  <div class="vp-li-sub">{{ c.correo }} · {{ c.numero_celular }}</div>
+                </div>
+                <div class="vp-li-check" *ngIf="form.value.idUsuario === c._id">✓</div>
+              </button>
+
+              <div class="vp-empty" *ngIf="clientesFiltrados().length === 0">
+                No hay clientes para mostrar.
+              </div>
+            </div>
+
+            <p class="vp-help error"
+              *ngIf="form.get('idUsuario')?.touched && form.get('idUsuario')?.invalid">
+              Debes seleccionar un dueño.
+            </p>
+          </div>
+
+          <!-- NUEVO -->
+          <div *ngIf="modo === 'NUEVO'" formGroupName="dueno" class="vp-owner">
+            <div class="vp-fields">
+              <div class="vp-field">
+                <label>Nombre completo</label>
+                <input type="text" formControlName="nombre_completo" placeholder="Ej: Juan Pérez" />
+              </div>
+
+              <div class="vp-field">
+                <label>Correo</label>
+                <input type="email" formControlName="correo" placeholder="correo@dominio.com" />
+              </div>
+
+              <div class="vp-field">
+                <label>Celular</label>
+                <input type="text" formControlName="numero_celular" placeholder="70000000" />
+              </div>
+
+              <div class="vp-field" [formGroup]="form">
+                <label>Contraseña</label>
+
+                <div class="vp-pwd">
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    formControlName="contrasena"
+                    autocomplete="new-password"
+                    placeholder="Mín. 8, mayús/minús, número y especial"
+                  />
+                  <button
+                    type="button"
+                    class="vp-eye"
+                    (click)="showPassword = !showPassword"
+                    [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                  >
+                    {{ showPassword ? '🙈' : '👁' }}
+                  </button>
+                </div>
+
+                <div class="vp-rules">
+                  <div class="vp-rule" [class.ok]="passwordRuleState().len">8+ caracteres</div>
+                  <div class="vp-rule" [class.ok]="passwordRuleState().upper">1 mayúscula</div>
+                  <div class="vp-rule" [class.ok]="passwordRuleState().lower">1 minúscula</div>
+                  <div class="vp-rule" [class.ok]="passwordRuleState().num">1 número</div>
+                  <div class="vp-rule" [class.ok]="passwordRuleState().special">1 especial</div>
+                </div>
+
+                <p class="vp-help error"
+                  *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.invalid">
+                  La contraseña no cumple los requisitos.
+                </p>
+              </div>
+
+              <div class="vp-field" [formGroup]="form">
+                <label>Confirmar contraseña</label>
+
+                <div class="vp-pwd">
+                  <input
+                    [type]="showPassword2 ? 'text' : 'password'"
+                    formControlName="confirmar_contrasena"
+                    autocomplete="new-password"
+                    placeholder="Repita la contraseña"
+                  />
+                  <button
+                    type="button"
+                    class="vp-eye"
+                    (click)="showPassword2 = !showPassword2"
+                    [attr.aria-label]="showPassword2 ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                  >
+                    {{ showPassword2 ? '🙈' : '👁' }}
+                  </button>
+                </div>
+
+                <p class="vp-help error"
+                  *ngIf="form.hasError('passwordsMismatch') && form.get('confirmar_contrasena')?.touched">
+                  Las contraseñas no coinciden.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT: pets -->
+        <section class="vp-card">
+          <div class="vp-card-head">
+            <h3 class="vp-card-title">
+              <span class="vp-icon">🐶</span>
+              Mascotas
+            </h3>
+
+            <div class="vp-qty">
+              <span class="vp-qty-label">Cantidad</span>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                formControlName="cantidadMascotas"
+                (change)="onCantidadMascotasChange()"
+              />
+              <span class="vp-qty-hint">máx. 10</span>
+            </div>
+          </div>
+
+          <div class="vp-pets">
+            <div
+              class="vp-pet"
+              *ngFor="let _ of mascotasFA.controls; let i = index; trackBy: trackByIndex"
+              [formGroup]="mascotaGroupAt(i)"
+            >
+              <div class="vp-pet-head">
+                <div class="vp-pet-title">
+                  <span class="vp-pet-dot"></span>
+                  Mascota {{ i + 1 }}
+                </div>
+              </div>
+
+              <div class="vp-fields vp-fields-pet">
+                <div class="vp-field">
+                  <label>Nombre</label>
+                  <input type="text" formControlName="nombre" placeholder="Ej: Rocky" />
+                </div>
+
+                <div class="vp-field">
+                  <label>Tipo</label>
+                  <select formControlName="tipo_mascota">
+                    <option value="" disabled>Seleccione...</option>
+                    <option *ngFor="let t of tiposMascota" [value]="t._id">
+                      {{ t.tipo_mascota }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="vp-field">
+                  <label>Edad</label>
+                  <input type="text" formControlName="edad" placeholder="Ej: 4 años / 6 meses" />
+                  <p class="vp-help error"
+                    *ngIf="mascotaGroupAt(i).get('edad')?.touched && mascotaGroupAt(i).get('edad')?.invalid">
+                    Formato válido: "4 años" o "6 meses"
+                  </p>
+                </div>
+
+                <div class="vp-field">
+                  <label>Peso (kg)</label>
+                  <input type="number" min="0" step="0.1" formControlName="peso" placeholder="Ej: 12.5" />
+                </div>
+
+                <div class="vp-field">
+                  <label>Sexo</label>
+                  <select formControlName="sexo">
+                    <option value="MACHO">MACHO</option>
+                    <option value="HEMBRA">HEMBRA</option>
+                  </select>
+                </div>
+
+                <div class="vp-field">
+                  <label>Raza</label>
+                  <input type="text" formControlName="raza" placeholder="Ej: Mestizo" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- footer -->
+      <div class="vp-footer">
+        <button type="button" class="vp-btn ghost" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="vp-btn primary" [disabled]="cargando">
+          {{ cargando ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
