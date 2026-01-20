@@ -1,0 +1,256 @@
+<div class="hc-page">
+  <div class="hc-shell">
+    <div class="hc-topbar">
+      <button class="hc-back" type="button" (click)="volverPacientes()">
+        <span class="hc-back-ico">←</span>
+        Volver a Pacientes
+      </button>
+
+      <button class="hc-refresh" type="button" (click)="cargarTodo()">
+        ⟳ Actualizar
+      </button>
+    </div>
+
+    <div class="hc-hero" *ngIf="historial as h">
+      <div class="hc-hero-left">
+        <div class="hc-kicker">Historial clínico</div>
+        <h1 class="hc-title">{{ h.id_mascota?.nombre }}</h1>
+
+        <div class="hc-meta">
+          <div class="hc-chip">
+            <span class="hc-chip-k">Tipo</span>
+            <span class="hc-chip-v">{{ h.id_mascota?.tipo_mascota?.tipo_mascota }}</span>
+          </div>
+
+          <div class="hc-chip">
+            <span class="hc-chip-k">Raza</span>
+            <span class="hc-chip-v">{{ h.id_mascota?.raza }}</span>
+          </div>
+
+          <div class="hc-chip">
+            <span class="hc-chip-k">Peso</span>
+            <span class="hc-chip-v">{{ h.id_mascota?.peso }} kg</span>
+          </div>
+
+          <div class="hc-chip">
+            <span class="hc-chip-k">Edad</span>
+            <span class="hc-chip-v">{{ h.id_mascota?.edad }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hc-hero-right">
+        <div class="hc-owner-card" *ngIf="h.dueno as d; else sinDueno">
+          <div class="hc-owner-title">Propietario</div>
+          <div class="hc-owner-name">{{ d.nombre_completo }}</div>
+          <div class="hc-owner-sub">{{ d.correo }}</div>
+          <div class="hc-owner-sub">{{ d.numero_celular }}</div>
+        </div>
+
+        <ng-template #sinDueno>
+          <div class="hc-owner-card">
+            <div class="hc-owner-title">Propietario</div>
+            <div class="hc-owner-sub">No disponible</div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="hc-state" *ngIf="cargando">Cargando historial...</div>
+    <div class="hc-state hc-error" *ngIf="!cargando && errorMsg">{{ errorMsg }}</div>
+
+    <div class="hc-body" *ngIf="!cargando && !errorMsg && historial as h">
+      <!-- Tabs -->
+      <div class="hc-tabs">
+        <button class="hc-tab" [class.active]="tab==='consultas'" (click)="setTab('consultas')">
+          Consultas <span class="hc-badge">{{ h.consultas?.length || 0 }}</span>
+        </button>
+
+        <button class="hc-tab" [class.active]="tab==='vacunas'" (click)="setTab('vacunas')">
+          Vacunas <span class="hc-badge">{{ h.vacunas?.length || 0 }}</span>
+        </button>
+
+        <button class="hc-tab" [class.active]="tab==='desparasitaciones'" (click)="setTab('desparasitaciones')">
+          Desparasitación <span class="hc-badge">{{ h.desparasitaciones?.length || 0 }}</span>
+        </button>
+
+        <button class="hc-tab" [class.active]="tab==='procedimientos'" (click)="setTab('procedimientos')">
+          Procedimientos <span class="hc-badge">{{ h.procedimientos?.length || 0 }}</span>
+        </button>
+
+        <button class="hc-tab" [class.active]="tab==='examenes'" (click)="setTab('examenes')">
+          Exámenes <span class="hc-badge">{{ h.examenes?.length || 0 }}</span>
+        </button>
+
+        <div class="hc-tabs-spacer"></div>
+
+        <button class="hc-add" type="button" (click)="agregarItem()">
+          + Agregar
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="hc-panel">
+        <!-- CONSULTAS -->
+        <ng-container *ngIf="tab==='consultas'">
+          <div class="hc-empty" *ngIf="(h.consultas?.length || 0) === 0">
+            Aún no hay consultas registradas.
+          </div>
+
+          <div class="hc-grid" *ngIf="(h.consultas?.length || 0) > 0">
+            <div class="hc-card" *ngFor="let c of h.consultas">
+              <div class="hc-card-top">
+                <div class="hc-card-title">Consulta</div>
+                <div class="hc-card-date">{{ formatDate(c.fecha) }}</div>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Motivo</span>
+                <span class="v">{{ c.motivo_consulta }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Peso</span>
+                <span class="v">{{ c.peso_en_consulta }} kg</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Temperatura</span>
+                <span class="v">{{ c.temperatura ?? '-' }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Diagnóstico</span>
+                <span class="v">{{ c.diagnostico || '-' }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Tratamiento</span>
+                <span class="v">{{ c.tratamiento || '-' }}</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- VACUNAS -->
+        <ng-container *ngIf="tab==='vacunas'">
+          <div class="hc-empty" *ngIf="(h.vacunas?.length || 0) === 0">
+            Aún no hay vacunas registradas.
+          </div>
+
+          <div class="hc-grid" *ngIf="(h.vacunas?.length || 0) > 0">
+            <div class="hc-card" *ngFor="let v of h.vacunas">
+              <div class="hc-card-top">
+                <div class="hc-card-title">{{ v.vacuna }}</div>
+                <div class="hc-card-date">{{ formatDate(v.fecha_aplicacion) }}</div>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Refuerzo</span>
+                <span class="v">{{ v.fecha_refuerzo ? formatDate(v.fecha_refuerzo) : '-' }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Obs.</span>
+                <span class="v">{{ v.observaciones || '-' }}</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- DESPARASITACIONES -->
+        <ng-container *ngIf="tab==='desparasitaciones'">
+          <div class="hc-empty" *ngIf="(h.desparasitaciones?.length || 0) === 0">
+            Aún no hay desparasitaciones registradas.
+          </div>
+
+          <div class="hc-grid" *ngIf="(h.desparasitaciones?.length || 0) > 0">
+            <div class="hc-card" *ngFor="let d of h.desparasitaciones">
+              <div class="hc-card-top">
+                <div class="hc-card-title">{{ d.producto }}</div>
+                <div class="hc-card-date">{{ formatDate(d.fecha) }}</div>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Dosis</span>
+                <span class="v">{{ d.dosis }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Próxima</span>
+                <span class="v">{{ d.proxima ? formatDate(d.proxima) : '-' }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Obs.</span>
+                <span class="v">{{ d.observaciones || '-' }}</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- PROCEDIMIENTOS -->
+        <ng-container *ngIf="tab==='procedimientos'">
+          <div class="hc-empty" *ngIf="(h.procedimientos?.length || 0) === 0">
+            Aún no hay procedimientos registrados.
+          </div>
+
+          <div class="hc-grid" *ngIf="(h.procedimientos?.length || 0) > 0">
+            <div class="hc-card" *ngFor="let p of h.procedimientos">
+              <div class="hc-card-top">
+                <div class="hc-card-title">{{ p.tipo_procedimiento }}</div>
+                <div class="hc-card-date">{{ formatDate(p.fecha) }}</div>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Riesgo/Anestesia</span>
+                <span class="v">{{ p.anestesia_riesgo || '-' }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Notas</span>
+                <span class="v">{{ p.notas || '-' }}</span>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Complicaciones</span>
+                <span class="v">{{ p.complicaciones || '-' }}</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- EXÁMENES -->
+        <ng-container *ngIf="tab==='examenes'">
+          <div class="hc-empty" *ngIf="(h.examenes?.length || 0) === 0">
+            Aún no hay exámenes registrados.
+          </div>
+
+          <div class="hc-grid" *ngIf="(h.examenes?.length || 0) > 0">
+            <div class="hc-card" *ngFor="let e of h.examenes">
+              <div class="hc-card-top">
+                <div class="hc-card-title">{{ e.tipo }}</div>
+                <div class="hc-card-date">{{ formatDate(e.fecha) }}</div>
+              </div>
+
+              <div class="hc-row">
+                <span class="k">Resultado</span>
+                <span class="v">{{ e.resultado || '-' }}</span>
+              </div>
+
+              <div class="hc-attachments" *ngIf="(e.adjuntos?.length || 0) > 0">
+                <div class="hc-att" *ngFor="let a of e.adjuntos">
+                  <a class="hc-att-link" [href]="a.url" target="_blank" rel="noreferrer">
+                    {{ a.nombreOriginal || a.objectKey }}
+                  </a>
+                  <span class="hc-att-meta">{{ a.mimeType }} · {{ a.size }} bytes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>

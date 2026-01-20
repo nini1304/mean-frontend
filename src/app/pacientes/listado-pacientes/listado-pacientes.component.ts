@@ -94,9 +94,9 @@ get pacientesPaginados(): UsuarioMascotaDto[] {
   }
 
   verHistorial(p: UsuarioMascotaDto) {
-    // TODO: aquí luego navegas al historial clínico
-    console.log('Historial clínico de:', p.mascota?.nombre, p.mascota?.id);
-  }
+  this.router.navigate(['/historial', p.mascota.id]);
+}
+
 
   
 

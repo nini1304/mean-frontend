@@ -31,6 +31,14 @@ export const routes: Routes = [
     import('./pacientes/listado-pacientes/listado-pacientes.component')
       .then(m => m.ListadoPacientesComponent),
 },
+{
+  path: 'historial/:idMascota',
+  canActivate: [authGuard, roleGuard(['RECEPCIONISTA'])],
+  loadComponent: () =>
+    import('./historial/historial-clinico/historial-clinico.component')
+      .then(m => m.HistorialClinicoComponent),
+},
+
 
 
 
