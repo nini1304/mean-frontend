@@ -4,6 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HistorialClinicoService, HistorialClinicoDto, VeterinarioDto } from '../historial-clinico.service';
 import { ModalAgregarConsultaComponent } from '../modal-agregar-consulta/modal-agregar-consulta.component';
 import { ModalAgregarVacunaComponent } from '../modal-agregar-vacuna/modal-agregar-vacuna.component';
+import { ModalAgregarDesparasitacionComponent } from '../modal-agregar-desparasitacion/modal-agregar-desparasitacion.component';
+import { ModalAgregarProcedimientoComponent } from '../modal-agregar-procedimiento/modal-agregar-procedimiento.component';
+
+
 
 
 type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' | 'examenes';
@@ -11,7 +15,7 @@ type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' |
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent],
+  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -23,7 +27,9 @@ export class HistorialClinicoComponent implements OnInit {
   historial: HistorialClinicoDto | null = null;
   veterinarios: VeterinarioDto[] = [];
   showAddConsulta = false;
-   showAddVacuna = false;
+  showAddVacuna = false;
+  showAddDesparasitacion = false;
+  showAddProcedimiento = false;
 
   tab: TabKey = 'consultas';
 
@@ -31,7 +37,7 @@ export class HistorialClinicoComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private service: HistorialClinicoService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.idMascota = this.route.snapshot.paramMap.get('idMascota') || '';
@@ -43,20 +49,28 @@ export class HistorialClinicoComponent implements OnInit {
   }
 
   abrirAgregarConsulta() {
-  this.showAddConsulta = true;
-}
+    this.showAddConsulta = true;
+  }
 
-cerrarAddConsulta() {
-  this.showAddConsulta = false;
-}
+  cerrarAddConsulta() {
+    this.showAddConsulta = false;
+  }
 
-onConsultaCreated() {
-  this.cargarTodo(); // refresca historial
-}
+  onConsultaCreated() {
+    this.cargarTodo(); // refresca historial
+  }
 
-abrirAgregarVacuna() { this.showAddVacuna = true; }
+  abrirAgregarVacuna() { this.showAddVacuna = true; }
   cerrarAddVacuna() { this.showAddVacuna = false; }
   onVacunaCreated() { this.cargarTodo(); }
+
+  abrirAgregarDesparasitacion() { this.showAddDesparasitacion = true; }
+  cerrarAddDesparasitacion() { this.showAddDesparasitacion = false; }
+  onDesparasitacionCreated() { this.cargarTodo(); }
+
+  abrirAgregarProcedimiento() { this.showAddProcedimiento = true; }
+ cerrarAddProcedimiento() { this.showAddProcedimiento = false; }
+ onProcedimientoCreated() { this.cargarTodo(); }
 
   cargarTodo() {
     this.cargando = true;
@@ -97,7 +111,7 @@ abrirAgregarVacuna() { this.showAddVacuna = true; }
     this.tab = t;
     console.log('TAB =>', this.tab);
 
-    
+
   }
 
   formatDate(d: any): string {
@@ -108,17 +122,19 @@ abrirAgregarVacuna() { this.showAddVacuna = true; }
   }
 
   agregarItem() {
-  if (this.tab === 'consultas') {
-    this.abrirAgregarConsulta();
-    return;
-  }
-
-  if (this.tab === 'vacunas') {           // 👈 NUEVO
-      this.abrirAgregarVacuna();
+    if (this.tab === 'consultas') {
+      this.abrirAgregarConsulta();
       return;
     }
 
-  alert('Luego abrimos el modal para: ' + this.tab);
-}
+    if (this.tab === 'vacunas') {           // 👈 NUEVO
+      this.abrirAgregarVacuna();
+      return;
+    }
+    if (this.tab === 'desparasitaciones') { this.abrirAgregarDesparasitacion(); return; }
+    if (this.tab === 'procedimientos') { this.abrirAgregarProcedimiento(); return; }
+
+    alert('Luego abrimos el modal para: ' + this.tab);
+  }
 
 }

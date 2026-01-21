@@ -268,3 +268,17 @@
   (close)="cerrarAddVacuna()"
   (created)="onVacunaCreated()">
 </app-modal-agregar-vacuna>
+
+<app-modal-agregar-desparasitacion
+  *ngIf="showAddDesparasitacion"
+  [idMascota]="idMascota"
+  (close)="cerrarAddDesparasitacion()"
+  (created)="onDesparasitacionCreated()">
+</app-modal-agregar-desparasitacion>
+<app-modal-agregar-procedimiento
+  *ngIf="showAddProcedimiento"
+  [idMascota]="idMascota"
+  (close)="cerrarAddProcedimiento()"
+  (created)="onProcedimientoCreated()">
+</app-modal-agregar-procedimiento>
+

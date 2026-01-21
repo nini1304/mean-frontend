@@ -1,0 +1,71 @@
+<div class="hc-backdrop" (click)="cancelar()">
+  <div class="hc-card" (click)="$event.stopPropagation()">
+    <button class="hc-close" type="button" (click)="cancelar()" aria-label="Cerrar">✕</button>
+
+    <div class="hc-head">
+      <div class="hc-badge">Historial Clínico</div>
+      <h2 class="hc-title">Nuevo procedimiento</h2>
+      <p class="hc-sub">Registra procedimientos realizados a la mascota.</p>
+    </div>
+
+    <div class="hc-msg">
+      <p class="err" *ngIf="errorMsg">{{ errorMsg }}</p>
+      <p class="ok" *ngIf="okMsg">{{ okMsg }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="hc-form">
+      <div class="hc-grid">
+        <div class="hc-field hc-span2">
+          <label>Tipo de procedimiento</label>
+          <input type="text" formControlName="tipo_procedimiento" placeholder="Ej: Castración" />
+          <small class="hint" *ngIf="form.get('tipo_procedimiento')?.touched && form.get('tipo_procedimiento')?.invalid">
+            El tipo es obligatorio (mín. 3 caracteres).
+          </small>
+        </div>
+
+        <div class="hc-field">
+          <label>Fecha</label>
+          <input type="date" formControlName="fecha" />
+          <small class="hint" *ngIf="form.get('fecha')?.touched && form.get('fecha')?.invalid">
+            La fecha es obligatoria.
+          </small>
+        </div>
+
+        <div class="hc-field">
+          <label>Riesgo / anestesia</label>
+          <input type="text" formControlName="anestesia_riesgo" placeholder="Ej: Bajo" />
+        </div>
+
+        <div class="hc-field hc-span2">
+          <label>Veterinario (opcional)</label>
+          <select formControlName="id_veterinario" [disabled]="cargandoVets">
+            <option value="">
+              {{ cargandoVets ? 'Cargando veterinarios...' : 'Sin asignar' }}
+            </option>
+
+            <option *ngFor="let v of vets" [value]="v.id">
+              {{ v.usuario?.nombre_completo }} · {{ v.especialidad }}
+            </option>
+          </select>
+        </div>
+
+        <div class="hc-field hc-span2">
+          <label>Notas</label>
+          <textarea rows="2" formControlName="notas" placeholder="Ej: Ayuno 8h"></textarea>
+        </div>
+
+        <div class="hc-field hc-span2">
+          <label>Complicaciones</label>
+          <textarea rows="2" formControlName="complicaciones" placeholder="Opcional"></textarea>
+        </div>
+      </div>
+
+      <div class="hc-actions">
+        <button type="button" class="btn-ghost" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="cargando">
+          {{ cargando ? 'Guardando...' : 'Guardar procedimiento' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

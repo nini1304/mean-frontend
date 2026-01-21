@@ -8,6 +8,7 @@ import { ModalEditarPacienteComponent } from '../modal-editar-paciente/modal-edi
 
 
 
+
 @Component({
   selector: 'app-listado-pacientes',
   standalone: true,
