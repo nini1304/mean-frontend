@@ -166,7 +166,7 @@
                     <div class="hc-grid" *ngIf="(h.vacunas?.length || 0) > 0">
                         <div class="hc-card" *ngFor="let v of h.vacunas">
                             <div class="hc-card-actions">
-                                <button class="btn-ghost" type="button">✏️
+                                <button class="btn-ghost" type="button" (click)="editarVacuna(v)">✏️
                                     Editar</button>
                             </div>
                             <div class="hc-card-top">
@@ -359,3 +359,11 @@
   (close)="cerrarEditConsulta()"
   (updated)="onConsultaUpdated()">
 </app-modal-editar-consulta>
+
+<app-modal-editar-vacuna
+  *ngIf="showEditVacuna"
+  [idMascota]="idMascota"
+  [data]="selectedVacuna"
+  (close)="cerrarEditVacuna()"
+  (updated)="onVacunaUpdated()">
+</app-modal-editar-vacuna>
