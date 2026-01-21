@@ -11,6 +11,7 @@ import { ModalEditarConsultaComponent } from '../modal-editar-consulta/modal-edi
 import { ModalEditarVacunaComponent } from '../modal-editar-vacuna/modal-editar-vacuna.component';
 import { ModalEditarDesparasitacionComponent } from '../modal-editar-desparasitacion/modal-editar-desparasitacion.component';
 import { ModalEditarProcedimientoComponent } from '../modal-editar-procedimiento/modal-editar-procedimiento.component';
+import { ModalEditarExamenComponent } from '../modal-editar-examen/modal-editar-examen.component';
 
 
 
@@ -19,7 +20,7 @@ type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' |
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent, ModalAgregarProcedimientoComponent, ModalAgregarExamenComponent, ModalEditarConsultaComponent, ModalEditarVacunaComponent, ModalEditarDesparasitacionComponent, ModalEditarProcedimientoComponent],
+  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent, ModalAgregarProcedimientoComponent, ModalAgregarExamenComponent, ModalEditarConsultaComponent, ModalEditarVacunaComponent, ModalEditarDesparasitacionComponent, ModalEditarProcedimientoComponent,ModalEditarExamenComponent],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -47,6 +48,9 @@ export class HistorialClinicoComponent implements OnInit {
 
   showEditProcedimiento = false;
   selectedProcedimiento: any = null;
+
+  showEditExamen = false;
+  selectedExamen: any = null;
 
 
 
@@ -153,6 +157,20 @@ export class HistorialClinicoComponent implements OnInit {
   onProcedimientoUpdated() {
     this.cargarTodo();
   }
+
+  editarExamen(e: any) {
+  this.selectedExamen = e;
+  this.showEditExamen = true;
+}
+
+cerrarEditExamen() {
+  this.showEditExamen = false;
+  this.selectedExamen = null;
+}
+
+onExamenUpdated() {
+  this.cargarTodo();
+}
 
 
 

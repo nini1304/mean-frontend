@@ -162,6 +162,15 @@ export interface ActualizarProcedimientoDto {
     id_veterinario?: string | null;
 }
 
+export interface ActualizarExamenDto {
+    tipo?: string;
+    fecha?: string;
+    resultado?: string;
+    valores?: any;              // objeto (se manda JSON)
+    id_veterinario?: string | null;
+}
+
+
 @Injectable({ providedIn: 'root' })
 export class HistorialClinicoService {
     private readonly baseHistorial = 'http://localhost:3000/api/historial';
@@ -279,6 +288,22 @@ export class HistorialClinicoService {
         return this.http.put<ApiMessageResponse>(
             `${this.baseHistorial}/${idMascota}/procedimientos/${idProcedimiento}`,
             body
+        );
+    }
+
+    actualizarExamen(idMascota: string, idExamen: string, body: ActualizarExamenDto) {
+        return this.http.put<ApiMessageResponse>(
+            `${this.baseHistorial}/${idMascota}/examenes/${idExamen}`,
+            body
+        );
+    }
+
+    agregarAdjuntoExamen(idMascota: string, idExamen: string, archivo: File) {
+        const fd = new FormData();
+        fd.append('archivo', archivo); // 👈 debe llamarse "archivo"
+        return this.http.post<ApiMessageResponse>(
+            `${this.baseHistorial}/${idMascota}/examenes/${idExamen}/adjuntos`,
+            fd
         );
     }
 

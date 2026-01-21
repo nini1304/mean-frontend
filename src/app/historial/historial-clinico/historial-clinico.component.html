@@ -283,7 +283,7 @@
                     <div class="hc-grid" *ngIf="(h.examenes?.length || 0) > 0">
                         <div class="hc-card" *ngFor="let e of h.examenes">
                             <div class="hc-card-actions">
-                                <button class="btn-ghost" type="button">✏️
+                                <button class="btn-ghost" type="button" (click)="editarExamen(e)">✏️
                                     Editar</button>
                             </div>
                             <div class="hc-card-top">
@@ -383,3 +383,11 @@
   (close)="cerrarEditProcedimiento()"
   (updated)="onProcedimientoUpdated()">
 </app-modal-editar-procedimiento>
+
+<app-modal-editar-examen
+  *ngIf="showEditExamen"
+  [idMascota]="idMascota"
+  [data]="selectedExamen"
+  (close)="cerrarEditExamen()"
+  (updated)="onExamenUpdated()">
+</app-modal-editar-examen>
