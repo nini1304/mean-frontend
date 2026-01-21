@@ -2,13 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HistorialClinicoService, HistorialClinicoDto, VeterinarioDto } from '../historial-clinico.service';
+import { ModalAgregarConsultaComponent } from '../modal-agregar-consulta/modal-agregar-consulta.component';
+
 
 type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' | 'examenes';
 
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ModalAgregarConsultaComponent],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -19,6 +21,7 @@ export class HistorialClinicoComponent implements OnInit {
   idMascota = '';
   historial: HistorialClinicoDto | null = null;
   veterinarios: VeterinarioDto[] = [];
+  showAddConsulta = false;
 
   tab: TabKey = 'consultas';
 
@@ -36,6 +39,18 @@ export class HistorialClinicoComponent implements OnInit {
     }
     this.cargarTodo();
   }
+
+  abrirAgregarConsulta() {
+  this.showAddConsulta = true;
+}
+
+cerrarAddConsulta() {
+  this.showAddConsulta = false;
+}
+
+onConsultaCreated() {
+  this.cargarTodo(); // refresca historial
+}
 
   cargarTodo() {
     this.cargando = true;
@@ -83,8 +98,13 @@ export class HistorialClinicoComponent implements OnInit {
     return date.toLocaleString();
   }
 
-  // TODO: aquí luego abrimos modales para crear registros por sección
   agregarItem() {
-    alert('Aquí luego abrimos el modal para agregar un registro en: ' + this.tab);
+  if (this.tab === 'consultas') {
+    this.abrirAgregarConsulta();
+    return;
   }
+
+  alert('Luego abrimos el modal para: ' + this.tab);
+}
+
 }

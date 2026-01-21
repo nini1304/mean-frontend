@@ -254,3 +254,11 @@
     </div>
   </div>
 </div>
+
+<app-modal-agregar-consulta
+  *ngIf="showAddConsulta"
+  [idMascota]="idMascota"
+  (close)="cerrarAddConsulta()"
+  (created)="onConsultaCreated()">
+</app-modal-agregar-consulta>
+

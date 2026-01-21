@@ -1,0 +1,102 @@
+<div class="hc-backdrop" (click)="cancelar()">
+  <div class="hc-card" (click)="$event.stopPropagation()">
+    <button class="hc-close" type="button" (click)="cancelar()" aria-label="Cerrar">
+      ✕
+    </button>
+
+    <div class="hc-head">
+      <div class="hc-badge">Historial Clínico</div>
+      <h2 class="hc-title">Nueva consulta</h2>
+      <p class="hc-sub">Registra el control médico de la mascota.</p>
+    </div>
+
+    <div class="hc-msg">
+      <p class="err" *ngIf="errorMsg">{{ errorMsg }}</p>
+      <p class="ok" *ngIf="okMsg">{{ okMsg }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="hc-form">
+      <div class="hc-grid">
+        <!-- Fecha -->
+        <div class="hc-field">
+          <label>Fecha y hora</label>
+          <input type="datetime-local" formControlName="fechaLocal" />
+          <small class="hint" *ngIf="form.get('fechaLocal')?.touched && form.get('fechaLocal')?.invalid">
+            La fecha es obligatoria.
+          </small>
+        </div>
+
+        <!-- Veterinario -->
+        <div class="hc-field">
+          <label>Veterinario</label>
+
+          <select formControlName="id_veterinario" [disabled]="cargandoVets">
+            <option value="" disabled>
+              {{ cargandoVets ? 'Cargando veterinarios...' : 'Seleccione...' }}
+            </option>
+
+            <option *ngFor="let v of vets" [value]="v.id">
+              {{ v.usuario?.nombre_completo }} · {{ v.especialidad }}
+            </option>
+          </select>
+
+          <small class="hint" *ngIf="!cargandoVets && vets.length === 0">
+            No hay veterinarios registrados.
+          </small>
+
+          <small class="hint" *ngIf="form.get('id_veterinario')?.touched && form.get('id_veterinario')?.invalid">
+            Debes seleccionar un veterinario.
+          </small>
+        </div>
+
+        <!-- Motivo -->
+        <div class="hc-field hc-span2">
+          <label>Motivo de consulta</label>
+          <input type="text" formControlName="motivo_consulta" placeholder="Ej: Vómitos y decaimiento" />
+          <small class="hint" *ngIf="form.get('motivo_consulta')?.touched && form.get('motivo_consulta')?.invalid">
+            El motivo es obligatorio (mín. 3 caracteres).
+          </small>
+        </div>
+
+        <!-- Peso / Temp -->
+        <div class="hc-field">
+          <label>Peso en consulta (kg)</label>
+          <input type="number" step="0.1" min="0" formControlName="peso_en_consulta" placeholder="Ej: 12.3" />
+          <small class="hint" *ngIf="form.get('peso_en_consulta')?.touched && form.get('peso_en_consulta')?.invalid">
+            El peso es obligatorio.
+          </small>
+        </div>
+
+        <div class="hc-field">
+          <label>Temperatura (°C)</label>
+          <input type="number" step="0.1" min="0" formControlName="temperatura" placeholder="Ej: 38.9 (opcional)" />
+        </div>
+
+        <!-- Diagnóstico -->
+        <div class="hc-field hc-span2">
+          <label>Diagnóstico</label>
+          <textarea rows="2" formControlName="diagnostico" placeholder="Ej: Gastritis"></textarea>
+        </div>
+
+        <!-- Tratamiento -->
+        <div class="hc-field hc-span2">
+          <label>Tratamiento</label>
+          <textarea rows="2" formControlName="tratamiento" placeholder="Ej: Suero + dieta blanda"></textarea>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="hc-field hc-span2">
+          <label>Observaciones</label>
+          <textarea rows="2" formControlName="observaciones" placeholder="Ej: Control en 48h"></textarea>
+        </div>
+      </div>
+
+      <div class="hc-actions">
+        <button type="button" class="btn-ghost" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="cargando || cargandoVets || vets.length === 0">
+          {{ cargando ? 'Guardando...' : 'Guardar consulta' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

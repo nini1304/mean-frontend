@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface ApiMessageResponse<T = any> {
+  message: string;
+  data?: T;
+}
+
 export interface VeterinarioDto {
   id: string;
   especialidad: string;
@@ -52,6 +57,45 @@ export interface HistorialClinicoDto {
   updatedAt: string;
 }
 
+// ...imports y tipos que ya tienes
+
+export interface CrearConsultaDto {
+  fecha: string;
+  id_veterinario: string;
+  motivo_consulta: string;
+  peso_en_consulta: number;
+  temperatura?: number | null;
+  diagnostico?: string;
+  tratamiento?: string;
+  observaciones?: string;
+}
+
+export interface CrearVacunaDto {
+  vacuna: string;
+  fecha_aplicacion: string;
+  fecha_refuerzo?: string | null;
+  id_veterinario?: string | null;
+  observaciones?: string;
+}
+
+export interface CrearDesparasitacionDto {
+  producto: string;
+  fecha: string;
+  dosis: string;
+  proxima?: string | null;
+  id_veterinario?: string | null; // opcional en tu schema
+  observaciones?: string;
+}
+
+export interface CrearProcedimientoDto {
+  tipo_procedimiento: string;
+  fecha: string;
+  anestesia_riesgo?: string;
+  notas?: string;
+  complicaciones?: string;
+  id_veterinario?: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class HistorialClinicoService {
   private readonly baseHistorial = 'http://localhost:3000/api/historial';
@@ -59,18 +103,31 @@ export class HistorialClinicoService {
 
   constructor(private http: HttpClient) {}
 
-  initHistorial(idMascota: string): Observable<any> {
+  initHistorial(idMascota: string) {
     return this.http.post(`${this.baseHistorial}/${idMascota}/init`, {});
   }
 
-  obtenerHistorial(idMascota: string): Observable<HistorialClinicoDto> {
+  obtenerHistorial(idMascota: string) {
     return this.http.get<HistorialClinicoDto>(`${this.baseHistorial}/${idMascota}`);
   }
 
-  listarVeterinarios(): Observable<VeterinarioDto[]> {
+  listarVeterinarios() {
     return this.http.get<VeterinarioDto[]>(`${this.baseVets}`);
   }
 
-  // TODO: cuando me confirmes endpoints, agregamos:
-  // crearConsulta / crearVacuna / crearDesparasitacion / crearProcedimiento / subirExamen
+  crearConsulta(idMascota: string, body: CrearConsultaDto): Observable<ApiMessageResponse> {
+  return this.http.post<ApiMessageResponse>(`${this.baseHistorial}/${idMascota}/consultas`, body);
+}
+
+  crearVacuna(idMascota: string, body: CrearVacunaDto) {
+    return this.http.post(`${this.baseHistorial}/${idMascota}/vacunas`, body);
+  }
+
+  crearDesparasitacion(idMascota: string, body: CrearDesparasitacionDto) {
+    return this.http.post(`${this.baseHistorial}/${idMascota}/desparasitaciones`, body);
+  }
+
+  crearProcedimiento(idMascota: string, body: CrearProcedimientoDto) {
+    return this.http.post(`${this.baseHistorial}/${idMascota}/procedimientos`, body);
+  }
 }
