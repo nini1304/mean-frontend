@@ -277,6 +277,25 @@ $mint: #A8FBD3;
   font-weight: 800;
 }
 
+.hc-card-actions{
+    display: flex;
+    justify-content: end;
+    margin-bottom: 12px;
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(49, 50, 111, .22);
+  color: $dark;
+  font-weight: 950;
+  padding: 11px 18px;
+  border-radius: 999px;
+  
+  cursor: pointer;
+
+  &:hover { background: rgba(255,255,255,.75); }
+}
+
 @media (max-width: 900px) {
   .hc-hero { grid-template-columns: 1fr; }
   .hc-grid { grid-template-columns: 1fr; }

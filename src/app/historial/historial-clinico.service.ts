@@ -124,6 +124,17 @@ export interface CrearExamenDto {
 }
 
 
+export interface ActualizarConsultaDto {
+    fecha?: string;
+    id_veterinario?: string;
+    motivo_consulta?: string;
+    peso_en_consulta?: number;
+    temperatura?: number | null;
+    diagnostico?: string;
+    tratamiento?: string;
+    observaciones?: string;
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class HistorialClinicoService {
@@ -198,6 +209,17 @@ export class HistorialClinicoService {
         return this.http.post<ApiMessageResponse>(
             `${this.baseHistorial}/${idMascota}/examenes/upload`,
             fd
+        );
+    }
+
+    actualizarConsulta(
+        idMascota: string,
+        idConsulta: string,
+        body: ActualizarConsultaDto
+    ): Observable<ApiMessageResponse> {
+        return this.http.put<ApiMessageResponse>(
+            `${this.baseHistorial}/${idMascota}/consultas/${idConsulta}`,
+            body
         );
     }
 

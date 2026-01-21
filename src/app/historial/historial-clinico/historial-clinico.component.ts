@@ -7,7 +7,7 @@ import { ModalAgregarVacunaComponent } from '../modal-agregar-vacuna/modal-agreg
 import { ModalAgregarDesparasitacionComponent } from '../modal-agregar-desparasitacion/modal-agregar-desparasitacion.component';
 import { ModalAgregarProcedimientoComponent } from '../modal-agregar-procedimiento/modal-agregar-procedimiento.component';
 import { ModalAgregarExamenComponent } from '../modal-agregar-examen/modal-agregar-examen.component';
-
+import { ModalEditarConsultaComponent } from '../modal-editar-consulta/modal-editar-consulta.component';
 
 
 
@@ -16,7 +16,7 @@ type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' |
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent,ModalAgregarExamenComponent ],
+  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent,ModalAgregarExamenComponent,ModalEditarConsultaComponent ],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -32,6 +32,9 @@ export class HistorialClinicoComponent implements OnInit {
   showAddDesparasitacion = false;
   showAddProcedimiento = false;
   showAddExamen = false;
+
+  showEditConsulta = false;
+  selectedConsulta: any = null;
 
   tab: TabKey = 'consultas';
 
@@ -77,6 +80,20 @@ export class HistorialClinicoComponent implements OnInit {
  abrirAgregarExamen() { this.showAddExamen = true; }
 cerrarAddExamen() { this.showAddExamen = false; }
 onExamenCreated() { this.cargarTodo(); }
+
+editarConsulta(c: any) {
+  this.selectedConsulta = c;
+  this.showEditConsulta = true;
+}
+
+cerrarEditConsulta() {
+  this.showEditConsulta = false;
+  this.selectedConsulta = null;
+}
+
+onConsultaUpdated() {
+  this.cargarTodo();
+}
 
   cargarTodo() {
     this.cargando = true;
