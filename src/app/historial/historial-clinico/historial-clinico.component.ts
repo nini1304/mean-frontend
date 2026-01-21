@@ -10,6 +10,7 @@ import { ModalAgregarExamenComponent } from '../modal-agregar-examen/modal-agreg
 import { ModalEditarConsultaComponent } from '../modal-editar-consulta/modal-editar-consulta.component';
 import { ModalEditarVacunaComponent } from '../modal-editar-vacuna/modal-editar-vacuna.component';
 import { ModalEditarDesparasitacionComponent } from '../modal-editar-desparasitacion/modal-editar-desparasitacion.component';
+import { ModalEditarProcedimientoComponent } from '../modal-editar-procedimiento/modal-editar-procedimiento.component';
 
 
 
@@ -18,7 +19,7 @@ type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' |
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent,ModalAgregarExamenComponent,ModalEditarConsultaComponent,ModalEditarVacunaComponent, ModalEditarDesparasitacionComponent ],
+  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent, ModalAgregarProcedimientoComponent, ModalAgregarExamenComponent, ModalEditarConsultaComponent, ModalEditarVacunaComponent, ModalEditarDesparasitacionComponent, ModalEditarProcedimientoComponent],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -42,7 +43,11 @@ export class HistorialClinicoComponent implements OnInit {
   selectedVacuna: any = null;
 
   showEditDesparasitacion = false;
-selectedDesparasitacion: any = null;
+  selectedDesparasitacion: any = null;
+
+  showEditProcedimiento = false;
+  selectedProcedimiento: any = null;
+
 
 
 
@@ -84,56 +89,70 @@ selectedDesparasitacion: any = null;
   onDesparasitacionCreated() { this.cargarTodo(); }
 
   abrirAgregarProcedimiento() { this.showAddProcedimiento = true; }
- cerrarAddProcedimiento() { this.showAddProcedimiento = false; }
- onProcedimientoCreated() { this.cargarTodo(); }
+  cerrarAddProcedimiento() { this.showAddProcedimiento = false; }
+  onProcedimientoCreated() { this.cargarTodo(); }
 
- abrirAgregarExamen() { this.showAddExamen = true; }
-cerrarAddExamen() { this.showAddExamen = false; }
-onExamenCreated() { this.cargarTodo(); }
+  abrirAgregarExamen() { this.showAddExamen = true; }
+  cerrarAddExamen() { this.showAddExamen = false; }
+  onExamenCreated() { this.cargarTodo(); }
 
 
 
-editarConsulta(c: any) {
-  this.selectedConsulta = c;
-  this.showEditConsulta = true;
-}
+  editarConsulta(c: any) {
+    this.selectedConsulta = c;
+    this.showEditConsulta = true;
+  }
 
-cerrarEditConsulta() {
-  this.showEditConsulta = false;
-  this.selectedConsulta = null;
-}
+  cerrarEditConsulta() {
+    this.showEditConsulta = false;
+    this.selectedConsulta = null;
+  }
 
-onConsultaUpdated() {
-  this.cargarTodo();
-}
+  onConsultaUpdated() {
+    this.cargarTodo();
+  }
 
-editarVacuna(v: any) {
-  this.selectedVacuna = v;
-  this.showEditVacuna = true;
-}
+  editarVacuna(v: any) {
+    this.selectedVacuna = v;
+    this.showEditVacuna = true;
+  }
 
-cerrarEditVacuna() {
-  this.showEditVacuna = false;
-  this.selectedVacuna = null;
-}
+  cerrarEditVacuna() {
+    this.showEditVacuna = false;
+    this.selectedVacuna = null;
+  }
 
-onVacunaUpdated() {
-  this.cargarTodo();
-}
+  onVacunaUpdated() {
+    this.cargarTodo();
+  }
 
-editarDesparasitacion(d: any) {
-  this.selectedDesparasitacion = d;
-  this.showEditDesparasitacion = true;
-}
+  editarDesparasitacion(d: any) {
+    this.selectedDesparasitacion = d;
+    this.showEditDesparasitacion = true;
+  }
 
-cerrarEditDesparasitacion() {
-  this.showEditDesparasitacion = false;
-  this.selectedDesparasitacion = null;
-}
+  cerrarEditDesparasitacion() {
+    this.showEditDesparasitacion = false;
+    this.selectedDesparasitacion = null;
+  }
 
-onDesparasitacionUpdated() {
-  this.cargarTodo();
-}
+  onDesparasitacionUpdated() {
+    this.cargarTodo();
+  }
+
+  editarProcedimiento(p: any) {
+    this.selectedProcedimiento = p;
+    this.showEditProcedimiento = true;
+  }
+
+  cerrarEditProcedimiento() {
+    this.showEditProcedimiento = false;
+    this.selectedProcedimiento = null;
+  }
+
+  onProcedimientoUpdated() {
+    this.cargarTodo();
+  }
 
 
 

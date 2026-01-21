@@ -243,7 +243,7 @@
                         *ngIf="(h.procedimientos?.length || 0) > 0">
                         <div class="hc-card" *ngFor="let p of h.procedimientos">
                             <div class="hc-card-actions">
-                                <button class="btn-ghost" type="button">✏️
+                                <button class="btn-ghost" type="button" (click)="editarProcedimiento(p)">✏️
                                     Editar</button>
                             </div>
                             <div class="hc-card-top">
@@ -375,3 +375,11 @@
   (close)="cerrarEditDesparasitacion()"
   (updated)="onDesparasitacionUpdated()">
 </app-modal-editar-desparasitacion>
+
+<app-modal-editar-procedimiento
+  *ngIf="showEditProcedimiento"
+  [idMascota]="idMascota"
+  [data]="selectedProcedimiento"
+  (close)="cerrarEditProcedimiento()"
+  (updated)="onProcedimientoUpdated()">
+</app-modal-editar-procedimiento>
