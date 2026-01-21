@@ -262,3 +262,9 @@
   (created)="onConsultaCreated()">
 </app-modal-agregar-consulta>
 
+<app-modal-agregar-vacuna
+  *ngIf="showAddVacuna"
+  [idMascota]="idMascota"
+  (close)="cerrarAddVacuna()"
+  (created)="onVacunaCreated()">
+</app-modal-agregar-vacuna>

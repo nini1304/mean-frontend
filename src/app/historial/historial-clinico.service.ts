@@ -96,6 +96,9 @@ export interface CrearProcedimientoDto {
   id_veterinario?: string | null;
 }
 
+
+
+
 @Injectable({ providedIn: 'root' })
 export class HistorialClinicoService {
   private readonly baseHistorial = 'http://localhost:3000/api/historial';
@@ -119,9 +122,10 @@ export class HistorialClinicoService {
   return this.http.post<ApiMessageResponse>(`${this.baseHistorial}/${idMascota}/consultas`, body);
 }
 
-  crearVacuna(idMascota: string, body: CrearVacunaDto) {
-    return this.http.post(`${this.baseHistorial}/${idMascota}/vacunas`, body);
-  }
+ crearVacuna(idMascota: string, body: CrearVacunaDto): Observable<ApiMessageResponse> {
+  return this.http.post<ApiMessageResponse>(`${this.baseHistorial}/${idMascota}/vacunas`, body);
+}
+
 
   crearDesparasitacion(idMascota: string, body: CrearDesparasitacionDto) {
     return this.http.post(`${this.baseHistorial}/${idMascota}/desparasitaciones`, body);

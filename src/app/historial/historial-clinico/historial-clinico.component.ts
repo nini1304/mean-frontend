@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HistorialClinicoService, HistorialClinicoDto, VeterinarioDto } from '../historial-clinico.service';
 import { ModalAgregarConsultaComponent } from '../modal-agregar-consulta/modal-agregar-consulta.component';
+import { ModalAgregarVacunaComponent } from '../modal-agregar-vacuna/modal-agregar-vacuna.component';
 
 
 type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' | 'examenes';
@@ -10,7 +11,7 @@ type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' |
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, ModalAgregarConsultaComponent],
+  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -22,6 +23,7 @@ export class HistorialClinicoComponent implements OnInit {
   historial: HistorialClinicoDto | null = null;
   veterinarios: VeterinarioDto[] = [];
   showAddConsulta = false;
+   showAddVacuna = false;
 
   tab: TabKey = 'consultas';
 
@@ -51,6 +53,10 @@ cerrarAddConsulta() {
 onConsultaCreated() {
   this.cargarTodo(); // refresca historial
 }
+
+abrirAgregarVacuna() { this.showAddVacuna = true; }
+  cerrarAddVacuna() { this.showAddVacuna = false; }
+  onVacunaCreated() { this.cargarTodo(); }
 
   cargarTodo() {
     this.cargando = true;
@@ -89,6 +95,9 @@ onConsultaCreated() {
 
   setTab(t: TabKey) {
     this.tab = t;
+    console.log('TAB =>', this.tab);
+
+    
   }
 
   formatDate(d: any): string {
@@ -103,6 +112,11 @@ onConsultaCreated() {
     this.abrirAgregarConsulta();
     return;
   }
+
+  if (this.tab === 'vacunas') {           // 👈 NUEVO
+      this.abrirAgregarVacuna();
+      return;
+    }
 
   alert('Luego abrimos el modal para: ' + this.tab);
 }
