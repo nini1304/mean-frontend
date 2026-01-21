@@ -9,6 +9,7 @@ import { ModalAgregarProcedimientoComponent } from '../modal-agregar-procedimien
 import { ModalAgregarExamenComponent } from '../modal-agregar-examen/modal-agregar-examen.component';
 import { ModalEditarConsultaComponent } from '../modal-editar-consulta/modal-editar-consulta.component';
 import { ModalEditarVacunaComponent } from '../modal-editar-vacuna/modal-editar-vacuna.component';
+import { ModalEditarDesparasitacionComponent } from '../modal-editar-desparasitacion/modal-editar-desparasitacion.component';
 
 
 
@@ -17,7 +18,7 @@ type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' |
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent,ModalAgregarExamenComponent,ModalEditarConsultaComponent,ModalEditarVacunaComponent ],
+  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent,ModalAgregarExamenComponent,ModalEditarConsultaComponent,ModalEditarVacunaComponent, ModalEditarDesparasitacionComponent ],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -39,6 +40,10 @@ export class HistorialClinicoComponent implements OnInit {
 
   showEditVacuna = false;
   selectedVacuna: any = null;
+
+  showEditDesparasitacion = false;
+selectedDesparasitacion: any = null;
+
 
 
   tab: TabKey = 'consultas';
@@ -86,6 +91,8 @@ export class HistorialClinicoComponent implements OnInit {
 cerrarAddExamen() { this.showAddExamen = false; }
 onExamenCreated() { this.cargarTodo(); }
 
+
+
 editarConsulta(c: any) {
   this.selectedConsulta = c;
   this.showEditConsulta = true;
@@ -113,6 +120,21 @@ cerrarEditVacuna() {
 onVacunaUpdated() {
   this.cargarTodo();
 }
+
+editarDesparasitacion(d: any) {
+  this.selectedDesparasitacion = d;
+  this.showEditDesparasitacion = true;
+}
+
+cerrarEditDesparasitacion() {
+  this.showEditDesparasitacion = false;
+  this.selectedDesparasitacion = null;
+}
+
+onDesparasitacionUpdated() {
+  this.cargarTodo();
+}
+
 
 
   cargarTodo() {

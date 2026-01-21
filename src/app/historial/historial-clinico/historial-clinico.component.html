@@ -202,7 +202,7 @@
                         <div class="hc-card"
                             *ngFor="let d of h.desparasitaciones">
                             <div class="hc-card-actions">
-                                <button class="btn-ghost" type="button">✏️
+                                <button class="btn-ghost" type="button" (click)="editarDesparasitacion(d)">✏️
                                     Editar</button>
                             </div>
                             <div class="hc-card-top">
@@ -367,3 +367,11 @@
   (close)="cerrarEditVacuna()"
   (updated)="onVacunaUpdated()">
 </app-modal-editar-vacuna>
+
+<app-modal-editar-desparasitacion
+  *ngIf="showEditDesparasitacion"
+  [idMascota]="idMascota"
+  [data]="selectedDesparasitacion"
+  (close)="cerrarEditDesparasitacion()"
+  (updated)="onDesparasitacionUpdated()">
+</app-modal-editar-desparasitacion>

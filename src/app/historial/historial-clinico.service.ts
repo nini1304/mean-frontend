@@ -144,6 +144,15 @@ export interface ActualizarVacunaDto {
     observaciones?: string;
 }
 
+export interface ActualizarDesparasitacionDto {
+    producto?: string;
+    fecha?: string;
+    dosis?: string;
+    proxima?: string | null;
+    id_veterinario?: string | null;
+    observaciones?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class HistorialClinicoService {
     private readonly baseHistorial = 'http://localhost:3000/api/historial';
@@ -238,6 +247,17 @@ export class HistorialClinicoService {
     ) {
         return this.http.put<ApiMessageResponse>(
             `${this.baseHistorial}/${idMascota}/vacunas/${idVacuna}`,
+            body
+        );
+    }
+
+    actualizarDesparasitacion(
+        idMascota: string,
+        idDesparasitacion: string,
+        body: ActualizarDesparasitacionDto
+    ) {
+        return this.http.put<ApiMessageResponse>(
+            `${this.baseHistorial}/${idMascota}/desparasitaciones/${idDesparasitacion}`,
             body
         );
     }
