@@ -281,4 +281,10 @@
   (close)="cerrarAddProcedimiento()"
   (created)="onProcedimientoCreated()">
 </app-modal-agregar-procedimiento>
+<app-modal-agregar-examen
+  *ngIf="showAddExamen"
+  [idMascota]="idMascota"
+  (close)="cerrarAddExamen()"
+  (created)="onExamenCreated()">
+</app-modal-agregar-examen>
 

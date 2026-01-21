@@ -6,6 +6,7 @@ import { ModalAgregarConsultaComponent } from '../modal-agregar-consulta/modal-a
 import { ModalAgregarVacunaComponent } from '../modal-agregar-vacuna/modal-agregar-vacuna.component';
 import { ModalAgregarDesparasitacionComponent } from '../modal-agregar-desparasitacion/modal-agregar-desparasitacion.component';
 import { ModalAgregarProcedimientoComponent } from '../modal-agregar-procedimiento/modal-agregar-procedimiento.component';
+import { ModalAgregarExamenComponent } from '../modal-agregar-examen/modal-agregar-examen.component';
 
 
 
@@ -15,7 +16,7 @@ type TabKey = 'consultas' | 'vacunas' | 'desparasitaciones' | 'procedimientos' |
 @Component({
   selector: 'app-historial-clinico',
   standalone: true,
-  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent],
+  imports: [CommonModule, ModalAgregarConsultaComponent, ModalAgregarVacunaComponent, ModalAgregarDesparasitacionComponent,ModalAgregarProcedimientoComponent,ModalAgregarExamenComponent ],
   templateUrl: './historial-clinico.component.html',
   styleUrl: './historial-clinico.component.scss',
 })
@@ -30,6 +31,7 @@ export class HistorialClinicoComponent implements OnInit {
   showAddVacuna = false;
   showAddDesparasitacion = false;
   showAddProcedimiento = false;
+  showAddExamen = false;
 
   tab: TabKey = 'consultas';
 
@@ -71,6 +73,10 @@ export class HistorialClinicoComponent implements OnInit {
   abrirAgregarProcedimiento() { this.showAddProcedimiento = true; }
  cerrarAddProcedimiento() { this.showAddProcedimiento = false; }
  onProcedimientoCreated() { this.cargarTodo(); }
+
+ abrirAgregarExamen() { this.showAddExamen = true; }
+cerrarAddExamen() { this.showAddExamen = false; }
+onExamenCreated() { this.cargarTodo(); }
 
   cargarTodo() {
     this.cargando = true;
@@ -133,6 +139,7 @@ export class HistorialClinicoComponent implements OnInit {
     }
     if (this.tab === 'desparasitaciones') { this.abrirAgregarDesparasitacion(); return; }
     if (this.tab === 'procedimientos') { this.abrirAgregarProcedimiento(); return; }
+    if (this.tab === 'examenes') { this.abrirAgregarExamen(); return; }
 
     alert('Luego abrimos el modal para: ' + this.tab);
   }

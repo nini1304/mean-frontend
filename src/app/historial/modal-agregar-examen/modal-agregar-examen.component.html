@@ -1,0 +1,79 @@
+<div class="hc-backdrop" (click)="cancelar()">
+  <div class="hc-card" (click)="$event.stopPropagation()">
+    <button class="hc-close" type="button" (click)="cancelar()" aria-label="Cerrar">✕</button>
+
+    <div class="hc-head">
+      <div class="hc-badge">Historial Clínico</div>
+      <h2 class="hc-title">Nuevo examen</h2>
+      <p class="hc-sub">Sube un adjunto (PDF/imagen) y registra el resultado.</p>
+    </div>
+
+    <div class="hc-msg">
+      <p class="err" *ngIf="errorMsg">{{ errorMsg }}</p>
+      <p class="ok" *ngIf="okMsg">{{ okMsg }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="hc-form">
+      <div class="hc-grid">
+        <div class="hc-field">
+          <label>Tipo</label>
+          <input type="text" formControlName="tipo" placeholder="Ej: Hemograma / RX / Eco" />
+          <small class="hint" *ngIf="form.get('tipo')?.touched && form.get('tipo')?.invalid">
+            El tipo es obligatorio.
+          </small>
+        </div>
+
+        <div class="hc-field">
+          <label>Fecha y hora</label>
+          <input type="datetime-local" formControlName="fechaLocal" />
+          <small class="hint" *ngIf="form.get('fechaLocal')?.touched && form.get('fechaLocal')?.invalid">
+            La fecha es obligatoria.
+          </small>
+        </div>
+
+        <div class="hc-field hc-span2">
+          <label>Veterinario (opcional)</label>
+          <select formControlName="id_veterinario" [disabled]="cargandoVets">
+            <option value="">
+              {{ cargandoVets ? 'Cargando veterinarios...' : 'Sin asignar' }}
+            </option>
+            <option *ngFor="let v of vets" [value]="v.id">
+              {{ v.usuario?.nombre_completo }} · {{ v.especialidad }}
+            </option>
+          </select>
+        </div>
+
+        <div class="hc-field hc-span2">
+          <label>Resultado</label>
+          <textarea rows="2" formControlName="resultado" placeholder="Resumen del resultado (opcional)"></textarea>
+        </div>
+
+        <div class="hc-field hc-span2">
+          <label>Valores (JSON opcional)</label>
+          <textarea rows="3" formControlName="valores" placeholder='{"hb": 13.2, "wbc": 8.1}'></textarea>
+          <small class="hint">Si no lo usas, déjalo vacío.</small>
+        </div>
+
+        <div class="hc-field hc-span2">
+          <label>Adjunto</label>
+
+          <input type="file" (change)="onFileChange($event)" />
+
+          <div class="file-pill" *ngIf="file">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-meta">{{ file.type || 'archivo' }} · {{ file.size }} bytes</span>
+          </div>
+
+          <small class="hint" *ngIf="!file">Debes seleccionar un archivo.</small>
+        </div>
+      </div>
+
+      <div class="hc-actions">
+        <button type="button" class="btn-ghost" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="cargando">
+          {{ cargando ? 'Subiendo...' : 'Guardar examen' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

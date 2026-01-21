@@ -51,7 +51,7 @@ export interface HistorialClinicoDto {
     vacunas: any[];
     desparasitaciones: any[];
     procedimientos: any[];
-    examenes: any[];
+    examenes: ExamenDto[];
     dueno: DuenoMiniDto | null;
     createdAt: string;
     updatedAt: string;
@@ -96,6 +96,32 @@ export interface CrearProcedimientoDto {
     id_veterinario?: string | null;
 }
 
+export interface AdjuntoDto {
+    bucket: string;
+    objectKey: string;
+    url: string;
+    mimeType?: string;
+    nombreOriginal?: string;
+    size?: number;
+    uploadedAt?: string;
+}
+
+export interface ExamenDto {
+    _id?: string;
+    tipo: string;
+    fecha: string;
+    resultado?: string;
+    valores?: any;
+    adjuntos?: AdjuntoDto[];
+    id_veterinario?: any;
+}
+export interface CrearExamenDto {
+    tipo: string;
+    fecha: string; // ISO string
+    resultado?: string;
+    valores?: any;
+    id_veterinario?: string | null;
+}
 
 
 
@@ -147,5 +173,34 @@ export class HistorialClinicoService {
             body
         );
     }
+
+    crearExamenConAdjunto(
+        idMascota: string,
+        body: CrearExamenDto,
+        archivo: File
+    ): Observable<ApiMessageResponse> {
+        const fd = new FormData();
+
+        // 👇 coincide con upload.single("archivo")
+        fd.append('archivo', archivo);
+
+        // 👇 coincide con req.body.tipo, req.body.fecha, ...
+        fd.append('tipo', body.tipo);
+        fd.append('fecha', body.fecha);
+        fd.append('resultado', body.resultado ?? '');
+        fd.append('id_veterinario', body.id_veterinario ?? '');
+
+        if (body.valores !== undefined && body.valores !== null && body.valores !== '') {
+            fd.append('valores', typeof body.valores === 'string' ? body.valores : JSON.stringify(body.valores));
+        }
+
+        // 👇 coincide con tu ruta real
+        return this.http.post<ApiMessageResponse>(
+            `${this.baseHistorial}/${idMascota}/examenes/upload`,
+            fd
+        );
+    }
+
+
 
 }
