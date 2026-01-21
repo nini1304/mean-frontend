@@ -6,9 +6,17 @@ $mint: #A8FBD3;
 .hc-page {
   min-height: 100vh;
   padding: 18px;
-  background: linear-gradient(90deg, rgba(79,183,179,.18) 0%, rgba(168,251,211,.22) 100%);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+   background: linear-gradient(180deg, $mid 0%, $teal 100%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: $dark;
+}
+
+.imagen{
+  display: flex;
+  img{
+    margin-left: auto;
+    width: 300px;
+  }
 }
 
 .hc-shell {
@@ -27,10 +35,10 @@ $mint: #A8FBD3;
 .hc-back, .hc-refresh {
   border: 1px solid rgba(49,50,111,.18);
   background: rgba(255,255,255,.72);
-//   backdrop-filter: blur(8px);
   border-radius: 999px;
   padding: 10px 14px;
-  font-weight: 900;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
   color: $dark;
 }
