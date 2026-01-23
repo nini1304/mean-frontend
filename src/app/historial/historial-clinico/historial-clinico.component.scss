@@ -15,7 +15,8 @@ $mint: #A8FBD3;
   display: flex;
   img{
     margin-left: auto;
-    width: 300px;
+    width: 360px;
+    margin-top: -280px;
   }
 }
 
@@ -308,4 +309,13 @@ $mint: #A8FBD3;
   .hc-hero { grid-template-columns: 1fr; }
   .hc-grid { grid-template-columns: 1fr; }
   .hc-row { grid-template-columns: 1fr; }
+  .imagen{
+    display: none;
+  }
+}
+
+@media (max-width: 1900px) {
+  .imagen{
+    display: none;
+  }
 }
