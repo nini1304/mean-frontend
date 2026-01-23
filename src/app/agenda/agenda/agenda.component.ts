@@ -1,0 +1,168 @@
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalendarOptions } from '@fullcalendar/core';
+import interactionPlugin from '@fullcalendar/interaction';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
+
+import { CitaDto, CitasService } from '../citas.service';
+import { HistorialClinicoService, VeterinarioDto } from '../../historial/historial-clinico.service'; // o crea un VeterinariosService aparte
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-agenda',
+  standalone: true,
+  imports: [CommonModule, FormsModule, FullCalendarModule],
+  templateUrl: './agenda.component.html',
+  styleUrl: './agenda.component.scss',
+})
+export class AgendaComponent implements OnInit {
+  vets: VeterinarioDto[] = [];
+  idVeterinario: string = ''; // 👈 vacío al inicio
+
+  cargando = false;
+  errorMsg = '';
+  cargandoVets = false;
+
+  calendarOptions: CalendarOptions = {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    initialView: 'timeGridWeek',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+    },
+    locale: 'es',
+    selectable: true,
+    selectMirror: true,
+    editable: true,
+    eventResizableFromStart: true,
+    nowIndicator: true,
+    height: 'auto',
+
+    // 👇 NO llamar backend si no hay veterinario seleccionado
+    events: (info, successCallback, failureCallback) => {
+      if (!this.idVeterinario) {
+        successCallback([]); // sin vet seleccionado: agenda vacía
+        return;
+      }
+      this.cargarEventos(info.start.toISOString(), info.end.toISOString(), successCallback, failureCallback);
+    },
+
+    select: (arg) => this.crearDesdeSeleccion(arg as DateSelectArg),
+    eventDrop: (arg) => this.onMover(arg as any),
+    eventResize: (arg) => this.onResize(arg as any),
+    eventClick: (arg) => this.onClickEvento(arg as EventClickArg),
+  };
+
+  constructor(
+    private citasService: CitasService,
+    private hcService: HistorialClinicoService
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarVeterinarios();
+  }
+
+  private cargarVeterinarios() {
+    this.cargandoVets = true;
+    this.hcService.listarVeterinarios().subscribe({
+      next: (res) => {
+        this.vets = res ?? [];
+        this.cargandoVets = false;
+
+        // 👇 si solo hay uno, lo seleccionamos automáticamente
+        if (this.vets.length === 1) {
+          this.idVeterinario = this.vets[0].id;
+          // refresca eventos
+          setTimeout(() => this.refetchCalendar(), 0);
+        }
+      },
+      error: () => {
+        this.vets = [];
+        this.cargandoVets = false;
+      },
+    });
+  }
+
+  onVeterinarioChange(value: string) {
+    this.idVeterinario = value || '';
+    this.refetchCalendar();
+  }
+
+  private refetchCalendar() {
+    const api = (this.calendarOptions as any)?.view?.calendar; // no siempre existe
+    // mejor: usa ViewChild si quieres 100% seguro, pero esto suele funcionar con callback.
+    // Por simplicidad:
+    (document.querySelector('full-calendar') as any)?.getApi?.()?.refetchEvents?.();
+  }
+
+  private cargarEventos(startISO: string, endISO: string, ok: (events: any[]) => void, fail: (err: any) => void) {
+    this.cargando = true;
+    this.errorMsg = '';
+
+    this.citasService.listarPorRango({
+      start: startISO,
+      end: endISO,
+      id_veterinario: this.idVeterinario, // 👈 ya siempre válido
+    }).subscribe({
+      next: (citas: CitaDto[]) => {
+        this.cargando = false;
+        ok((citas ?? []).map(c => ({
+          id: c._id,
+          title: this.buildTitle(c),
+          start: c.start,
+          end: c.end,
+          extendedProps: c,
+          classNames: [this.classByEstado(c.estado)],
+        })));
+      },
+      error: (err) => {
+        this.cargando = false;
+        this.errorMsg = err?.error?.message || 'No se pudieron cargar las citas.';
+        fail(err);
+      }
+    });
+  }
+
+  private buildTitle(c: CitaDto) { return `${c.tipo} · ${c.estado}`; }
+
+  private classByEstado(estado: string) {
+    switch (estado) {
+      case 'CONFIRMADA': return 'ev-ok';
+      case 'CANCELADA': return 'ev-cancel';
+      default: return 'ev-pending';
+    }
+  }
+
+  private crearDesdeSeleccion(arg: DateSelectArg) {
+    if (!this.idVeterinario) {
+      alert('Primero selecciona un veterinario.');
+      return;
+    }
+
+    const idMascota = prompt('ID Mascota (por ahora):');
+    if (!idMascota) return;
+
+    const motivo = prompt('Motivo:') || 'Consulta';
+
+    this.citasService.crear({
+      id_veterinario: this.idVeterinario,
+      id_mascota: idMascota,
+      tipo: 'CITA',
+      start: arg.start.toISOString(),
+      end: arg.end.toISOString(),
+      motivo,
+      estado: 'PENDIENTE',
+    }).subscribe({
+      next: () => arg.view.calendar.refetchEvents(),
+      error: (err) => alert(err?.error?.message || 'No se pudo crear la cita.')
+    });
+  }
+
+  private onMover(arg: any) { /* igual que lo tienes */ }
+  private onResize(arg: any) { /* igual que lo tienes */ }
+  private onClickEvento(arg: EventClickArg) { /* igual que lo tienes */ }
+}

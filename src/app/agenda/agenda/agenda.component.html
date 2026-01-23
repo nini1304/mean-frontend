@@ -1,0 +1,35 @@
+<div class="ag-page">
+    <div class="ag-shell">
+        <div class="ag-top">
+            <div>
+                <div class="ag-kicker">Agenda</div>
+                <h1 class="ag-title">Citas y calendario</h1>
+                <p class="ag-sub">Gestiona las citas por día, semana o mes.</p>
+            </div>
+
+            <div class="ag-actions">
+                <span class="ag-pill" *ngIf="cargando">Cargando…</span>
+                <span class="ag-pill err" *ngIf="!cargando && errorMsg">{{
+                    errorMsg }}</span>
+            </div>
+        </div>
+        <div class="ag-filters">
+            <label class="ag-label">Veterinario</label>
+
+            <select class="ag-select"
+                [disabled]="cargandoVets"
+                [(ngModel)]="idVeterinario"
+                (ngModelChange)="onVeterinarioChange($event)">
+                <option value>-- Selecciona --</option>
+                <option *ngFor="let v of vets" [value]="v.id">
+                    {{ v.usuario.nombre_completo }} · {{ v.especialidad }}
+                </option>
+            </select>
+
+        </div>
+
+        <div class="ag-card">
+            <full-calendar [options]="calendarOptions"></full-calendar>
+        </div>
+    </div>
+</div>

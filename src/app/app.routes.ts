@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { AgendaComponent } from './agenda/agenda/agenda.component';
 
 export const routes: Routes = [
   {
@@ -38,6 +39,7 @@ export const routes: Routes = [
     import('./historial/historial-clinico/historial-clinico.component')
       .then(m => m.HistorialClinicoComponent),
 },
+{ path: 'agenda', component: AgendaComponent },
 
 
 

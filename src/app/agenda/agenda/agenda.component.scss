@@ -1,0 +1,91 @@
+:root{
+  --c1:#31326F;
+  --c2:#637AB9;
+  --c3:#4FB7B3;
+  --c4:#A8FBD3;
+}
+
+.ag-page{
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(49,50,111,.08), rgba(168,251,211,.18));
+  padding: 24px;
+}
+
+.ag-shell{
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ag-top{
+  display:flex;
+  justify-content: space-between;
+  align-items:flex-start;
+  gap:16px;
+  margin-bottom: 16px;
+}
+
+.ag-kicker{
+  display:inline-block;
+  font-weight:700;
+  color: var(--c1);
+  background: rgba(99,122,185,.18);
+  border: 1px solid rgba(99,122,185,.35);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.ag-title{
+  margin: 10px 0 4px;
+  color: var(--c1);
+  font-size: 26px;
+  letter-spacing: .2px;
+}
+
+.ag-sub{
+  margin: 0;
+  color: rgba(49,50,111,.75);
+}
+
+.ag-card{
+  background: white;
+  border: 1px solid rgba(99,122,185,.25);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(49,50,111,.10);
+  padding: 12px;
+}
+
+/* badges */
+.ag-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid rgba(79,183,179,.35);
+  background: rgba(168,251,211,.25);
+  color: var(--c1);
+}
+.ag-pill.err{
+  border-color: rgba(255,0,0,.25);
+  background: rgba(255,0,0,.08);
+}
+
+/* FullCalendar event colors by estado */
+:host ::ng-deep .fc .ev-pending{
+  background: rgba(99,122,185,.85) !important;
+  border-color: rgba(99,122,185,1) !important;
+  color: white !important;
+}
+:host ::ng-deep .fc .ev-ok{
+  background: rgba(79,183,179,.9) !important;
+  border-color: rgba(79,183,179,1) !important;
+  color: #0b2b2a !important;
+}
+:host ::ng-deep .fc .ev-cancel{
+  background: rgba(49,50,111,.25) !important;
+  border-color: rgba(49,50,111,.35) !important;
+  color: var(--c1) !important;
+  text-decoration: line-through;
+}
