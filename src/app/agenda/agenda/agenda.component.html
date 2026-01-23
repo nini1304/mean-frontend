@@ -20,7 +20,7 @@
                 [disabled]="cargandoVets"
                 [(ngModel)]="idVeterinario"
                 (ngModelChange)="onVeterinarioChange($event)">
-                <option value>-- Selecciona --</option>
+                <option value="">-- Selecciona --</option>
                 <option *ngFor="let v of vets" [value]="v.id">
                     {{ v.usuario.nombre_completo }} · {{ v.especialidad }}
                 </option>

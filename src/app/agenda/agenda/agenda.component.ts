@@ -1,15 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { Component, OnInit,ViewChild } from '@angular/core';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
+import listPlugin from '@fullcalendar/list';
+
 
 import { CitaDto, CitasService } from '../citas.service';
 import { HistorialClinicoService, VeterinarioDto } from '../../historial/historial-clinico.service'; // o crea un VeterinariosService aparte
 import { FormsModule } from '@angular/forms';
+
+
 
 @Component({
   selector: 'app-agenda',
@@ -19,6 +23,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './agenda.component.scss',
 })
 export class AgendaComponent implements OnInit {
+  @ViewChild(FullCalendarComponent) calendar!: FullCalendarComponent;
+
   vets: VeterinarioDto[] = [];
   idVeterinario: string = ''; // 👈 vacío al inicio
 
@@ -27,7 +33,7 @@ export class AgendaComponent implements OnInit {
   cargandoVets = false;
 
   calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
     initialView: 'timeGridWeek',
     headerToolbar: {
       left: 'prev,next today',
@@ -93,11 +99,9 @@ export class AgendaComponent implements OnInit {
   }
 
   private refetchCalendar() {
-    const api = (this.calendarOptions as any)?.view?.calendar; // no siempre existe
-    // mejor: usa ViewChild si quieres 100% seguro, pero esto suele funcionar con callback.
-    // Por simplicidad:
-    (document.querySelector('full-calendar') as any)?.getApi?.()?.refetchEvents?.();
-  }
+  this.calendar?.getApi()?.refetchEvents();
+}
+
 
   private cargarEventos(startISO: string, endISO: string, ok: (events: any[]) => void, fail: (err: any) => void) {
     this.cargando = true;
