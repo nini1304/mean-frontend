@@ -15,6 +15,11 @@ import { FormsModule } from '@angular/forms';
 
 
 
+import { TipoCita } from '../citas.service';
+import { MascotasService, MascotaRelacionDto } from '../mascotas.service';
+
+
+
 @Component({
   selector: 'app-agenda',
   standalone: true,
@@ -34,6 +39,20 @@ export class AgendaComponent implements OnInit {
 
   showDetalle = false;
   citaSeleccionada: CitaDto | null = null;
+
+
+  mascotas: MascotaRelacionDto[] = [];
+  showCrear = false;
+  crearError = '';
+
+  form = {
+    id_mascota: '',
+    tipo: 'CONSULTA' as TipoCita,
+    startLocal: '',
+    endLocal: '',
+    motivo: ''
+  };
+
 
 
   calendarOptions: CalendarOptions = {
@@ -69,12 +88,22 @@ export class AgendaComponent implements OnInit {
 
   constructor(
     private citasService: CitasService,
-    private hcService: HistorialClinicoService
+    private hcService: HistorialClinicoService,
+    private mascotasService: MascotasService
   ) { }
 
   ngOnInit(): void {
     this.cargarVeterinarios();
+    this.cargarMascotas();
   }
+
+  private cargarMascotas() {
+    this.mascotasService.listar().subscribe({
+      next: (res) => this.mascotas = res ?? [],
+      error: () => this.mascotas = []
+    });
+  }
+
 
   getVetNombre(c: CitaDto): string {
     const vet: any = c.id_veterinario;
@@ -200,30 +229,7 @@ export class AgendaComponent implements OnInit {
     }
   }
 
-  private crearDesdeSeleccion(arg: DateSelectArg) {
-    if (!this.idVeterinario) {
-      alert('Primero selecciona un veterinario.');
-      return;
-    }
 
-    const idMascota = prompt('ID Mascota (por ahora):');
-    if (!idMascota) return;
-
-    const motivo = prompt('Motivo:') || 'Consulta';
-
-    this.citasService.crear({
-      id_veterinario: this.idVeterinario,
-      id_mascota: idMascota,
-      tipo: 'CITA',
-      start: arg.start.toISOString(),
-      end: arg.end.toISOString(),
-      motivo,
-      estado: 'PENDIENTE',
-    }).subscribe({
-      next: () => arg.view.calendar.refetchEvents(),
-      error: (err) => alert(err?.error?.message || 'No se pudo crear la cita.')
-    });
-  }
 
   private onMover(arg: any) { /* igual que lo tienes */ }
   private onResize(arg: any) { /* igual que lo tienes */ }
@@ -238,5 +244,102 @@ export class AgendaComponent implements OnInit {
 
     this.abrirDetalle(cita);
   }
+
+
+
+  getVetNombreFromSelected(): string {
+    const v = this.vets.find(x => x.id === this.idVeterinario);
+    return v ? `${v.usuario.nombre_completo} · ${v.especialidad}` : '-';
+  }
+
+  private crearDesdeSeleccion(arg: DateSelectArg) {
+    if (!this.idVeterinario) {
+      alert('Primero selecciona un veterinario.');
+      return;
+    }
+
+    // FullCalendar ya te da start/end
+    this.abrirCrearConRango(arg.start, arg.end);
+  }
+
+  abrirNuevaCita() {
+    if (!this.idVeterinario) return;
+    // Por defecto: ahora + 30 min
+    const now = new Date();
+    const end = new Date(now.getTime() + 30 * 60000);
+    this.abrirCrearConRango(now, end);
+  }
+
+  private abrirCrearConRango(start: Date, end: Date) {
+    this.crearError = '';
+    this.form = {
+      id_mascota: '',
+      tipo: 'CONSULTA',
+      startLocal: this.toLocalInputValue(start),
+      endLocal: this.toLocalInputValue(end),
+      motivo: ''
+    };
+    this.showCrear = true;
+  }
+
+  cerrarCrear() {
+    this.showCrear = false;
+    this.crearError = '';
+  }
+
+  private toLocalInputValue(d: Date): string {
+    // yyyy-MM-ddTHH:mm (sin Z)
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+
+  guardarCita() {
+  if (!this.idVeterinario) {
+    this.crearError = 'Selecciona un veterinario.';
+    return;
+  }
+  if (!this.form.id_mascota) {
+    this.crearError = 'Selecciona una mascota.';
+    return;
+  }
+  if (!this.form.startLocal || !this.form.endLocal) {
+    this.crearError = 'Completa inicio y fin.';
+    return;
+  }
+
+  const start = new Date(this.form.startLocal);
+  const end = new Date(this.form.endLocal);
+
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    this.crearError = 'Fechas inválidas.';
+    return;
+  }
+  if (end <= start) {
+    this.crearError = 'La hora fin debe ser mayor a la hora inicio.';
+    return;
+  }
+
+  this.citasService.crear({
+    id_veterinario: this.idVeterinario,
+    id_mascota: this.form.id_mascota,
+    tipo: this.form.tipo,          // ✅ CONSULTA/VACUNA/CONTROL/CIRUGIA/OTRO
+    start: start.toISOString(),
+    end: end.toISOString(),
+    motivo: this.form.motivo || undefined,
+    estado: 'PENDIENTE'
+  }).subscribe({
+    next: () => {
+      this.cerrarCrear();
+      this.refetchCalendar();
+    },
+    error: (err) => {
+      this.crearError = err?.error?.message || 'No se pudo crear la cita.';
+    }
+  });
+}
+
+
+
 
 }

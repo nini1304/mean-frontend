@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export type EstadoCita = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA';
-export type TipoCita = 'CITA' | 'VACUNA' | 'CONTROL' | 'PROCEDIMIENTO'; // ajusta a tu gusto
+export type TipoCita = 'CONSULTA' | 'VACUNA' | 'CONTROL' | 'CIRUGIA' | 'OTRO';
+export type EstadoCita = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'NO_ASISTIO' | 'COMPLETADA';
+
 
 export interface CitaDto {
   _id: string;
@@ -44,6 +45,8 @@ export interface CitaDto {
 }
 
 
+
+
 export interface CrearCitaDto {
   id_veterinario: string;
   id_mascota: string;
@@ -51,8 +54,9 @@ export interface CrearCitaDto {
   start: string;
   end: string;
   motivo?: string;
-  estado?: EstadoCita;
+  estado?: EstadoCita; // opcional si backend default PENDIENTE
 }
+
 
 @Injectable({ providedIn: 'root' })
 export class CitasService {

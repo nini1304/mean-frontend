@@ -29,6 +29,13 @@
         </div>
 
         <div class="ag-card">
+            <div class="ag-toolbar">
+                <button class="ag-btn" type="button" (click)="abrirNuevaCita()"
+                    [disabled]="!idVeterinario">
+                    + Nueva cita
+                </button>
+            </div>
+
             <full-calendar [options]="calendarOptions"></full-calendar>
             <!-- Modal detalle de cita -->
             <div class="ag-modal-backdrop" *ngIf="showDetalle"
@@ -96,6 +103,98 @@
                             <button class="ag-btn" type="button"
                                 (click)="cerrarDetalle()">Cerrar</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal crear cita -->
+            <div class="ag-modal-backdrop" *ngIf="showCrear"
+                (click)="cerrarCrear()">
+                <div class="ag-modal" (click)="$event.stopPropagation()">
+                    <div class="ag-modal-top">
+                        <div>
+                            <div class="ag-modal-kicker">Nueva cita</div>
+                            <div class="ag-modal-title">Registrar en
+                                agenda</div>
+                        </div>
+                        <button class="ag-x" type="button"
+                            (click)="cerrarCrear()">×</button>
+                    </div>
+
+                    <div class="ag-modal-body">
+                        <div class="ag-row">
+                            <span class="k">Veterinario</span>
+                            <span class="v">{{ getVetNombreFromSelected()
+                                }}</span>
+                        </div>
+
+                        <div class="ag-row">
+                            <span class="k">Mascota</span>
+                            <span class="v">
+                                <select class="ag-select"
+                                    [(ngModel)]="form.id_mascota">
+                                    <option value="">-- Selecciona mascota
+                                        --</option>
+                                    <option *ngFor="let r of mascotas"
+                                        [value]="r.mascota.id">
+                                        {{ r.mascota.nombre }} ({{
+                                        r.mascota.tipo_mascota }}) · Dueño: {{
+                                        r.dueno.nombre_completo }}
+                                    </option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <div class="ag-row">
+                            <span class="k">Tipo</span>
+                            <span class="v">
+                                <select class="ag-select"
+                                    [(ngModel)]="form.tipo">
+                                    <option value="CONSULTA">CONSULTA</option>
+                                    <option value="VACUNA">VACUNA</option>
+                                    <option value="CONTROL">CONTROL</option>
+                                    <option value="CIRUGIA">CIRUGIA</option>
+                                    <option value="OTRO">OTRO</option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <div class="ag-row">
+                            <span class="k">Inicio</span>
+                            <span class="v">
+                                <input class="ag-input" type="datetime-local"
+                                    [(ngModel)]="form.startLocal">
+                            </span>
+                        </div>
+
+                        <div class="ag-row">
+                            <span class="k">Fin</span>
+                            <span class="v">
+                                <input class="ag-input" type="datetime-local"
+                                    [(ngModel)]="form.endLocal">
+                            </span>
+                        </div>
+
+                        <div class="ag-row">
+                            <span class="k">Motivo</span>
+                            <span class="v">
+                                <input class="ag-input" type="text"
+                                    [(ngModel)]="form.motivo"
+                                    placeholder="Ej: Control post operatorio">
+                            </span>
+                        </div>
+
+                        <div class="ag-modal-actions">
+                            <button class="ag-btn danger" type="button"
+                                (click)="guardarCita()">
+                                Guardar
+                            </button>
+                            <button class="ag-btn" type="button"
+                                (click)="cerrarCrear()">Cancelar</button>
+                        </div>
+
+                        <p class="ag-help" *ngIf="crearError">{{ crearError
+                            }}</p>
                     </div>
                 </div>
             </div>

@@ -183,3 +183,28 @@
   color: #fff;
   border-color: rgba(49,50,111,.35);
 }
+
+
+
+
+
+.ag-toolbar{
+  display:flex;
+  justify-content:flex-end;
+  padding: 8px 4px 12px;
+  gap: 10px;
+}
+
+.ag-input{
+  width: 100%;
+  border: 1px solid rgba(99,122,185,.6);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+}
+.ag-help{
+  margin: 10px 0 0;
+  color: #b00020;
+  font-size: 12px;
+}
+
