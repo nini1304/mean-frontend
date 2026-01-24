@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -31,6 +31,10 @@ export class AgendaComponent implements OnInit {
   cargando = false;
   errorMsg = '';
   cargandoVets = false;
+
+  showDetalle = false;
+  citaSeleccionada: CitaDto | null = null;
+
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -66,11 +70,45 @@ export class AgendaComponent implements OnInit {
   constructor(
     private citasService: CitasService,
     private hcService: HistorialClinicoService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cargarVeterinarios();
   }
+
+  abrirDetalle(cita: CitaDto) {
+    this.citaSeleccionada = cita;
+    this.showDetalle = true;
+  }
+
+  cerrarDetalle() {
+    this.showDetalle = false;
+    this.citaSeleccionada = null;
+  }
+
+  formatDate(d: any): string {
+    if (!d) return '-';
+    const date = new Date(d);
+    if (Number.isNaN(date.getTime())) return String(d);
+    return date.toLocaleString();
+  }
+
+  cancelarDesdeModal(idCita: string) {
+    const ok = confirm('¿Seguro que deseas cancelar esta cita?');
+    if (!ok) return;
+
+    const motivo = prompt('Motivo de cancelación:') || 'Cancelada';
+
+    this.citasService.cancelar(idCita, { motivo }).subscribe({
+      next: () => {
+        this.cerrarDetalle();
+        this.refetchCalendar();
+      },
+      error: (err) => alert(err?.error?.message || 'No se pudo cancelar la cita.'),
+    });
+  }
+
+
 
   private cargarVeterinarios() {
     this.cargandoVets = true;
@@ -99,8 +137,8 @@ export class AgendaComponent implements OnInit {
   }
 
   private refetchCalendar() {
-  this.calendar?.getApi()?.refetchEvents();
-}
+    this.calendar?.getApi()?.refetchEvents();
+  }
 
 
   private cargarEventos(startISO: string, endISO: string, ok: (events: any[]) => void, fail: (err: any) => void) {
@@ -168,5 +206,16 @@ export class AgendaComponent implements OnInit {
 
   private onMover(arg: any) { /* igual que lo tienes */ }
   private onResize(arg: any) { /* igual que lo tienes */ }
-  private onClickEvento(arg: EventClickArg) { /* igual que lo tienes */ }
+  private onClickEvento(arg: EventClickArg) {
+    const cita = (arg.event.extendedProps as any) as CitaDto;
+
+    // por si acaso (si extendedProps viene vacío)
+    if (!cita) {
+      alert('No se pudo leer la información de la cita.');
+      return;
+    }
+
+    this.abrirDetalle(cita);
+  }
+
 }
