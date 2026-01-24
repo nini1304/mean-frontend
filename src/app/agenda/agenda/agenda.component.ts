@@ -76,6 +76,27 @@ export class AgendaComponent implements OnInit {
     this.cargarVeterinarios();
   }
 
+  getVetNombre(c: CitaDto): string {
+    const vet: any = c.id_veterinario;
+    return vet?.id_usuario?.nombre_completo ?? '-';
+  }
+
+  getVetEspecialidad(c: CitaDto): string {
+    const vet: any = c.id_veterinario;
+    return vet?.especialidad ?? '';
+  }
+
+  getMascotaNombre(c: CitaDto): string {
+    const m: any = c.id_mascota;
+    return m?.nombre ?? '-';
+  }
+
+  getMascotaTipo(c: CitaDto): string {
+    const m: any = c.id_mascota;
+    return m?.tipo_mascota?.tipo_mascota ?? '';
+  }
+
+
   abrirDetalle(cita: CitaDto) {
     this.citaSeleccionada = cita;
     this.showDetalle = true;

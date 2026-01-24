@@ -20,7 +20,7 @@
                 [disabled]="cargandoVets"
                 [(ngModel)]="idVeterinario"
                 (ngModelChange)="onVeterinarioChange($event)">
-                <option value="">-- Selecciona --</option>
+                <option value>-- Selecciona --</option>
                 <option *ngFor="let v of vets" [value]="v.id">
                     {{ v.usuario.nombre_completo }} · {{ v.especialidad }}
                 </option>
@@ -31,55 +31,74 @@
         <div class="ag-card">
             <full-calendar [options]="calendarOptions"></full-calendar>
             <!-- Modal detalle de cita -->
-<div class="ag-modal-backdrop" *ngIf="showDetalle" (click)="cerrarDetalle()">
-  <div class="ag-modal" (click)="$event.stopPropagation()">
-    <div class="ag-modal-top">
-      <div>
-        <div class="ag-modal-kicker">Detalle de cita</div>
-        <div class="ag-modal-title">
-          {{ citaSeleccionada?.tipo }} · {{ citaSeleccionada?.estado }}
-        </div>
-      </div>
+            <div class="ag-modal-backdrop" *ngIf="showDetalle"
+                (click)="cerrarDetalle()">
+                <div class="ag-modal" (click)="$event.stopPropagation()">
+                    <div class="ag-modal-top">
+                        <div>
+                            <div class="ag-modal-kicker">Detalle de cita</div>
+                            <div class="ag-modal-title">
+                                {{ citaSeleccionada?.tipo }} · {{
+                                citaSeleccionada?.estado }}
+                            </div>
+                        </div>
 
-      <button class="ag-x" type="button" (click)="cerrarDetalle()">×</button>
-    </div>
+                        <button class="ag-x" type="button"
+                            (click)="cerrarDetalle()">×</button>
+                    </div>
 
-    <div class="ag-modal-body" *ngIf="citaSeleccionada as c">
-      <div class="ag-row">
-        <span class="k">Motivo</span>
-        <span class="v">{{ c.motivo || '-' }}</span>
-      </div>
+                    <div class="ag-modal-body" *ngIf="citaSeleccionada as c">
+                        <div class="ag-row">
+                            <span class="k">Motivo</span>
+                            <span class="v">{{ c.motivo || '-' }}</span>
+                        </div>
 
-      <div class="ag-row">
-        <span class="k">Inicio</span>
-        <span class="v">{{ formatDate(c.start) }}</span>
-      </div>
+                        <div class="ag-row">
+                            <span class="k">Inicio</span>
+                            <span class="v">{{ formatDate(c.start) }}</span>
+                        </div>
 
-      <div class="ag-row">
-        <span class="k">Fin</span>
-        <span class="v">{{ formatDate(c.end) }}</span>
-      </div>
+                        <div class="ag-row">
+                            <span class="k">Fin</span>
+                            <span class="v">{{ formatDate(c.end) }}</span>
+                        </div>
 
-      <div class="ag-row">
-        <span class="k">Veterinario</span>
-        <span class="v">{{ c.id_veterinario }}</span>
-      </div>
+                        <div class="ag-row">
+                            <span class="k">Veterinario</span>
+                            <span class="v">
+                                {{ getVetNombre(c) }}
+                                <span *ngIf="getVetEspecialidad(c)"> · {{
+                                    getVetEspecialidad(c) }}</span>
+                            </span>
+                        </div>
 
-      <div class="ag-row">
-        <span class="k">Mascota</span>
-        <span class="v">{{ c.id_mascota }}</span>
-      </div>
+                        <div class="ag-row">
+                            <span class="k">Mascota</span>
+                            <span class="v">
+                                {{ getMascotaNombre(c) }}
+                                <span *ngIf="getMascotaTipo(c)"> · {{
+                                    getMascotaTipo(c) }}</span>
+                            </span>
+                        </div>
 
-      <div class="ag-modal-actions">
-        <!-- ejemplo: cancelar -->
-        <button class="ag-btn danger" type="button" (click)="cancelarDesdeModal(c._id)">
-          Cancelar cita
-        </button>
-        <button class="ag-btn" type="button" (click)="cerrarDetalle()">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
+                        <div class="ag-row">
+                            <span class="k">Dueño</span>
+                            <span class="v">{{ c.dueno?.nombre_completo || '-'
+                                }}</span>
+                        </div>
+
+                        <div class="ag-modal-actions">
+                            <!-- ejemplo: cancelar -->
+                            <button class="ag-btn danger" type="button"
+                                (click)="cancelarDesdeModal(c._id)">
+                                Cancelar cita
+                            </button>
+                            <button class="ag-btn" type="button"
+                                (click)="cerrarDetalle()">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>

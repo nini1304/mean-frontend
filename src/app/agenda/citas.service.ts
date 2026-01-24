@@ -7,14 +7,42 @@ export type TipoCita = 'CITA' | 'VACUNA' | 'CONTROL' | 'PROCEDIMIENTO'; // ajust
 
 export interface CitaDto {
   _id: string;
-  id_veterinario: string;
-  id_mascota: string;
-  tipo: TipoCita;
-  start: string; // ISO
-  end: string;   // ISO
+
+  id_veterinario: string | {
+    _id: string;
+    especialidad: string;
+    id_usuario?: {
+      _id: string;
+      nombre_completo: string;
+      correo: string;
+      numero_celular: string;
+    };
+  };
+
+  id_mascota: string | {
+    _id: string;
+    nombre: string;
+    raza?: string;
+    edad?: number;
+    peso?: number;
+    tipo_mascota?: { _id: string; tipo_mascota: string };
+  };
+
+  dueno?: {
+    id: string;
+    nombre_completo: string;
+    correo: string;
+    numero_celular: string;
+  } | null;
+
+  start: string;
+  end: string;
+  tipo: any;
+  estado: any;
   motivo?: string;
-  estado: EstadoCita;
+  notas?: string;
 }
+
 
 export interface CrearCitaDto {
   id_veterinario: string;
