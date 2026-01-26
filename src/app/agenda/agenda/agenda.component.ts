@@ -295,49 +295,69 @@ export class AgendaComponent implements OnInit {
 
 
   guardarCita() {
-  if (!this.idVeterinario) {
-    this.crearError = 'Selecciona un veterinario.';
-    return;
-  }
-  if (!this.form.id_mascota) {
-    this.crearError = 'Selecciona una mascota.';
-    return;
-  }
-  if (!this.form.startLocal || !this.form.endLocal) {
-    this.crearError = 'Completa inicio y fin.';
-    return;
-  }
-
-  const start = new Date(this.form.startLocal);
-  const end = new Date(this.form.endLocal);
-
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
-    this.crearError = 'Fechas inválidas.';
-    return;
-  }
-  if (end <= start) {
-    this.crearError = 'La hora fin debe ser mayor a la hora inicio.';
-    return;
-  }
-
-  this.citasService.crear({
-    id_veterinario: this.idVeterinario,
-    id_mascota: this.form.id_mascota,
-    tipo: this.form.tipo,          // ✅ CONSULTA/VACUNA/CONTROL/CIRUGIA/OTRO
-    start: start.toISOString(),
-    end: end.toISOString(),
-    motivo: this.form.motivo || undefined,
-    estado: 'PENDIENTE'
-  }).subscribe({
-    next: () => {
-      this.cerrarCrear();
-      this.refetchCalendar();
-    },
-    error: (err) => {
-      this.crearError = err?.error?.message || 'No se pudo crear la cita.';
+    if (!this.idVeterinario) {
+      this.crearError = 'Selecciona un veterinario.';
+      return;
     }
-  });
-}
+    if (!this.form.id_mascota) {
+      this.crearError = 'Selecciona una mascota.';
+      return;
+    }
+    if (!this.form.startLocal || !this.form.endLocal) {
+      this.crearError = 'Completa inicio y fin.';
+      return;
+    }
+
+    const start = new Date(this.form.startLocal);
+    const end = new Date(this.form.endLocal);
+
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      this.crearError = 'Fechas inválidas.';
+      return;
+    }
+    if (end <= start) {
+      this.crearError = 'La hora fin debe ser mayor a la hora inicio.';
+      return;
+    }
+
+    this.citasService.crear({
+      id_veterinario: this.idVeterinario,
+      id_mascota: this.form.id_mascota,
+      tipo: this.form.tipo,          // ✅ CONSULTA/VACUNA/CONTROL/CIRUGIA/OTRO
+      start: start.toISOString(),
+      end: end.toISOString(),
+      notas: this.form.motivo || undefined,
+      estado: 'PENDIENTE'
+    }).subscribe({
+      next: () => {
+        this.cerrarCrear();
+        this.refetchCalendar();
+      },
+      error: (err) => {
+        this.crearError = err?.error?.message || 'No se pudo crear la cita.';
+      }
+    });
+  }
+
+  onCambiarEstado(c: CitaDto, nuevoEstado: any) {
+    const estado = nuevoEstado as any;
+
+    // si eligen CANCELADA, usamos el flujo actual (motivo + endpoint cancelar)
+    if (estado === 'CANCELADA') {
+      this.cancelarDesdeModal(c._id);
+      return;
+    }
+
+    this.citasService.cambiarEstado(c._id, { estado }).subscribe({
+      next: () => {
+        // actualiza lo que se ve en el modal sin recargar todo
+        if (this.citaSeleccionada) this.citaSeleccionada.estado = estado;
+        this.refetchCalendar();
+      },
+      error: (err) => alert(err?.error?.message || 'No se pudo cambiar el estado.'),
+    });
+  }
+
 
 
 

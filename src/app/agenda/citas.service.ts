@@ -53,7 +53,7 @@ export interface CrearCitaDto {
   tipo: TipoCita;
   start: string;
   end: string;
-  motivo?: string;
+  notas?: string;
   estado?: EstadoCita; // opcional si backend default PENDIENTE
 }
 
@@ -79,4 +79,9 @@ export class CitasService {
   cancelar(idCita: string, body: { motivo?: string }) {
     return this.http.patch<any>(`${this.base}/${idCita}/cancelar`, body);
   }
+
+  cambiarEstado(idCita: string, body: { estado: EstadoCita }) {
+  return this.http.patch<any>(`${this.base}/${idCita}/estado`, body);
+}
+
 }

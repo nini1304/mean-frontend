@@ -57,7 +57,7 @@
                     <div class="ag-modal-body" *ngIf="citaSeleccionada as c">
                         <div class="ag-row">
                             <span class="k">Motivo</span>
-                            <span class="v">{{ c.motivo || '-' }}</span>
+                            <span class="v">{{ c.notas || c.motivo || '-' }}</span>
                         </div>
 
                         <div class="ag-row">
@@ -68,6 +68,22 @@
                         <div class="ag-row">
                             <span class="k">Fin</span>
                             <span class="v">{{ formatDate(c.end) }}</span>
+                        </div>
+                        <div class="ag-row">
+                            <span class="k">Estado</span>
+                            <span class="v">
+                                <select class="ag-select"
+                                    [ngModel]="c.estado"
+                                    (ngModelChange)="onCambiarEstado(c, $event)">
+                                    <option value="PENDIENTE">PENDIENTE</option>
+                                    <option
+                                        value="CONFIRMADA">CONFIRMADA</option>
+                                    <option
+                                        value="NO_ASISTIO">NO_ASISTIO</option>
+                                    <option
+                                        value="COMPLETADA">COMPLETADA</option>
+                                </select>
+                            </span>
                         </div>
 
                         <div class="ag-row">
@@ -133,7 +149,7 @@
                             <span class="v">
                                 <select class="ag-select"
                                     [(ngModel)]="form.id_mascota">
-                                    <option value="">-- Selecciona mascota
+                                    <option value>-- Selecciona mascota
                                         --</option>
                                     <option *ngFor="let r of mascotas"
                                         [value]="r.mascota.id">
