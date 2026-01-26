@@ -11,7 +11,9 @@
                 <span class="ag-pill" *ngIf="cargando">Cargando…</span>
                 <span class="ag-pill err" *ngIf="!cargando && errorMsg">{{
                     errorMsg }}</span>
+                <span class="ag-pill ok" *ngIf="toastMsg">{{ toastMsg }}</span>
             </div>
+
         </div>
         <div class="ag-filters">
             <label class="ag-label">Veterinario</label>
@@ -57,7 +59,8 @@
                     <div class="ag-modal-body" *ngIf="citaSeleccionada as c">
                         <div class="ag-row">
                             <span class="k">Motivo</span>
-                            <span class="v">{{ c.notas || c.motivo || '-' }}</span>
+                            <span class="v">{{ c.notas || c.motivo || '-'
+                                }}</span>
                         </div>
 
                         <div class="ag-row">
@@ -73,8 +76,9 @@
                             <span class="k">Estado</span>
                             <span class="v">
                                 <select class="ag-select"
-                                    [ngModel]="c.estado"
-                                    (ngModelChange)="onCambiarEstado(c, $event)">
+                                    [ngModel]="estadoTmp"
+                                    [ngModelOptions]="{ standalone: true }"
+                                    (ngModelChange)="onCambiarEstado($event)">
                                     <option value="PENDIENTE">PENDIENTE</option>
                                     <option
                                         value="CONFIRMADA">CONFIRMADA</option>
@@ -83,6 +87,7 @@
                                     <option
                                         value="COMPLETADA">COMPLETADA</option>
                                 </select>
+
                             </span>
                         </div>
 

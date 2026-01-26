@@ -7,6 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import type { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import listPlugin from '@fullcalendar/list';
+import type { EstadoCita } from '../citas.service';
 
 
 import { CitaDto, CitasService } from '../citas.service';
@@ -44,6 +45,12 @@ export class AgendaComponent implements OnInit {
   mascotas: MascotaRelacionDto[] = [];
   showCrear = false;
   crearError = '';
+
+  estadoTmp: EstadoCita = 'PENDIENTE';
+
+
+  toastMsg = '';
+  private toastTimer: any;
 
   form = {
     id_mascota: '',
@@ -97,6 +104,12 @@ export class AgendaComponent implements OnInit {
     this.cargarMascotas();
   }
 
+  private showToast(msg: string) {
+  this.toastMsg = msg;
+  clearTimeout(this.toastTimer);
+  this.toastTimer = setTimeout(() => (this.toastMsg = ''), 2500);
+}
+
   private cargarMascotas() {
     this.mascotasService.listar().subscribe({
       next: (res) => this.mascotas = res ?? [],
@@ -127,9 +140,12 @@ export class AgendaComponent implements OnInit {
 
 
   abrirDetalle(cita: CitaDto) {
-    this.citaSeleccionada = cita;
-    this.showDetalle = true;
-  }
+  // copia editable (evita el "read-only" de FullCalendar)
+  this.citaSeleccionada = { ...cita };
+  this.estadoTmp = (cita.estado as any) ?? 'PENDIENTE';
+  this.showDetalle = true;
+}
+
 
   cerrarDetalle() {
     this.showDetalle = false;
@@ -221,29 +237,26 @@ export class AgendaComponent implements OnInit {
 
   private buildTitle(c: CitaDto) { return `${c.tipo} · ${c.estado}`; }
 
-  private classByEstado(estado: string) {
-    switch (estado) {
-      case 'CONFIRMADA': return 'ev-ok';
-      case 'CANCELADA': return 'ev-cancel';
-      default: return 'ev-pending';
-    }
+private classByEstado(estado: string) {
+  switch (estado) {
+    case 'CONFIRMADA': return 'ev-ok';
+    case 'COMPLETADA': return 'ev-ok';
+    case 'NO_ASISTIO': return 'ev-cancel';
+    case 'CANCELADA': return 'ev-cancel';
+    default: return 'ev-pending';
   }
+}
+
 
 
 
   private onMover(arg: any) { /* igual que lo tienes */ }
   private onResize(arg: any) { /* igual que lo tienes */ }
   private onClickEvento(arg: EventClickArg) {
-    const cita = (arg.event.extendedProps as any) as CitaDto;
+  const cita = (arg.event.extendedProps as any) as CitaDto;
+  this.abrirDetalle({ ...cita });
+}
 
-    // por si acaso (si extendedProps viene vacío)
-    if (!cita) {
-      alert('No se pudo leer la información de la cita.');
-      return;
-    }
-
-    this.abrirDetalle(cita);
-  }
 
 
 
@@ -339,24 +352,67 @@ export class AgendaComponent implements OnInit {
     });
   }
 
-  onCambiarEstado(c: CitaDto, nuevoEstado: any) {
-    const estado = nuevoEstado as any;
+  onCambiarEstado(nuevoEstado: EstadoCita) {
+  if (!this.citaSeleccionada) return;
 
-    // si eligen CANCELADA, usamos el flujo actual (motivo + endpoint cancelar)
-    if (estado === 'CANCELADA') {
-      this.cancelarDesdeModal(c._id);
-      return;
+  const id = this.citaSeleccionada._id;
+  const prev = this.estadoTmp;
+
+  // UI inmediata
+  this.estadoTmp = nuevoEstado;
+  this.citaSeleccionada = { ...this.citaSeleccionada, estado: nuevoEstado };
+  this.patchCalendarEvent(id, { estado: nuevoEstado });
+
+  this.showToast('Guardando...');
+
+  this.citasService.cambiarEstado(id, { estado: nuevoEstado }).subscribe({
+    next: () => {
+      this.showToast('✅ Estado actualizado');
+      setTimeout(() => this.refetchCalendar(), 0);
+    },
+    error: (err) => {
+      // revertir
+      this.estadoTmp = prev;
+      this.citaSeleccionada = { ...this.citaSeleccionada!, estado: prev };
+      this.patchCalendarEvent(id, { estado: prev });
+
+      alert(err?.error?.message || 'No se pudo cambiar el estado.');
     }
+  });
+}
 
-    this.citasService.cambiarEstado(c._id, { estado }).subscribe({
-      next: () => {
-        // actualiza lo que se ve en el modal sin recargar todo
-        if (this.citaSeleccionada) this.citaSeleccionada.estado = estado;
-        this.refetchCalendar();
-      },
-      error: (err) => alert(err?.error?.message || 'No se pudo cambiar el estado.'),
-    });
+
+
+
+  private patchCalendarEvent(idCita: string, patch: Partial<CitaDto>) {
+  const api = this.calendar?.getApi();
+  if (!api) return;
+
+  const ev = api.getEventById(idCita);
+  console.log('[patchCalendarEvent] id:', idCita, 'found?', !!ev);
+  if (!ev) {
+    // si no lo encuentra (raro), al menos fuerza recarga
+    api.refetchEvents();
+    return;
   }
+
+  // extendedProps contiene el objeto CitaDto que tú metiste
+  const current = (ev.extendedProps as any) as CitaDto;
+  const updated: CitaDto = { ...current, ...patch } as any;
+
+  // 1) actualiza props que afectan visual
+  ev.setProp('title', this.buildTitle(updated));
+
+  // classNames a veces se acumula; esto lo “resetea”
+  ev.setProp('classNames', [this.classByEstado(updated.estado as any)]);
+
+  // 2) actualiza lo que lees en el modal (extendedProps)
+  // como extendedProps era tu CitaDto, seteamos campos clave:
+  if (patch.estado) ev.setExtendedProp('estado', patch.estado);
+  if (patch.notas) ev.setExtendedProp('notas', patch.notas);
+  if ((patch as any).motivo) ev.setExtendedProp('motivo', (patch as any).motivo);
+}
+
 
 
 
