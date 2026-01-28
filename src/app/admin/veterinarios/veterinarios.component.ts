@@ -5,12 +5,13 @@ import { Router } from '@angular/router';
 import { VeterinarioDto, VeterinariosService } from '../veterianarios.service';
 import { ModalAgregarVeterinarioComponent } from '../modal-agregar-veterinario/modal-agregar-veterinario.component';
 import { ModalHorariosVeterinarioComponent } from '../modal-horarios-veterinario/modal-horarios-veterinario.component';
+import { ModalEditarVeterinarioComponent } from '../modal-editar-veterinario/modal-editar-veterinario.component';
 
 
 @Component({
   selector: 'app-veterinarios',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalAgregarVeterinarioComponent,ModalHorariosVeterinarioComponent],
+  imports: [CommonModule, FormsModule, ModalAgregarVeterinarioComponent,ModalHorariosVeterinarioComponent,ModalEditarVeterinarioComponent],
   templateUrl: './veterinarios.component.html',
   styleUrl: './veterinarios.component.scss',
 })
@@ -29,6 +30,9 @@ export class VeterinariosComponent implements OnInit {
 
   showHorariosModal = false;
 veterinarioHorarios: VeterinarioDto | null = null;
+
+showEditModal = false;
+veterinarioEditando: VeterinarioDto | null = null;
 
   constructor(
     private veterinariosService: VeterinariosService,
@@ -69,6 +73,11 @@ veterinarioHorarios: VeterinarioDto | null = null;
   verHorarios(v: VeterinarioDto) {
   this.veterinarioHorarios = v;
   this.showHorariosModal = true;
+}
+
+editarVeterinario(v: VeterinarioDto) {
+  this.veterinarioEditando = v;
+  this.showEditModal = true;
 }
 
 

@@ -64,7 +64,7 @@
                                 </button>
 
                                 <!-- EDITAR -->
-                                <button class="icon-btn" type="button"
+                                <button class="icon-btn" type="button" (click)="editarVeterinario(v)"
                                     aria-label="Editar">
                                     <svg viewBox="0 0 24 24" class="icon"
                                         aria-hidden="true">
@@ -129,3 +129,9 @@
   (close)="showHorariosModal=false; veterinarioHorarios=null">
 </app-modal-horarios-veterinario>
 
+<app-modal-editar-veterinario
+  *ngIf="showEditModal && veterinarioEditando"
+  [veterinario]="veterinarioEditando"
+  (close)="showEditModal=false; veterinarioEditando=null"
+  (updated)="recargar()">
+</app-modal-editar-veterinario>

@@ -33,6 +33,21 @@ export interface CrearVeterinarioCompletoDto {
   horarios: HorarioDto[];
 }
 
+export interface ActualizarVeterinarioDto {
+  usuario: {
+    nombre_completo: string;
+    correo: string;
+    numero_celular: string;
+  };
+  especialidad: string;
+  horarios: {
+    dia_semana: number;
+    hora_inicio: string;
+    hora_fin: string;
+    activo: boolean;
+  }[];
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class VeterinariosService {
@@ -47,5 +62,9 @@ export class VeterinariosService {
 
   crearCompleto(body: CrearVeterinarioCompletoDto) {
     return this.http.post<any>(`${this.base}/completo`, body);
+  }
+
+   actualizar(id: string, body: ActualizarVeterinarioDto) {
+    return this.http.put<any>(`${this.base}/${id}`, body);
   }
 }
