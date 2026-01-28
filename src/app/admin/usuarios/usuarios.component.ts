@@ -108,7 +108,7 @@ usuarioEditando: UsuarioDto | null = null;
 
   // ------- acciones UI -------
   volverMenu() {
-    this.router.navigate(['/menu']); // ajusta ruta
+    this.router.navigate(['admin/menu']); // ajusta ruta
   }
 
   editarUsuario(u: UsuarioDto) {

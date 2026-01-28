@@ -19,4 +19,8 @@ irUsuarios() {
   this.router.navigate(['/admin/usuarios']);
 }
 
+irVeterinarios() {
+  this.router.navigate(['/admin/veterinarios']);
+}
+
 }

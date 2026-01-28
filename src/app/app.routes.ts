@@ -26,6 +26,12 @@ export const routes: Routes = [
       import('./admin/usuarios/usuarios.component').then(m => m.UsuariosComponent),
   },
   {
+    path: 'admin/veterinarios',
+    canActivate: [authGuard, roleGuard(['ADMIN'])], // ajusta si tu rol se llama diferente
+    loadComponent: () =>
+      import('./admin/veterinarios/veterinarios.component').then(m => m.VeterinariosComponent),
+  },
+  {
   path: 'recepcionista/menu',
   loadComponent: () =>
     import('./recepcionista/menu-recepcionista/menu-recepcionista.component').then(m => m.MenuRecepcionistaComponent),
