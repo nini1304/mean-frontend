@@ -20,6 +20,12 @@ export const routes: Routes = [
 	import('./admin/menu/menu.component').then(m => m.MenuComponent),
   },
   {
+    path: 'admin/usuarios',
+    canActivate: [authGuard, roleGuard(['ADMIN'])], // ajusta si tu rol se llama diferente
+    loadComponent: () =>
+      import('./admin/usuarios/usuarios.component').then(m => m.UsuariosComponent),
+  },
+  {
   path: 'recepcionista/menu',
   loadComponent: () =>
     import('./recepcionista/menu-recepcionista/menu-recepcionista.component').then(m => m.MenuRecepcionistaComponent),

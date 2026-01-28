@@ -1,0 +1,105 @@
+<div class="page">
+  <div class="container">
+
+    <div class="top-actions">
+      <button class="btn-back" type="button" (click)="volverMenu()">
+        <span class="back-icon">←</span>
+        Volver al menú principal
+      </button>
+    </div>
+
+    <div class="header">
+      <h1>Usuarios</h1>
+
+      <button class="btn-add" type="button" (click)="abrirAdd()">
+        Agregar <span class="plus">+</span>
+      </button>
+    </div>
+
+    <div class="search-bar">
+      <span class="search-label">Buscar</span>
+
+      <input
+        type="text"
+        [(ngModel)]="filtro"
+        (ngModelChange)="page = 1"
+        placeholder="Nombre, correo, celular o rol"
+        aria-label="Buscar usuarios" />
+    </div>
+
+    <div class="status" *ngIf="cargando">Cargando...</div>
+    <div class="status error" *ngIf="!cargando && errorMsg">{{ errorMsg }}</div>
+
+    <div class="table-wrap" *ngIf="!cargando && !errorMsg">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nombre completo</th>
+            <th>Correo</th>
+            <th>Celular</th>
+            <th>Rol</th>
+            <th>Creado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let u of usuariosPaginados">
+            <td>{{ u.nombre_completo }}</td>
+            <td>{{ u.correo }}</td>
+            <td>{{ u.numero_celular }}</td>
+            <td>{{ u.id_rol?.nombre || '-' }}</td>
+            <td>{{ formatDate(u.createdAt) }}</td>
+
+            <td class="center">
+              <div class="actions">
+                <!-- EDITAR -->
+                <button class="icon-btn" type="button" (click)="editarUsuario(u)" aria-label="Editar">
+                  <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"></path>
+                    <path d="M20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"></path>
+                  </svg>
+                </button>
+
+                <!-- ELIMINAR (lógico) -->
+                <button class="icon-btn danger" type="button" (click)="eliminarUsuario(u)" aria-label="Eliminar">
+                  <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+                    <path d="M6 7h12l-1 14H7L6 7z"></path>
+                    <path d="M9 4h6l1 2H8l1-2z"></path>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="usuariosFiltrados.length === 0">
+            <td class="empty" colspan="6">No se encontraron usuarios.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button type="button" class="pager-btn" (click)="prevPage()" [disabled]="page === 1">
+        ← Anterior
+      </button>
+
+      <span class="pager-info">
+        Página {{ page }} de {{ totalPages }}
+        <span class="pager-total">({{ usuariosFiltrados.length }} registros)</span>
+      </span>
+
+      <button type="button" class="pager-btn" (click)="nextPage()" [disabled]="page === totalPages">
+        Siguiente →
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<app-modal-agregar-usuario
+  *ngIf="showAddModal"
+  (close)="showAddModal=false"
+  (created)="recargar()">
+</app-modal-agregar-usuario>
+

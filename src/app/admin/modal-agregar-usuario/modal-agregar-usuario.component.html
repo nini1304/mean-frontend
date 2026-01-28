@@ -1,0 +1,118 @@
+<div class="backdrop">
+    <div class="card">
+        <div class="top">
+            <div class="title">
+                <div class="badge">👤</div>
+                <div>
+                    <h2>Nuevo usuario</h2>
+                    <p class="subtitle">Registro de usuario (sin
+                        veterinario)</p>
+                </div>
+            </div>
+
+            <button class="x" type="button" (click)="cancelar()"
+                aria-label="Cerrar">✕</button>
+        </div>
+
+        <div class="messages">
+            <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+            <p class="success" *ngIf="okMsg">{{ okMsg }}</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <section class="panel">
+                <div class="panel-head">
+                    <span class="dot"></span>
+                    <h3>Datos del usuario</h3>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label>Nombre completo</label>
+                        <input type="text" formControlName="nombre_completo" />
+                        <small class="hint"
+                            *ngIf="form.get('nombre_completo')?.touched && form.get('nombre_completo')?.invalid">
+                            Ingresa un nombre válido.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Correo</label>
+                        <input type="email" formControlName="correo" />
+                        <small class="hint"
+                            *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
+                            Ingresa un correo válido.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Celular</label>
+                        <input type="text" formControlName="numero_celular" />
+                        <small class="hint"
+                            *ngIf="form.get('numero_celular')?.touched && form.get('numero_celular')?.invalid">
+                            El celular es obligatorio.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Rol</label>
+                        <select formControlName="id_rol">
+                            <option value>-- Selecciona --</option>
+                            <option *ngFor="let r of roles" [value]="r._id">{{
+                                r.nombre }}</option>
+                        </select>
+
+                        <small class="hint"
+                            *ngIf="form.get('id_rol')?.touched && form.get('id_rol')?.invalid">
+                            Selecciona un rol.
+                        </small>
+                    </div>
+                    <div class="field">
+                        <label>Contraseña</label>
+                        <input type="password" formControlName="contrasena" />
+                        <small class="hint"
+                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.errors?.['required']">
+                            La contraseña es obligatoria.
+                        </small>
+
+                        <!-- minlength -->
+                        <small class="hint"
+                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.errors?.['minlength']">
+                            Debe tener al menos 8 caracteres.
+                        </small>
+
+                        <!-- pattern (complejidad) -->
+                        <small class="hint"
+                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.errors?.['pattern']">
+                            Debe incluir mayúscula, minúscula, número y un
+                            caracter especial.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Confirmar contraseña</label>
+                        <input type="password"
+                            formControlName="confirmarContrasena" />
+                        <small class="hint"
+                            *ngIf="form.get('confirmarContrasena')?.touched && form.get('confirmarContrasena')?.invalid">
+                            Confirma la contraseña.
+                        </small>
+
+                        <small class="hint"
+                            *ngIf="(form.touched || form.dirty) && passwordMismatch">
+                            Las contraseñas no coinciden.
+                        </small>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <button type="button" class="btn ghost"
+                    (click)="cancelar()">Cancelar</button>
+                <button type="submit" class="btn solid" [disabled]="cargando">
+                    {{ cargando ? 'Guardando...' : 'Crear usuario' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
