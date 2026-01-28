@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { VeterinarioDto, VeterinariosService } from '../veterianarios.service';
 import { ModalAgregarVeterinarioComponent } from '../modal-agregar-veterinario/modal-agregar-veterinario.component';
+import { ModalHorariosVeterinarioComponent } from '../modal-horarios-veterinario/modal-horarios-veterinario.component';
 
 
 @Component({
   selector: 'app-veterinarios',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalAgregarVeterinarioComponent],
+  imports: [CommonModule, FormsModule, ModalAgregarVeterinarioComponent,ModalHorariosVeterinarioComponent],
   templateUrl: './veterinarios.component.html',
   styleUrl: './veterinarios.component.scss',
 })
@@ -26,28 +27,27 @@ export class VeterinariosComponent implements OnInit {
 
   showAddModal = false;
 
+  showHorariosModal = false;
+veterinarioHorarios: VeterinarioDto | null = null;
+
   constructor(
     private veterinariosService: VeterinariosService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.cargar();
   }
 
-  abrirAdd(){ this.showAddModal = true; }
+  abrirAdd() { this.showAddModal = true; }
 
-  recargar(){
-  this.page = 1;
-  // llama tu cargar()
-  (this as any).cargar?.(); // si cargar es private, haz wrapper público como en Usuarios
-}
+  
 
   private cargar() {
     this.cargando = true;
     this.errorMsg = '';
 
-    this.veterinariosService.listar().subscribe({
+    this.veterinariosService.listarConHorarios(false).subscribe({
       next: (res) => {
         this.veterinarios = res ?? [];
         this.cargando = false;
@@ -55,11 +55,22 @@ export class VeterinariosComponent implements OnInit {
       error: (err) => {
         this.veterinarios = [];
         this.cargando = false;
-        this.errorMsg =
-          err?.error?.message || 'No se pudieron cargar los veterinarios.';
+        this.errorMsg = err?.error?.message || 'No se pudieron cargar los veterinarios.';
       },
     });
   }
+
+ 
+  recargar() {
+    this.page = 1;
+    this.cargar();
+  }
+
+  verHorarios(v: VeterinarioDto) {
+  this.veterinarioHorarios = v;
+  this.showHorariosModal = true;
+}
+
 
   // ------- filtros / paginación -------
   get veterinariosFiltrados(): VeterinarioDto[] {

@@ -1,104 +1,131 @@
 <div class="page">
-  <div class="container">
+    <div class="container">
 
-    <div class="top-actions">
-      <button class="btn-back" type="button" (click)="volverMenu()">
-        <span class="back-icon">←</span>
-        Volver al menú principal
-      </button>
+        <div class="top-actions">
+            <button class="btn-back" type="button" (click)="volverMenu()">
+                <span class="back-icon">←</span>
+                Volver al menú principal
+            </button>
+        </div>
+
+        <div class="header">
+            <h1>Veterinarios</h1>
+            <button class="btn-add" type="button" (click)="abrirAdd()">
+                Agregar <span class="plus">+</span>
+            </button>
+        </div>
+
+        <div class="search-bar">
+            <span class="search-label">Buscar</span>
+
+            <input
+                type="text"
+                [(ngModel)]="filtro"
+                (ngModelChange)="page = 1"
+                placeholder="Nombre, correo, celular o especialidad"
+                aria-label="Buscar veterinarios" />
+        </div>
+
+        <div class="status" *ngIf="cargando">Cargando...</div>
+        <div class="status error" *ngIf="!cargando && errorMsg">{{ errorMsg
+            }}</div>
+
+        <div class="table-wrap" *ngIf="!cargando && !errorMsg">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre completo</th>
+                        <th>Correo</th>
+                        <th>Celular</th>
+                        <th>Especialidad</th>
+                        <th>Creado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let v of veterinariosPaginados">
+                        <td>{{ v.usuario?.nombre_completo || '-' }}</td>
+                        <td>{{ v.usuario?.correo || '-' }}</td>
+                        <td>{{ v.usuario?.numero_celular || '-' }}</td>
+                        <td>{{ v.especialidad || '-' }}</td>
+                        <td>{{ formatDate(v.createdAt) }}</td>
+
+                        <td class="center">
+                            <div class="actions">
+                                <button class="icon-btn" type="button"
+                                    (click)="verHorarios(v)"
+                                    aria-label="Ver horarios">
+                                    <svg viewBox="0 0 24 24" class="icon"
+                                        aria-hidden="true">
+                                        <path
+                                            d="M12 8a4 4 0 100 8 4 4 0 000-8zm0-6C6.5 2 2 7 2 12s4.5 10 10 10 10-5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"></path>
+                                    </svg>
+                                </button>
+
+                                <!-- EDITAR -->
+                                <button class="icon-btn" type="button"
+                                    aria-label="Editar">
+                                    <svg viewBox="0 0 24 24" class="icon"
+                                        aria-hidden="true">
+                                        <path
+                                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"></path>
+                                        <path
+                                            d="M20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"></path>
+                                    </svg>
+                                </button>
+
+                                <!-- ELIMINAR (lógico) -->
+                                <button class="icon-btn danger" type="button"
+                                    aria-label="Eliminar">
+                                    <svg viewBox="0 0 24 24" class="icon"
+                                        aria-hidden="true">
+                                        <path d="M6 7h12l-1 14H7L6 7z"></path>
+                                        <path d="M9 4h6l1 2H8l1-2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="veterinariosFiltrados.length === 0">
+                        <td class="empty" colspan="6">No se encontraron
+                            veterinarios.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button type="button" class="pager-btn" (click)="prevPage()"
+                [disabled]="page === 1">
+                ← Anterior
+            </button>
+
+            <span class="pager-info">
+                Página {{ page }} de {{ totalPages }}
+                <span class="pager-total">({{ veterinariosFiltrados.length }}
+                    registros)</span>
+            </span>
+
+            <button type="button" class="pager-btn" (click)="nextPage()"
+                [disabled]="page === totalPages">
+                Siguiente →
+            </button>
+        </div>
+
     </div>
-
-    <div class="header">
-      <h1>Veterinarios</h1>
-       <button class="btn-add" type="button" (click)="abrirAdd()">
-        Agregar <span class="plus">+</span>
-      </button>
-    </div>
-
-    <div class="search-bar">
-      <span class="search-label">Buscar</span>
-
-      <input
-        type="text"
-        [(ngModel)]="filtro"
-        (ngModelChange)="page = 1"
-        placeholder="Nombre, correo, celular o especialidad"
-        aria-label="Buscar veterinarios" />
-    </div>
-
-    <div class="status" *ngIf="cargando">Cargando...</div>
-    <div class="status error" *ngIf="!cargando && errorMsg">{{ errorMsg }}</div>
-
-    <div class="table-wrap" *ngIf="!cargando && !errorMsg">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Nombre completo</th>
-            <th>Correo</th>
-            <th>Celular</th>
-            <th>Especialidad</th>
-            <th>Creado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let v of veterinariosPaginados">
-            <td>{{ v.usuario?.nombre_completo || '-' }}</td>
-            <td>{{ v.usuario?.correo || '-' }}</td>
-            <td>{{ v.usuario?.numero_celular || '-' }}</td>
-            <td>{{ v.especialidad || '-' }}</td>
-            <td>{{ formatDate(v.createdAt) }}</td>
-
-            <td class="center">
-              <div class="actions">
-                <!-- EDITAR -->
-                <button class="icon-btn" type="button"  aria-label="Editar">
-                  <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
-                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"></path>
-                    <path d="M20.71 7.04a1.003 1.003 0 0 0 0-1.42L18.37 3.29a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"></path>
-                  </svg>
-                </button>
-
-                <!-- ELIMINAR (lógico) -->
-                <button class="icon-btn danger" type="button"  aria-label="Eliminar">
-                  <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
-                    <path d="M6 7h12l-1 14H7L6 7z"></path>
-                    <path d="M9 4h6l1 2H8l1-2z"></path>
-                  </svg>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <tr *ngIf="veterinariosFiltrados.length === 0">
-            <td class="empty" colspan="5">No se encontraron veterinarios.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="pagination">
-      <button type="button" class="pager-btn" (click)="prevPage()" [disabled]="page === 1">
-        ← Anterior
-      </button>
-
-      <span class="pager-info">
-        Página {{ page }} de {{ totalPages }}
-        <span class="pager-total">({{ veterinariosFiltrados.length }} registros)</span>
-      </span>
-
-      <button type="button" class="pager-btn" (click)="nextPage()" [disabled]="page === totalPages">
-        Siguiente →
-      </button>
-    </div>
-
-  </div>
 </div>
 
-
 <app-modal-agregar-veterinario
-  *ngIf="showAddModal"
-  (close)="showAddModal=false"
-  (created)="recargar()">
+    *ngIf="showAddModal"
+    (close)="showAddModal=false"
+    (created)="recargar()">
 </app-modal-agregar-veterinario>
+
+<app-modal-horarios-veterinario
+  *ngIf="showHorariosModal && veterinarioHorarios"
+  [veterinario]="veterinarioHorarios"
+  (close)="showHorariosModal=false; veterinarioHorarios=null">
+</app-modal-horarios-veterinario>
+

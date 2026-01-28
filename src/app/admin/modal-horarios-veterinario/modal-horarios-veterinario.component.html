@@ -1,0 +1,57 @@
+<div class="backdrop">
+  <div class="card">
+    <div class="top">
+      <div class="title">
+        <div class="badge">🕒</div>
+        <div>
+          <h2>Horarios</h2>
+          <p class="subtitle">
+            {{ veterinario?.usuario?.nombre_completo || 'Veterinario' }} ·
+            {{ veterinario?.especialidad || '-' }}
+          </p>
+        </div>
+      </div>
+
+      <button class="x" type="button" (click)="cerrar()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="messages">
+      <p class="hint2" *ngIf="(veterinario?.horarios?.length || 0) === 0">
+        No hay horarios registrados.
+      </p>
+    </div>
+
+    <div class="content" *ngIf="(veterinario?.horarios?.length || 0) > 0">
+      <div class="table-wrap">
+        <table class="table-mini">
+          <thead>
+            <tr>
+              <th>Día</th>
+              <th>Inicio</th>
+              <th>Fin</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let h of horariosOrdenados">
+              <td>{{ diaLabel(h.dia_semana) }}</td>
+              <td>{{ h.hora_inicio }}</td>
+              <td>{{ h.hora_fin }}</td>
+              <td>
+                <span class="pill" [class.off]="h.activo === false">
+                  {{ h.activo === false ? 'Inactivo' : 'Activo' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      <button type="button" class="btn ghost" (click)="cerrar()">Cerrar</button>
+    </div>
+  </div>
+</div>

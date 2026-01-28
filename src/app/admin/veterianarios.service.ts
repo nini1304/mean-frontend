@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 export interface VetUsuarioDto {
   id?: string; 
@@ -10,15 +10,18 @@ export interface VetUsuarioDto {
 
 
 export interface HorarioDto {
-  dia_semana: number;      // 1..7 (según tu backend)
-  hora_inicio: string;     // "08:00"
-  hora_fin: string;        // "12:00"
+  id?: string;
+  dia_semana: number;   // ojo: tu backend devuelve 0..6 (según tu ejemplo)
+  hora_inicio: string;  // "08:00"
+  hora_fin: string;     // "12:00"
+  activo?: boolean;
 }
 
 export interface VeterinarioDto {
   id: string;
   especialidad: string;
   usuario: VetUsuarioDto;
+  horarios?: HorarioDto[];   // ✅ ahora viene en la respuesta
   createdAt: string;
   updatedAt: string;
 }
@@ -37,8 +40,9 @@ export class VeterinariosService {
 
   constructor(private http: HttpClient) {}
 
-  listar() {
-    return this.http.get<VeterinarioDto[]>(this.base);
+  listarConHorarios(soloActivos: boolean = false) {
+    const params = new HttpParams().set('soloActivos', String(soloActivos));
+    return this.http.get<VeterinarioDto[]>(`${this.base}/con-horarios`, { params });
   }
 
   crearCompleto(body: CrearVeterinarioCompletoDto) {
