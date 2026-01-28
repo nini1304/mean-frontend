@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService, UsuarioDto } from '../users.service';
 import { ModalAgregarUsuarioComponent } from '../modal-agregar-usuario/modal-agregar-usuario.component';
+import { ModalEditarUsuarioComponent } from '../modal-editar-usuario/modal-editar-usuario.component';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalAgregarUsuarioComponent,],
+  imports: [CommonModule, FormsModule, ModalAgregarUsuarioComponent,ModalEditarUsuarioComponent],
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.scss',
 })
@@ -17,6 +18,9 @@ export class UsuariosComponent implements OnInit {
   cargando = false;
   errorMsg = '';
   showAddModal = false;
+
+  showEditModal = false;
+usuarioEditando: UsuarioDto | null = null;
  
 
   filtro = '';
@@ -107,21 +111,29 @@ export class UsuariosComponent implements OnInit {
     this.router.navigate(['/menu']); // ajusta ruta
   }
 
-  crearUsuario() {
-    // por ahora placeholder, luego hacemos modal
-    alert('Pendiente: crear usuario');
-  }
-
   editarUsuario(u: UsuarioDto) {
-    alert(`Pendiente: editar usuario ${u.nombre_completo}`);
-  }
+  this.usuarioEditando = u;
+  this.showEditModal = true;
+}
 
   eliminarUsuario(u: UsuarioDto) {
-    const ok = confirm(`¿Eliminar (lógico) al usuario "${u.nombre_completo}"?`);
-    if (!ok) return;
+  const ok = confirm(`¿Eliminar al usuario "${u.nombre_completo}"?`);
+  if (!ok) return;
 
-    // Pendiente: cuando tengas endpoint de borrado lógico:
-    // this.usersService.eliminar(u._id).subscribe({...})
-    alert('Pendiente: endpoint eliminar lógico');
-  }
+  this.cargando = true;
+  this.errorMsg = '';
+
+  this.usersService.eliminar(u._id).subscribe({
+    next: () => {
+      this.cargando = false;
+      // refresca lista
+      this.recargar(); // o this.cargar() según tu implementación
+    },
+    error: (err) => {
+      this.cargando = false;
+      this.errorMsg = err?.error?.message || 'No se pudo eliminar el usuario.';
+    },
+  });
+}
+
 }

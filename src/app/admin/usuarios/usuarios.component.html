@@ -103,3 +103,9 @@
   (created)="recargar()">
 </app-modal-agregar-usuario>
 
+<app-modal-editar-usuario
+  *ngIf="showEditModal && usuarioEditando"
+  [usuario]="usuarioEditando"
+  (close)="showEditModal=false; usuarioEditando=null"
+  (updated)="recargar()">
+</app-modal-editar-usuario>
