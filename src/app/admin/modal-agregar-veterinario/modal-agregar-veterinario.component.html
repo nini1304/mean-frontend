@@ -1,0 +1,201 @@
+<div class="backdrop">
+    <div class="card">
+        <div class="top">
+            <div class="title">
+                <div class="badge">🩺</div>
+                <div>
+                    <h2>Nuevo veterinario</h2>
+                    <p class="subtitle">Registro completo (usuario +
+                        horarios)</p>
+                </div>
+            </div>
+
+            <button class="x" type="button" (click)="cancelar()"
+                aria-label="Cerrar">✕</button>
+        </div>
+
+        <div class="messages">
+            <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+            <p class="success" *ngIf="okMsg">{{ okMsg }}</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()">
+
+            <!-- Panel 1: Usuario -->
+            <section class="panel" formGroupName="usuario">
+                <div class="panel-head">
+                    <span class="dot"></span>
+                    <h3>Datos del usuario</h3>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label>Nombre completo</label>
+                        <input type="text" formControlName="nombre_completo" />
+                        <small class="hint"
+                            *ngIf="form.get('usuario.nombre_completo')?.touched && form.get('usuario.nombre_completo')?.invalid">
+                            Ingresa un nombre válido.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Correo</label>
+                        <input type="email" formControlName="correo" />
+                        <small class="hint"
+                            *ngIf="form.get('usuario.correo')?.touched && form.get('usuario.correo')?.invalid">
+                            Ingresa un correo válido.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Celular</label>
+                        <input type="text" formControlName="numero_celular" />
+                        <small class="hint"
+                            *ngIf="form.get('usuario.numero_celular')?.touched && form.get('usuario.numero_celular')?.invalid">
+                            El celular es obligatorio.
+                        </small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel 2: Datos del veterinario -->
+            <section class="panel">
+                <div class="panel-head">
+                    <span class="dot dot2"></span>
+                    <h3>Datos del veterinario</h3>
+                </div>
+
+                <div class="grid">
+                    <div class="field">
+                        <label>Especialidad</label>
+                        <input type="text" formControlName="especialidad" />
+                        <small class="hint"
+                            *ngIf="form.get('especialidad')?.touched && form.get('especialidad')?.invalid">
+                            Ingresa una especialidad válida.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Contraseña</label>
+                        <input type="password" formControlName="contrasena" />
+
+                        <small class="hint"
+                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.errors?.['required']">
+                            La contraseña es obligatoria.
+                        </small>
+
+                        <small class="hint"
+                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.errors?.['minlength']">
+                            Debe tener al menos 8 caracteres.
+                        </small>
+
+                        <small class="hint"
+                            *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.errors?.['pattern']">
+                            Debe incluir mayúscula, minúscula, número y un
+                            caracter especial.
+                        </small>
+                    </div>
+
+                    <div class="field">
+                        <label>Confirmar contraseña</label>
+                        <input type="password"
+                            formControlName="confirmarContrasena" />
+
+                        <small class="hint"
+                            *ngIf="form.get('confirmarContrasena')?.touched && form.get('confirmarContrasena')?.invalid">
+                            Confirma la contraseña.
+                        </small>
+
+                        <small class="hint"
+                            *ngIf="form.get('confirmarContrasena')?.touched && passwordMismatch">
+                            Las contraseñas no coinciden.
+                        </small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel 3: Horarios -->
+            <!-- Panel 3: Horarios -->
+            <section class="panel">
+                <div class="panel-head">
+                    <span class="dot dot2"></span>
+                    <h3>Horarios de atención</h3>
+
+                    <button type="button" class="btn mini"
+                        (click)="agregarHorario()">
+                        + Agregar horario
+                    </button>
+                </div>
+
+                <p class="hint" *ngIf="sinHorarios">
+                    Debes registrar al menos un horario.
+                </p>
+
+                <div class="table-wrap" *ngIf="!sinHorarios">
+                    <table class="table-mini">
+                        <thead>
+                            <tr>
+                                <th>Día</th>
+                                <th>Inicio</th>
+                                <th>Fin</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody formArrayName="horarios">
+                            <tr
+                                *ngFor="let h of horariosArr.controls; let i = index"
+                                [formGroupName]="i">
+                                <td>
+                                    <select formControlName="dia_semana">
+                                        <option [value]="1">Lunes</option>
+                                        <option [value]="2">Martes</option>
+                                        <option [value]="3">Miércoles</option>
+                                        <option [value]="4">Jueves</option>
+                                        <option [value]="5">Viernes</option>
+                                        <option [value]="6">Sábado</option>
+                                        <option [value]="7">Domingo</option>
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input type="time"
+                                        formControlName="hora_inicio" />
+                                </td>
+
+                                <td>
+                                    <input type="time"
+                                        formControlName="hora_fin" />
+                                    <small class="hint"
+                                        *ngIf="h.touched && h.errors?.['horaRangoInvalido']">
+                                        La hora fin debe ser mayor a la hora
+                                        inicio.
+                                    </small>
+                                </td>
+
+                                <td class="right">
+                                    <button type="button"
+                                        class="btn danger mini"
+                                        (click)="quitarHorario(i)">
+                                        Quitar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="footer">
+                <button type="button" class="btn ghost"
+                    (click)="cancelar()">Cancelar</button>
+                <button type="submit" class="btn solid"
+                    [disabled]="cargando || form.invalid || sinHorarios">
+                    {{ cargando ? 'Guardando...' : 'Crear veterinario' }}
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>

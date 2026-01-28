@@ -3,12 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { VeterinarioDto, VeterinariosService } from '../veterianarios.service';
+import { ModalAgregarVeterinarioComponent } from '../modal-agregar-veterinario/modal-agregar-veterinario.component';
 
 
 @Component({
   selector: 'app-veterinarios',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ModalAgregarVeterinarioComponent],
   templateUrl: './veterinarios.component.html',
   styleUrl: './veterinarios.component.scss',
 })
@@ -23,6 +24,8 @@ export class VeterinariosComponent implements OnInit {
   page = 1;
   pageSize = 10;
 
+  showAddModal = false;
+
   constructor(
     private veterinariosService: VeterinariosService,
     private router: Router
@@ -31,6 +34,14 @@ export class VeterinariosComponent implements OnInit {
   ngOnInit(): void {
     this.cargar();
   }
+
+  abrirAdd(){ this.showAddModal = true; }
+
+  recargar(){
+  this.page = 1;
+  // llama tu cargar()
+  (this as any).cargar?.(); // si cargar es private, haz wrapper público como en Usuarios
+}
 
   private cargar() {
     this.cargando = true;

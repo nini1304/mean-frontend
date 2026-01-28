@@ -10,7 +10,7 @@
 
     <div class="header">
       <h1>Veterinarios</h1>
-       <button class="btn-add" type="button" >
+       <button class="btn-add" type="button" (click)="abrirAdd()">
         Agregar <span class="plus">+</span>
       </button>
     </div>
@@ -95,3 +95,10 @@
 
   </div>
 </div>
+
+
+<app-modal-agregar-veterinario
+  *ngIf="showAddModal"
+  (close)="showAddModal=false"
+  (created)="recargar()">
+</app-modal-agregar-veterinario>
