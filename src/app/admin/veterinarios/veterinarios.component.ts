@@ -6,12 +6,13 @@ import { VeterinarioDto, VeterinariosService } from '../veterianarios.service';
 import { ModalAgregarVeterinarioComponent } from '../modal-agregar-veterinario/modal-agregar-veterinario.component';
 import { ModalHorariosVeterinarioComponent } from '../modal-horarios-veterinario/modal-horarios-veterinario.component';
 import { ModalEditarVeterinarioComponent } from '../modal-editar-veterinario/modal-editar-veterinario.component';
+import { ModalEliminarVeterinarioComponent } from '../modal-eliminar-veterinario/modal-eliminar-veterinario.component';
 
 
 @Component({
   selector: 'app-veterinarios',
   standalone: true,
-  imports: [CommonModule, FormsModule, ModalAgregarVeterinarioComponent,ModalHorariosVeterinarioComponent,ModalEditarVeterinarioComponent],
+  imports: [CommonModule, FormsModule, ModalAgregarVeterinarioComponent,ModalHorariosVeterinarioComponent,ModalEditarVeterinarioComponent,ModalEliminarVeterinarioComponent],
   templateUrl: './veterinarios.component.html',
   styleUrl: './veterinarios.component.scss',
 })
@@ -33,6 +34,11 @@ veterinarioHorarios: VeterinarioDto | null = null;
 
 showEditModal = false;
 veterinarioEditando: VeterinarioDto | null = null;
+
+showDeleteModal = false;
+veterinarioEliminar: VeterinarioDto | null = null;
+deleteErrorMsg = '';
+deleteLoading = false;
 
   constructor(
     private veterinariosService: VeterinariosService,
@@ -63,6 +69,45 @@ veterinarioEditando: VeterinarioDto | null = null;
       },
     });
   }
+
+  confirmarEliminar(v: VeterinarioDto) {
+  this.veterinarioEliminar = v;
+  this.deleteErrorMsg = '';
+  this.showDeleteModal = true;
+}
+
+cancelarEliminar() {
+  this.showDeleteModal = false;
+  this.veterinarioEliminar = null;
+  this.deleteErrorMsg = '';
+}
+
+eliminarVeterinario() {
+  if (!this.veterinarioEliminar) return;
+
+  this.deleteLoading = true;
+  this.deleteErrorMsg = '';
+
+  this.veterinariosService.eliminarLogico(this.veterinarioEliminar.id).subscribe({
+    next: () => {
+      this.deleteLoading = false;
+      this.cancelarEliminar();
+      this.recargar();
+    },
+    error: (err) => {
+      this.deleteLoading = false;
+
+      // ✅ backend debe devolver 409 cuando hay pendientes
+      if (err?.status === 409) {
+        this.deleteErrorMsg = err?.error?.message || 'No se puede eliminar: existen citas PENDIENTE.';
+        return;
+      }
+
+      this.deleteErrorMsg = err?.error?.message || 'No se pudo eliminar el veterinario.';
+    }
+  });
+}
+
 
  
   recargar() {

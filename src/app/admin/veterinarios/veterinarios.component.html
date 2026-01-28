@@ -64,7 +64,8 @@
                                 </button>
 
                                 <!-- EDITAR -->
-                                <button class="icon-btn" type="button" (click)="editarVeterinario(v)"
+                                <button class="icon-btn" type="button"
+                                    (click)="editarVeterinario(v)"
                                     aria-label="Editar">
                                     <svg viewBox="0 0 24 24" class="icon"
                                         aria-hidden="true">
@@ -77,6 +78,7 @@
 
                                 <!-- ELIMINAR (lógico) -->
                                 <button class="icon-btn danger" type="button"
+                                    (click)="confirmarEliminar(v)"
                                     aria-label="Eliminar">
                                     <svg viewBox="0 0 24 24" class="icon"
                                         aria-hidden="true">
@@ -124,14 +126,23 @@
 </app-modal-agregar-veterinario>
 
 <app-modal-horarios-veterinario
-  *ngIf="showHorariosModal && veterinarioHorarios"
-  [veterinario]="veterinarioHorarios"
-  (close)="showHorariosModal=false; veterinarioHorarios=null">
+    *ngIf="showHorariosModal && veterinarioHorarios"
+    [veterinario]="veterinarioHorarios"
+    (close)="showHorariosModal=false; veterinarioHorarios=null">
 </app-modal-horarios-veterinario>
 
 <app-modal-editar-veterinario
-  *ngIf="showEditModal && veterinarioEditando"
-  [veterinario]="veterinarioEditando"
-  (close)="showEditModal=false; veterinarioEditando=null"
-  (updated)="recargar()">
+    *ngIf="showEditModal && veterinarioEditando"
+    [veterinario]="veterinarioEditando"
+    (close)="showEditModal=false; veterinarioEditando=null"
+    (updated)="recargar()">
 </app-modal-editar-veterinario>
+
+<app-modal-eliminar-veterinario
+    *ngIf="showDeleteModal && veterinarioEliminar"
+    [veterinario]="veterinarioEliminar"
+    [cargando]="deleteLoading"
+    [errorMsg]="deleteErrorMsg"
+    (close)="cancelarEliminar()"
+    (confirm)="eliminarVeterinario()">
+</app-modal-eliminar-veterinario>

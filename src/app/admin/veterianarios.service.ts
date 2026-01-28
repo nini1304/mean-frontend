@@ -67,4 +67,8 @@ export class VeterinariosService {
    actualizar(id: string, body: ActualizarVeterinarioDto) {
     return this.http.put<any>(`${this.base}/${id}`, body);
   }
+
+  eliminarLogico(id: string) {
+    return this.http.delete<{ ok: boolean; veterinario: any }>(`${this.base}/${id}`);
+  }
 }

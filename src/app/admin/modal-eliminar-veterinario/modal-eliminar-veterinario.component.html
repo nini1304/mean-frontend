@@ -1,0 +1,45 @@
+<div class="backdrop">
+  <div class="card">
+    <div class="top">
+      <div class="title">
+        <div class="badge">🗑️</div>
+        <div>
+          <h2>Eliminar veterinario</h2>
+          <p class="subtitle">
+            Esta acción es un borrado lógico
+          </p>
+        </div>
+      </div>
+
+      <button class="x" type="button" (click)="cerrar()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="messages">
+      <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+    </div>
+
+    <div class="panel" style="margin: 14px 18px 0;">
+      <div class="panel-head">
+        <span class="dot dot2"></span>
+        <h3>Confirmación</h3>
+      </div>
+
+      <p style="margin:0; font-weight: 800; color: rgba(49,50,111,.8);">
+        ¿Seguro que deseas eliminar a:
+        <b>{{ veterinario?.usuario?.nombre_completo }}</b>
+        ({{ veterinario?.especialidad }})?
+      </p>
+
+      <p style="margin:8px 0 0; font-size:12px; font-weight:800; color: rgba(49,50,111,.65);">
+        No se podrá eliminar si tiene citas en estado <b>PENDIENTE</b>.
+      </p>
+    </div>
+
+    <div class="footer" style="padding: 0 18px 18px;">
+      <button type="button" class="btn ghost" (click)="cerrar()">Cancelar</button>
+      <button type="button" class="btn solid danger" (click)="confirmar()" [disabled]="cargando">
+        {{ cargando ? 'Eliminando...' : 'Eliminar' }}
+      </button>
+    </div>
+  </div>
+</div>
