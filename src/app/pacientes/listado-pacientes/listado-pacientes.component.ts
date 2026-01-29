@@ -140,7 +140,11 @@ export class ListadoPacientesComponent implements OnInit {
       this.router.navigate(['/admin/menu']);
     } else if (this.rolActual === 'RECEPCIONISTA') {
       this.router.navigate(['/recepcionista/menu']);
-    } else {
+    } else if (this.rolActual === 'VETERINARIO') {
+					this.router.navigate(['/veterinario/menu']);
+				}
+    
+    else {
       this.router.navigate(['/']);
     }
   }

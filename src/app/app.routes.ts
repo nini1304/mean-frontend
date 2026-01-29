@@ -15,6 +15,12 @@ export const routes: Routes = [
 	loadComponent: () =>
 	import('./admin/menu/menu.component').then(m => m.MenuComponent),
   },
+   {
+	path: 'veterinario/menu',
+  canActivate: [authGuard, roleGuard(['VETERINARIO'])],
+	loadComponent: () =>
+	import('./veterinario/menu-veterinario/menu-veterinario.component').then(m => m.MenuVeterinarioComponent),
+  },
   {
     path: 'admin/usuarios',
     canActivate: [authGuard, roleGuard(['ADMIN'])], // ajusta si tu rol se llama diferente
@@ -36,14 +42,14 @@ export const routes: Routes = [
 
 {
   path: 'pacientes',
-  canActivate: [authGuard, roleGuard(['ADMIN','RECEPCIONISTA'])],
+  canActivate: [authGuard, roleGuard(['ADMIN','RECEPCIONISTA', 'VETERINARIO'])],
   loadComponent: () =>
     import('./pacientes/listado-pacientes/listado-pacientes.component')
       .then(m => m.ListadoPacientesComponent),
 },
 {
   path: 'historial/:idMascota',
-  canActivate: [authGuard, roleGuard(['RECEPCIONISTA'])],
+  canActivate: [authGuard, roleGuard(['VETERINARIO'])],
   loadComponent: () =>
     import('./historial/historial-clinico/historial-clinico.component')
       .then(m => m.HistorialClinicoComponent),

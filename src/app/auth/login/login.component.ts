@@ -124,7 +124,9 @@ export class LoginComponent {
 					this.router.navigate(['/admin/menu']);
 				} else if (this.rolActual === 'RECEPCIONISTA') {
 					this.router.navigate(['/recepcionista/menu']);
-				}
+				} else if (this.rolActual === 'VETERINARIO') {
+					this.router.navigate(['/veterinario/menu']);
+				} 
 				else {
 					this.router.navigate(['/']);
 				}
@@ -233,6 +235,8 @@ export class LoginComponent {
 					this.router.navigate(['/admin/menu']);
 				} else if (this.rolActual === 'RECEPCIONISTA') {
 					this.router.navigate(['/recepcionista/menu']);
+				} else if (this.rolActual === 'VETERINARIO') {
+					this.router.navigate(['/veterinario/menu']);
 				}
 				else {
 					this.router.navigate(['/']);
