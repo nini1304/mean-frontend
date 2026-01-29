@@ -10,7 +10,7 @@ interface LoginRequest {
 interface LoginResponse {
   message: string;
   token: string;
-  requiereCambioContrasena?: boolean; 
+  requiereCambioContrasena?: boolean;
 }
 
 export interface UserTokenPayload {
@@ -36,7 +36,7 @@ interface ForgotPasswordResponse {
 export class AuthService {
   private readonly baseUrl = 'http://localhost:3000/api/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(data: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}/login`, data).pipe(
@@ -45,6 +45,11 @@ export class AuthService {
       })
     );
   }
+
+  logout() {
+    localStorage.removeItem('token');
+  }
+
 
   forgotPassword(correo: string): Observable<ForgotPasswordResponse> {
     return this.http.post<ForgotPasswordResponse>(
@@ -72,10 +77,10 @@ export class AuthService {
   }
 
   changePassword(contrasena_actual: string, contrasena_nueva: string) {
-  return this.http.post<{ message: string }>(
-    `http://localhost:3000/api/contrasenas/change-password`,
-    { contrasena_actual, contrasena_nueva }
-  );
-}
+    return this.http.post<{ message: string }>(
+      `http://localhost:3000/api/contrasenas/change-password`,
+      { contrasena_actual, contrasena_nueva }
+    );
+  }
 
 }

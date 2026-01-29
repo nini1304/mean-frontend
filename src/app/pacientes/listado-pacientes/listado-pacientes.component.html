@@ -44,7 +44,7 @@
                         <th>Peso</th>
                         <th>Tipo</th>
                         <th>Raza</th>
-                        <th>Historial clinico</th>
+                        <th *ngIf="puedeVerHistorial">Historial clinico</th>
                         <th>Mas informacion</th>
                         <th>Acciones</th>
                     </tr>
@@ -58,7 +58,7 @@
                         <td>{{ p.mascota.tipo_mascota }}</td>
                         <td>{{ p.mascota.raza }}</td>
 
-                        <td class="center">
+                        <td class="center" *ngIf="puedeVerHistorial">
                             <button class="btn-view" type="button"
                                 (click)="verHistorial(p)">
                                 ver
@@ -104,13 +104,16 @@
                     </tr>
 
                     <tr *ngIf="pacientesFiltrados.length === 0">
-                        <td class="empty" colspan="7">No se encontraron
-                            pacientes.</td>
+                        <td class="empty"
+                            [attr.colspan]="puedeVerHistorial ? 8 : 7">
+                            No se encontraron pacientes.
+                        </td>
                     </tr>
+
                 </tbody>
             </table>
         </div>
-        <div class="pagination" >
+        <div class="pagination">
             <button type="button" class="pager-btn" (click)="prevPage()"
                 [disabled]="page === 1">
                 ← Anterior
@@ -169,17 +172,15 @@
     </div>
 </div>
 
-
 <app-modal-agregar-paciente
-  *ngIf="showAddModal"
-  (close)="cerrarAddModal()"
-  (created)="onCreated()">
+    *ngIf="showAddModal"
+    (close)="cerrarAddModal()"
+    (created)="onCreated()">
 </app-modal-agregar-paciente>
 
-
 <app-modal-editar-paciente
-  *ngIf="showEditModal"
-  [data]="selectedToEdit"
-  (close)="cerrarEditModal()"
-  (updated)="onUpdated()">
+    *ngIf="showEditModal"
+    [data]="selectedToEdit"
+    (close)="cerrarEditModal()"
+    (updated)="onUpdated()">
 </app-modal-editar-paciente>

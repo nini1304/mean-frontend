@@ -3,18 +3,20 @@
     <h1 class="title">Menú de opciones</h1>
     <div class="content">
 
-        
-    <div class="buttons">
-      <button class="btn" (click)="irUsuarios()">Administrar usuarios</button>
-      <button class="btn"(click)="irVeterinarios()">Administrar veterinarios</button>
-      <button class="btn">Cerrar Sesion</button>
-    </div>
+      <div class="buttons">
+        <button class="btn" (click)="irUsuarios()">Administrar usuarios</button>
+        <button class="btn" (click)="irVeterinarios()">Administrar
+          veterinarios</button>
+        <button class="btn" (click)="irPacientes()">Pacientes</button>
 
-    <img
-      src="/assets/cat-menu.svg"
-      alt="Gatito administrador"
-      class="admin-cat"
-    />
+
+        <button class="btn" (click)="cerrarSesion()">Cerrar Sesion</button>
+      </div>
+
+      <img
+        src="/assets/cat-menu.svg"
+        alt="Gatito administrador"
+        class="admin-cat" />
     </div>
 
   </div>
