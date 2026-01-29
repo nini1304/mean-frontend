@@ -4,8 +4,7 @@
     <img
       src="/assets/cat-login.svg"
       alt="Gatito"
-      class="cat-image"
-    />
+      class="cat-image" />
 
     <!-- Contenido del formulario -->
     <div class="login-content">
@@ -19,8 +18,7 @@
             id="correo"
             type="email"
             formControlName="correo"
-            [class.is-invalid]="f['correo'].invalid && f['correo'].touched"
-          />
+            [class.is-invalid]="f['correo'].invalid && f['correo'].touched" />
         </div>
 
         <!-- Contraseña -->
@@ -32,39 +30,39 @@
             formControlName="contrasena"
             [class.is-invalid]="
               f['contrasena'].invalid && f['contrasena'].touched
-            "
-          />
+            " />
         </div>
 
         <!-- Mensajes -->
         <div class="messages">
           <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+          <p class="warning"
+            *ngIf="intentosRestantes !== null && intentosRestantes > 0">
+            Te quedan {{ intentosRestantes }} intento(s) antes de bloquear tu
+            cuenta.
+          </p>
           <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
         </div>
 
         <!-- Botón -->
-        <button
-          type="submit"
-          class="btn-primary"
-          [disabled]="cargando"
-        >
+        <button type="submit" class="btn-primary"
+          [disabled]="cargando || bloqueado">
           {{ cargando ? 'Ingresando...' : 'Ingresar' }}
         </button>
+
       </form>
 
       <!-- Recuperar contraseña -->
       <button
         type="button"
         class="recover-link"
-        (click)="onRecoverPassword()"
-      >
+        (click)="onRecoverPassword()">
         Recuperar contraseña
       </button>
     </div>
   </div>
 
-
-   <!-- MODAL RECUPERAR CONTRASEÑA -->
+  <!-- MODAL RECUPERAR CONTRASEÑA -->
   <div class="modal-backdrop" *ngIf="showRecoverModal">
     <div class="modal-card">
       <button class="modal-close" type="button" (click)="closeRecoverModal()">
@@ -81,16 +79,14 @@
       <form
         [formGroup]="recoverForm"
         (ngSubmit)="submitRecoverPassword()"
-        class="modal-form"
-      >
+        class="modal-form">
         <div class="modal-form-group">
           <label for="recuperar-correo">Ingrese su correo:</label>
           <input
             id="recuperar-correo"
             type="email"
             formControlName="correo"
-            [class.is-invalid]="rf['correo'].invalid && rf['correo'].touched"
-          />
+            [class.is-invalid]="rf['correo'].invalid && rf['correo'].touched" />
         </div>
 
         <div class="modal-messages">
@@ -101,8 +97,7 @@
         <button
           type="submit"
           class="btn-primary modal-btn"
-          [disabled]="cargandoReset"
-        >
+          [disabled]="cargandoReset">
           {{ cargandoReset ? 'Enviando...' : 'Enviar' }}
         </button>
       </form>
@@ -110,55 +105,54 @@
   </div>
 
   <!-- MODAL RESTABLECER CONTRASEÑA -->
-<div class="modal-backdrop" *ngIf="showChangePasswordModal">
-  <div class="modal-card">
-    <!-- opcional: si NO quieres que pueda cerrarlo, quita este botón -->
-    <button class="modal-close" type="button" (click)="closeChangePasswordModal()">
-      ✕
-    </button>
-
-    <h2 class="modal-title">Restablecer Contraseña</h2>
-
-    <form
-      [formGroup]="changePasswordForm"
-      (ngSubmit)="submitChangePassword()"
-      class="modal-form"
-    >
-      <div class="modal-form-group">
-        <label for="new-pass">Ingrese su nueva contraseña:</label>
-        <input
-          id="new-pass"
-          type="password"
-          formControlName="contrasena_nueva"
-          [class.is-invalid]="cpf['contrasena_nueva'].invalid && cpf['contrasena_nueva'].touched"
-        />
-      </div>
-
-      <div class="modal-form-group">
-        <label for="new-pass-2">Repita su nueva contraseña:</label>
-        <input
-          id="new-pass-2"
-          type="password"
-          formControlName="contrasena_nueva_2"
-          [class.is-invalid]="cpf['contrasena_nueva_2'].invalid && cpf['contrasena_nueva_2'].touched"
-        />
-      </div>
-
-      <div class="modal-messages">
-        <p class="error"
-           *ngIf="changePasswordForm.hasError('passwordsMismatch') && changePasswordForm.touched">
-          Las contraseñas no coinciden.
-        </p>
-
-        <p class="error" *ngIf="changeErrorMsg">{{ changeErrorMsg }}</p>
-        <p class="success" *ngIf="changeMsg">{{ changeMsg }}</p>
-      </div>
-
-      <button type="submit" class="btn-primary modal-btn" [disabled]="cargandoChange">
-        {{ cargandoChange ? 'Enviando...' : 'Enviar' }}
+  <div class="modal-backdrop" *ngIf="showChangePasswordModal">
+    <div class="modal-card">
+      <!-- opcional: si NO quieres que pueda cerrarlo, quita este botón -->
+      <button class="modal-close" type="button"
+        (click)="closeChangePasswordModal()">
+        ✕
       </button>
-    </form>
+
+      <h2 class="modal-title">Restablecer Contraseña</h2>
+
+      <form
+        [formGroup]="changePasswordForm"
+        (ngSubmit)="submitChangePassword()"
+        class="modal-form">
+        <div class="modal-form-group">
+          <label for="new-pass">Ingrese su nueva contraseña:</label>
+          <input
+            id="new-pass"
+            type="password"
+            formControlName="contrasena_nueva"
+            [class.is-invalid]="cpf['contrasena_nueva'].invalid && cpf['contrasena_nueva'].touched" />
+        </div>
+
+        <div class="modal-form-group">
+          <label for="new-pass-2">Repita su nueva contraseña:</label>
+          <input
+            id="new-pass-2"
+            type="password"
+            formControlName="contrasena_nueva_2"
+            [class.is-invalid]="cpf['contrasena_nueva_2'].invalid && cpf['contrasena_nueva_2'].touched" />
+        </div>
+
+        <div class="modal-messages">
+          <p class="error"
+            *ngIf="changePasswordForm.hasError('passwordsMismatch') && changePasswordForm.touched">
+            Las contraseñas no coinciden.
+          </p>
+
+          <p class="error" *ngIf="changeErrorMsg">{{ changeErrorMsg }}</p>
+          <p class="success" *ngIf="changeMsg">{{ changeMsg }}</p>
+        </div>
+
+        <button type="submit" class="btn-primary modal-btn"
+          [disabled]="cargandoChange">
+          {{ cargandoChange ? 'Enviando...' : 'Enviar' }}
+        </button>
+      </form>
+    </div>
   </div>
-</div>
 
 </div>

@@ -24,17 +24,21 @@ export class LoginComponent {
 	resetErrorMsg = '';
 
 	changePasswordForm: FormGroup;
-showChangePasswordModal = false;
-cargandoChange = false;
-changeMsg = '';
-changeErrorMsg = '';
-rolActual: string | null = null;
+	showChangePasswordModal = false;
+	cargandoChange = false;
+	changeMsg = '';
+	changeErrorMsg = '';
+	rolActual: string | null = null;
+
+	intentosRestantes: number | null = null;
+	bloqueado = false;
+
 
 
 	tempCurrentPassword: string | null = null;
 
 
-	 constructor(
+	constructor(
 		private fb: FormBuilder,
 		private authService: AuthService,
 		private router: Router
@@ -47,13 +51,13 @@ rolActual: string | null = null;
 		this.recoverForm = this.fb.group({
 			correo: ['', [Validators.required, Validators.email]],
 		});
-		
+
 		this.changePasswordForm = this.fb.group({
-		contrasena_nueva: ['', [Validators.required, Validators.minLength(6)]],
-		contrasena_nueva_2: ['', [Validators.required]],
-	},
-	{ validators: this.passwordsMatchValidator }
-);
+			contrasena_nueva: ['', [Validators.required, Validators.minLength(6)]],
+			contrasena_nueva_2: ['', [Validators.required]],
+		},
+			{ validators: this.passwordsMatchValidator }
+		);
 
 	}
 
@@ -62,26 +66,28 @@ rolActual: string | null = null;
 	}
 
 	get rf() {
-	return this.recoverForm.controls;
-}
+		return this.recoverForm.controls;
+	}
 
-get cpf() {
-	return this.changePasswordForm.controls;
-}
+	get cpf() {
+		return this.changePasswordForm.controls;
+	}
 
 
-private passwordsMatchValidator(group: AbstractControl) {
-	const a = group.get('contrasena_nueva')?.value;
-	const b = group.get('contrasena_nueva_2')?.value;
-	if (!a || !b) return null;
-	return a === b ? null : { passwordsMismatch: true };
-}
+	private passwordsMatchValidator(group: AbstractControl) {
+		const a = group.get('contrasena_nueva')?.value;
+		const b = group.get('contrasena_nueva_2')?.value;
+		if (!a || !b) return null;
+		return a === b ? null : { passwordsMismatch: true };
+	}
 
 
 
 	onSubmit() {
 		this.errorMsg = '';
 		this.successMsg = '';
+		this.intentosRestantes = null;  // ✅
+		this.bloqueado = false;         // ✅
 
 		if (this.loginForm.invalid) {
 			this.loginForm.markAllAsTouched();
@@ -102,31 +108,55 @@ private passwordsMatchValidator(group: AbstractControl) {
 
 
 
-				 const requiereCambio = !!res.requiereCambioContrasena;
+				const requiereCambio = !!res.requiereCambioContrasena;
 
-					if (requiereCambio) {
-						// abrir modal para cambiar contraseña
-						this.changeMsg = '';
-						this.changeErrorMsg = '';
-						this.changePasswordForm.reset();
-						this.showChangePasswordModal = true;
-						return; // NO redirigir todavía
-					}
+				if (requiereCambio) {
+					// abrir modal para cambiar contraseña
+					this.changeMsg = '';
+					this.changeErrorMsg = '';
+					this.changePasswordForm.reset();
+					this.showChangePasswordModal = true;
+					return; // NO redirigir todavía
+				}
 
 
 				if (this.rolActual === 'ADMIN') {
-    this.router.navigate(['/admin/menu']);
-  }else if (this.rolActual === 'RECEPCIONISTA') {
-        this.router.navigate(['/recepcionista/menu']);
-      } 
-	else {
-    this.router.navigate(['/']);
-  }
+					this.router.navigate(['/admin/menu']);
+				} else if (this.rolActual === 'RECEPCIONISTA') {
+					this.router.navigate(['/recepcionista/menu']);
+				}
+				else {
+					this.router.navigate(['/']);
+				}
 			},
 			error: (err) => {
 				this.cargando = false;
-				this.errorMsg = err?.error?.message || 'Error al iniciar sesión';
+
+				const payload = typeof err?.error === 'string'
+					? (() => { try { return JSON.parse(err.error); } catch { return null; } })()
+					: err?.error;
+
+				const code = payload?.code;
+				const msg = payload?.message;
+
+				if (code === 'CUENTA_BLOQUEADA') {
+					this.bloqueado = true;
+					this.errorMsg = msg || "Cuenta bloqueada. Use 'Recuperar contraseña'.";
+					this.onRecoverPassword();
+					return;
+				}
+
+				const restantes = payload?.intentosRestantes;
+				if (code === 'CREDENCIALES_INVALIDAS' && typeof restantes === 'number') {
+					this.intentosRestantes = restantes;
+					this.errorMsg = `${msg || 'Credenciales inválidas'}. Te quedan ${restantes} intento(s).`;
+					return;
+				}
+
+				this.errorMsg = msg || 'Error al iniciar sesión';
 			},
+
+
 		});
 	}
 
@@ -168,52 +198,52 @@ private passwordsMatchValidator(group: AbstractControl) {
 	}
 
 	closeChangePasswordModal() {
-  this.showChangePasswordModal = false;
-}
+		this.showChangePasswordModal = false;
+	}
 
-submitChangePassword() {
-  this.changeMsg = '';
-  this.changeErrorMsg = '';
+	submitChangePassword() {
+		this.changeMsg = '';
+		this.changeErrorMsg = '';
 
-  if (this.changePasswordForm.invalid) {
-    this.changePasswordForm.markAllAsTouched();
-    return;
-  }
+		if (this.changePasswordForm.invalid) {
+			this.changePasswordForm.markAllAsTouched();
+			return;
+		}
 
-  if (!this.tempCurrentPassword) {
-    this.changeErrorMsg = 'No se pudo recuperar la contraseña actual. Vuelva a iniciar sesión.';
-    return;
-  }
+		if (!this.tempCurrentPassword) {
+			this.changeErrorMsg = 'No se pudo recuperar la contraseña actual. Vuelva a iniciar sesión.';
+			return;
+		}
 
-  const nueva = this.changePasswordForm.value.contrasena_nueva;
+		const nueva = this.changePasswordForm.value.contrasena_nueva;
 
-  this.cargandoChange = true;
+		this.cargandoChange = true;
 
-  this.authService.changePassword(this.tempCurrentPassword, nueva).subscribe({
-    next: (res) => {
-      this.cargandoChange = false;
-      this.changeMsg = res.message || 'Contraseña cambiada correctamente';
-      this.showChangePasswordModal = false;
+		this.authService.changePassword(this.tempCurrentPassword, nueva).subscribe({
+			next: (res) => {
+				this.cargandoChange = false;
+				this.changeMsg = res.message || 'Contraseña cambiada correctamente';
+				this.showChangePasswordModal = false;
 
-      // limpiar la contraseña en memoria
-      this.tempCurrentPassword = null;
+				// limpiar la contraseña en memoria
+				this.tempCurrentPassword = null;
 
-      // redirigir según rol
-      if (this.rolActual === 'ADMIN') {
-        this.router.navigate(['/admin/menu']);
-      }else if (this.rolActual === 'RECEPCIONISTA') {
-        this.router.navigate(['/recepcionista/menu']);
-      }
-			else {
-        this.router.navigate(['/']);
-      }
-    },
-    error: (err) => {
-      this.cargandoChange = false;
-      this.changeErrorMsg =
-        err?.error?.message || 'Ocurrió un error al cambiar la contraseña.';
-    },
-  });
-}
+				// redirigir según rol
+				if (this.rolActual === 'ADMIN') {
+					this.router.navigate(['/admin/menu']);
+				} else if (this.rolActual === 'RECEPCIONISTA') {
+					this.router.navigate(['/recepcionista/menu']);
+				}
+				else {
+					this.router.navigate(['/']);
+				}
+			},
+			error: (err) => {
+				this.cargandoChange = false;
+				this.changeErrorMsg =
+					err?.error?.message || 'Ocurrió un error al cambiar la contraseña.';
+			},
+		});
+	}
 
 }
