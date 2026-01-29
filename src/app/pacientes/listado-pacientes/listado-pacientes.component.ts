@@ -56,7 +56,7 @@ export class ListadoPacientesComponent implements OnInit {
     const payload = token ? this.authService.getTokenPayload(token) : null;
 
     this.rolActual = payload?.rol?.nombre ?? null;
-    this.puedeVerHistorial = this.rolActual === 'RECEPCIONISTA';
+    this.puedeVerHistorial = this.rolActual === 'VETERINARIO';
 
   }
 

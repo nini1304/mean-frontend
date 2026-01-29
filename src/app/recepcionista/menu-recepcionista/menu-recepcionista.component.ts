@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-menu-recepcionista',
@@ -9,5 +10,15 @@ import { RouterModule } from '@angular/router';
   styleUrl: './menu-recepcionista.component.scss'
 })
 export class MenuRecepcionistaComponent {
+
+  constructor(private router: Router,private authService: AuthService) {}
+
+  irPacientes() {
+  this.router.navigate(['/pacientes'], { queryParams: { returnTo: '/recepcionista/menu' } });
+}
+cerrarSesion() {
+  this.authService.logout();
+  this.router.navigateByUrl('', { replaceUrl: true });
+}
 
 }
