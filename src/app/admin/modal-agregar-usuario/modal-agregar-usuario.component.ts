@@ -33,6 +33,9 @@ export class ModalAgregarUsuarioComponent implements OnInit {
   errorMsg = '';
   okMsg = '';
 
+
+  showPass = false;
+
  
 
   constructor(
@@ -69,6 +72,7 @@ export class ModalAgregarUsuarioComponent implements OnInit {
     return !!this.form.errors?.['passwordMismatch'];
   }
 
+  
  
 
   submit() {

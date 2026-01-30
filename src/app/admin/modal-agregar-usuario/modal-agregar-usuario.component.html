@@ -40,9 +40,16 @@
                         <label>Correo</label>
                         <input type="email" formControlName="correo" />
                         <small class="hint"
-                            *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
-                            Ingresa un correo válido.
+                            *ngIf="form.get('correo')?.touched && form.get('correo')?.errors?.['required']">
+                            El correo es obligatorio.
                         </small>
+
+                        <small class="hint"
+                            *ngIf="form.get('correo')?.touched && form.get('correo')?.errors?.['email']">
+                            Ingresa un correo válido (ej.
+                            usuario&#64;dominio.com).
+                        </small>
+
                     </div>
 
                     <div class="field">
@@ -57,7 +64,7 @@
                     <div class="field">
                         <label>Rol</label>
                         <select formControlName="id_rol">
-                            <option value>-- Selecciona --</option>
+                            <option value="" disabled>-- Selecciona --</option>
                             <option *ngFor="let r of roles" [value]="r._id">{{
                                 r.nombre }}</option>
                         </select>

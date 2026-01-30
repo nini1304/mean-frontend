@@ -9,7 +9,8 @@
         </div>
       </div>
 
-      <button class="x" type="button" (click)="cancelar()" aria-label="Cerrar">✕</button>
+      <button class="x" type="button" (click)="cancelar()"
+        aria-label="Cerrar">✕</button>
     </div>
 
     <div class="messages">
@@ -38,8 +39,14 @@
             <label>Correo</label>
             <input type="email" formControlName="correo" />
             <small class="hint"
-              *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
-              Ingresa un correo válido.
+              *ngIf="form.get('correo')?.touched && form.get('correo')?.errors?.['required']">
+              El correo es obligatorio.
+            </small>
+
+            <small class="hint"
+              *ngIf="form.get('correo')?.touched && form.get('correo')?.errors?.['email']">
+              Ingresa un correo válido (ej.
+              usuario&#64;dominio.com).
             </small>
           </div>
 
@@ -55,8 +62,9 @@
           <div class="field">
             <label>Rol</label>
             <select formControlName="id_rol">
-              <option value="">-- Selecciona --</option>
-              <option *ngFor="let r of roles" [value]="r._id">{{ r.nombre }}</option>
+              <option value="" disabled>-- Selecciona --</option>
+              <option *ngFor="let r of roles" [value]="r._id">{{ r.nombre
+                }}</option>
             </select>
 
             <small class="hint"
@@ -68,8 +76,10 @@
       </section>
 
       <div class="footer">
-        <button type="button" class="btn ghost" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="btn solid" [disabled]="cargando || form.invalid">
+        <button type="button" class="btn ghost"
+          (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn solid"
+          [disabled]="cargando || form.invalid">
           {{ cargando ? 'Guardando...' : 'Actualizar usuario' }}
         </button>
       </div>
