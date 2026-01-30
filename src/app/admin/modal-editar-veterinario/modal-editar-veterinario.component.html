@@ -9,7 +9,8 @@
         </div>
       </div>
 
-      <button class="x" type="button" (click)="cancelar()" aria-label="Cerrar">✕</button>
+      <button class="x" type="button" (click)="cancelar()"
+        aria-label="Cerrar">✕</button>
     </div>
 
     <div class="messages">
@@ -30,7 +31,8 @@
           <div class="field">
             <label>Nombre completo</label>
             <input type="text" formControlName="nombre_completo" />
-            <small class="hint" *ngIf="form.get('usuario.nombre_completo')?.touched && form.get('usuario.nombre_completo')?.invalid">
+            <small class="hint"
+              *ngIf="form.get('usuario.nombre_completo')?.touched && form.get('usuario.nombre_completo')?.invalid">
               Ingresa un nombre válido.
             </small>
           </div>
@@ -38,15 +40,23 @@
           <div class="field">
             <label>Correo</label>
             <input type="email" formControlName="correo" />
-            <small class="hint" *ngIf="form.get('usuario.correo')?.touched && form.get('usuario.correo')?.invalid">
-              Ingresa un correo válido.
+            <small class="hint"
+              *ngIf="form.get('usuario.correo')?.touched && form.get('usuario.correo')?.errors?.['required']">
+              El correo es obligatorio.
+            </small>
+
+            <small class="hint"
+              *ngIf="form.get('usuario.correo')?.touched && form.get('usuario.correo')?.errors?.['email']">
+              Ingresa un correo válido (ej.
+              usuario&#64;dominio.com).
             </small>
           </div>
 
           <div class="field">
             <label>Celular</label>
             <input type="text" formControlName="numero_celular" />
-            <small class="hint" *ngIf="form.get('usuario.numero_celular')?.touched && form.get('usuario.numero_celular')?.invalid">
+            <small class="hint"
+              *ngIf="form.get('usuario.numero_celular')?.touched && form.get('usuario.numero_celular')?.invalid">
               El celular es obligatorio.
             </small>
           </div>
@@ -64,7 +74,8 @@
           <div class="field">
             <label>Especialidad</label>
             <input type="text" formControlName="especialidad" />
-            <small class="hint" *ngIf="form.get('especialidad')?.touched && form.get('especialidad')?.invalid">
+            <small class="hint"
+              *ngIf="form.get('especialidad')?.touched && form.get('especialidad')?.invalid">
               Ingresa una especialidad válida.
             </small>
           </div>
@@ -85,7 +96,8 @@
           </button>
         </div>
 
-        <p class="hint" *ngIf="sinHorarios">Debes registrar al menos un horario.</p>
+        <p class="hint" *ngIf="sinHorarios">Debes registrar al menos un
+          horario.</p>
 
         <div class="table-wrap" *ngIf="!sinHorarios">
           <table class="table-mini">
@@ -100,24 +112,27 @@
             </thead>
 
             <tbody formArrayName="horarios">
-              <tr *ngFor="let h of horariosArr.controls; let i = index" [formGroupName]="i">
+              <tr *ngFor="let h of horariosArr.controls; let i = index"
+                [formGroupName]="i">
                 <td>
                   <select formControlName="dia_semana">
-                    <option [value]="0">Lunes</option>
-                    <option [value]="1">Martes</option>
-                    <option [value]="2">Miércoles</option>
-                    <option [value]="3">Jueves</option>
-                    <option [value]="4">Viernes</option>
-                    <option [value]="5">Sábado</option>
-                    <option [value]="6">Domingo</option>
+                    <option [value]="0">Domingo</option>
+                    <option [value]="1">Lunes</option>
+                    <option [value]="2">Martes</option>
+                    <option [value]="3">Miércoles</option>
+                    <option [value]="4">Jueves</option>
+                    <option [value]="5">Viernes</option>
+                    <option [value]="6">Sábado</option>
                   </select>
+
                 </td>
 
                 <td><input type="time" formControlName="hora_inicio" /></td>
 
                 <td>
                   <input type="time" formControlName="hora_fin" />
-                  <small class="hint" *ngIf="h.touched && h.errors?.['horaRangoInvalido']">
+                  <small class="hint"
+                    *ngIf="h.touched && h.errors?.['horaRangoInvalido']">
                     La hora fin debe ser mayor a la hora inicio.
                   </small>
                 </td>
@@ -130,7 +145,8 @@
                 </td>
 
                 <td class="right">
-                  <button type="button" class="btn danger mini" (click)="quitarHorario(i)">Quitar</button>
+                  <button type="button" class="btn danger mini"
+                    (click)="quitarHorario(i)">Quitar</button>
                 </td>
               </tr>
             </tbody>
@@ -140,8 +156,10 @@
       </section>
 
       <div class="footer">
-        <button type="button" class="btn ghost" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="btn solid" [disabled]="cargando || form.invalid || sinHorarios">
+        <button type="button" class="btn ghost"
+          (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn solid"
+          [disabled]="cargando || form.invalid || sinHorarios">
           {{ cargando ? 'Guardando...' : 'Actualizar veterinario' }}
         </button>
       </div>
