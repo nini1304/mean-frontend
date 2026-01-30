@@ -1,10 +1,16 @@
 <div class="ag-page">
     <div class="ag-shell">
+        <div class="hc-topbar">
+            <button class="hc-back" type="button" (click)="volverMenu()">
+                <span class="hc-back-ico">←</span>
+                Volver a Pacientes
+            </button>
+        </div>
         <div class="ag-top">
             <div>
-                <div class="ag-kicker">Agenda</div>
-                <h1 class="ag-title">Citas y calendario</h1>
-                <p class="ag-sub">Gestiona las citas por día, semana o mes.</p>
+                
+                <h1 >Citas y calendario</h1>
+                
             </div>
 
             <div class="ag-actions">
@@ -22,7 +28,7 @@
                 [disabled]="cargandoVets"
                 [(ngModel)]="idVeterinario"
                 (ngModelChange)="onVeterinarioChange($event)">
-                <option value>-- Selecciona --</option>
+                <option value="" disabled>-- Selecciona --</option>
                 <option *ngFor="let v of vets" [value]="v.id">
                     {{ v.usuario.nombre_completo }} · {{ v.especialidad }}
                 </option>

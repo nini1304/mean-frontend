@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 
 import { TipoCita } from '../citas.service';
 import { MascotasService, MascotaRelacionDto } from '../mascotas.service';
+import { Router } from '@angular/router';
 
 
 
@@ -96,12 +97,17 @@ export class AgendaComponent implements OnInit {
   constructor(
     private citasService: CitasService,
     private hcService: HistorialClinicoService,
-    private mascotasService: MascotasService
+    private mascotasService: MascotasService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.cargarVeterinarios();
     this.cargarMascotas();
+  }
+
+  volverMenu() {
+    this.router.navigate(['recepcionista/menu']); // ajusta ruta
   }
 
   private showToast(msg: string) {
