@@ -13,11 +13,67 @@ $title-color: #ffffff;
 .admin-page {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, $bg-left 0%, $bg-right 100%);
+  position: relative;
+  overflow: hidden;
+
+  // Gradiente animado
+  background: linear-gradient(120deg, $bg-left, $bg-right, #3b8dbd, #2b2d68);
+  background-size: 300% 300%;
+  animation: gradientShift 14s ease-in-out infinite;
+
   display: flex;
   justify-content: center;
+  align-items: center;
+
   font-family: system-ui, sans-serif;
   color: $title-color;
+
+  // Capa de huellitas
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+    opacity: 0.10;
+
+    // Patrón tipo "huellas" con gradientes (no necesitas SVG)
+    background-image:
+      radial-gradient(circle at 20px 18px, rgba(255,255,255,0.9) 0 6px, transparent 7px),
+      radial-gradient(circle at 34px 12px, rgba(255,255,255,0.9) 0 5px, transparent 6px),
+      radial-gradient(circle at 48px 18px, rgba(255,255,255,0.9) 0 6px, transparent 7px),
+      radial-gradient(ellipse at 34px 36px, rgba(255,255,255,0.9) 0 10px, transparent 11px);
+
+    background-size: 80px 80px;
+    background-repeat: repeat;
+    transform: rotate(-12deg);
+    animation: pawsDrift 18s linear infinite;
+  }
+
+  // Luces suaves (glow) para que se sienta más "cute"
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    pointer-events: none;
+    opacity: 0.35;
+    filter: blur(30px);
+
+    background:
+      radial-gradient(circle at 20% 30%, rgba(168,251,211,0.55), transparent 45%),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.25), transparent 40%),
+      radial-gradient(circle at 70% 80%, rgba(99,122,185,0.55), transparent 45%);
+  }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pawsDrift {
+  from { transform: translate3d(0, 0, 0) rotate(-12deg); }
+  to   { transform: translate3d(-120px, 120px, 0) rotate(-12deg); }
 }
 
 .admin-content {
@@ -25,57 +81,102 @@ $title-color: #ffffff;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
-  gap: 32px;
+  gap: 28px;
+
+  // “Card” para que no sea plano
+  position: relative;
+  z-index: 1; // encima de ::before/::after
+  padding: 32px 34px;
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.30);
+
+  // Glass effect (si el navegador lo soporta)
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.content{
+.content {
   display: flex;
   flex-direction: row;
-
-  gap: 50px;
-  width: 100%;
+  align-items: center;
+  gap: 44px;
 }
 
 .title {
-  
   text-align: center;
   width: 100%;
+  font-size: 34px;
+  letter-spacing: 0.3px;
+  text-shadow: 0 6px 18px rgba(0,0,0,0.28);
 }
 
 .buttons {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .btn {
   background: $btn-color;
   border: none;
-  padding: 16px 28px;
+  padding: 16px 22px;
   border-radius: 16px;
   font-size: 18px;
-   font-weight: bold;
+  font-weight: 800;
   cursor: pointer;
-  width: 280px;
+  width: 300px;
   text-align: center;
-  color: #000;
+  color: #0a0a0a;
 
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+    filter: brightness(1.03);
   }
 
   &:active {
     transform: translateY(1px);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   }
 }
 
 .admin-cat {
   height: 420px;
   width: auto;
+  filter: drop-shadow(0 12px 26px rgba(0,0,0,0.35));
+  animation: floatCat 3.4s ease-in-out infinite;
+}
+
+@keyframes floatCat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+// Responsive: en pantallas chicas apila y reduce imagen
+@media (max-width: 860px) {
+  .admin-content {
+    width: min(92vw, 520px);
+    padding: 26px 22px;
+  }
+
+  .content {
+    flex-direction: column-reverse;
+    gap: 18px;
+  }
+
+  .btn { width: 100%; }
+  .admin-cat { height: 260px; }
+}
+
+// Accesibilidad: si el usuario prefiere menos movimiento
+@media (prefers-reduced-motion: reduce) {
+  .admin-page { animation: none; }
+  .admin-page::before { animation: none; }
+  .admin-cat { animation: none; }
 }
