@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { TipoCita } from '../citas.service';
 import { MascotasService, MascotaRelacionDto } from '../mascotas.service';
 import { Router } from '@angular/router';
+import esLocale from '@fullcalendar/core/locales/es';
 
 
 
@@ -71,7 +72,14 @@ export class AgendaComponent implements OnInit {
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
     },
-    locale: 'es',
+    locale: esLocale, // ✅ aquí (reemplaza 'es')
+  buttonText: {     // ✅ opcional (pero recomendado)
+    today: 'Hoy',
+    month: 'Mes',
+    week: 'Semana',
+    day: 'Día',
+    list: 'Lista',
+  },
     selectable: true,
     selectMirror: true,
     editable: true,
