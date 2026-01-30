@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { VeterinarioDto, VeterinariosService } from '../../admin/veterianarios.service';
-import { ModalAgregarVeterinarioComponent } from '../../admin/modal-agregar-veterinario/modal-agregar-veterinario.component';
-import { ModalHorariosVeterinarioComponent } from '../../admin/modal-horarios-veterinario/modal-horarios-veterinario.component';
-import { ModalEditarVeterinarioComponent } from '../../admin/modal-editar-veterinario/modal-editar-veterinario.component';
-import { ModalEliminarVeterinarioComponent } from '../../admin/modal-eliminar-veterinario/modal-eliminar-veterinario.component';
+import { VeterinarioDto, VeterinariosService } from '../veterianarios.service';
+import { ModalAgregarVeterinarioComponent } from '../modal-agregar-veterinario/modal-agregar-veterinario.component';
+import { ModalHorariosVeterinarioComponent } from '../modal-horarios-veterinario/modal-horarios-veterinario.component';
+import { ModalEditarVeterinarioComponent } from '../modal-editar-veterinario/modal-editar-veterinario.component';
+import { ModalEliminarVeterinarioComponent } from '../modal-eliminar-veterinario/modal-eliminar-veterinario.component';
 
 
 @Component({

@@ -172,7 +172,7 @@ export class ModalAgregarVeterinarioComponent implements OnInit {
       4: 'Jueves',
       5: 'Viernes',
       6: 'Sábado',
-      7: 'Domingo',
+      0: 'Domingo',
     };
     return map[n] || `Día ${n}`;
   }

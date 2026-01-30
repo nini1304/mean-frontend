@@ -18,13 +18,13 @@ export class ModalHorariosVeterinarioComponent {
   // backend te está devolviendo 0..6 en tu ejemplo
   diaLabel(n: number): string {
     const map: Record<number, string> = {
-      0: 'Lunes',
-      1: 'Martes',
-      2: 'Miércoles',
-      3: 'Jueves',
-      4: 'Viernes',
-      5: 'Sábado',
-      6: 'Domingo',
+      1: 'Lunes',
+      2: 'Martes',
+      3: 'Miércoles',
+      4: 'Jueves',
+      5: 'Viernes',
+      6: 'Sábado',
+      0: 'Domingo',
     };
     return map[n] ?? `Día ${n}`;
   }

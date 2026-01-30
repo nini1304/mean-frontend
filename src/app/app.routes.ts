@@ -25,7 +25,7 @@ export const routes: Routes = [
     path: 'admin/usuarios',
     canActivate: [authGuard, roleGuard(['ADMIN'])], // ajusta si tu rol se llama diferente
     loadComponent: () =>
-      import('./admin/usuarios/usuarios.component').then(m => m.UsuariosComponent),
+      import('./usuarios/usuarios/usuarios.component').then(m => m.UsuariosComponent),
   },
   {
     path: 'admin/veterinarios',
