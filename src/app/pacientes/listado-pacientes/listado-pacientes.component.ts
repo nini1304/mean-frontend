@@ -21,7 +21,7 @@ export class ListadoPacientesComponent implements OnInit {
   cargando = false;
   errorMsg = '';
 
-  pageSize = 20;
+  pageSize = 10;
   page = 1;
 
   showAddModal = false;
@@ -78,17 +78,38 @@ export class ListadoPacientesComponent implements OnInit {
   }
 
   get pacientesFiltrados(): UsuarioMascotaDto[] {
-    const q = this.filtro.trim().toLowerCase();
-    if (!q) return this.pacientes;
+  const q = this.filtro.trim().toLowerCase();
+  if (!q) return this.pacientes;
 
-    return this.pacientes.filter((p) => {
-      const n = p.mascota?.nombre?.toLowerCase() ?? '';
-      const r = p.mascota?.raza?.toLowerCase() ?? '';
-      const t = p.mascota?.tipo_mascota?.toLowerCase() ?? '';
-      const d = p.dueno?.nombre_completo?.toLowerCase() ?? '';
-      return n.includes(q) || r.includes(q) || t.includes(q) || d.includes(q);
-    });
-  }
+  return this.pacientes.filter((p) => {
+    const n  = (p.mascota?.nombre ?? '').toLowerCase();
+    const s  = (p.mascota?.sexo ?? '').toLowerCase();
+    const r  = (p.mascota?.raza ?? '').toLowerCase();
+    const t  = (p.mascota?.tipo_mascota ?? '').toLowerCase();
+
+    // 👇 números -> string
+    const e  = String(p.mascota?.edad ?? '');
+    const pe = String(p.mascota?.peso ?? '');
+
+    // dueño (ampliado)
+    const dNombre  = (p.dueno?.nombre_completo ?? '').toLowerCase();
+    const dCorreo  = (p.dueno?.correo ?? '').toLowerCase();
+    const dCelular = String(p.dueno?.numero_celular ?? '');
+
+    return (
+      n.includes(q) ||
+      e.includes(q) ||
+      pe.includes(q) ||
+      s.includes(q) ||
+      r.includes(q) ||
+      t.includes(q) ||
+      dNombre.includes(q) ||
+      dCorreo.includes(q) ||
+      dCelular.includes(q)
+    );
+  });
+}
+
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.pacientesFiltrados.length / this.pageSize));

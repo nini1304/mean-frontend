@@ -42,6 +42,7 @@
                         <th>Nombre</th>
                         <th>Edad</th>
                         <th>Peso</th>
+                        <th>Sexo</th>
                         <th>Tipo</th>
                         <th>Raza</th>
                         <th *ngIf="puedeVerHistorial">Historial clinico</th>
@@ -55,6 +56,7 @@
                         <td>{{ p.mascota.nombre }}</td>
                         <td>{{ p.mascota.edad }}</td>
                         <td>{{ formatPeso(p.mascota.peso) }}</td>
+                        <td>{{ p.mascota.sexo }}</td>
                         <td>{{ p.mascota.tipo_mascota }}</td>
                         <td>{{ p.mascota.raza }}</td>
 
