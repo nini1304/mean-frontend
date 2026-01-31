@@ -8,9 +8,9 @@
         </div>
         <div class="ag-top">
             <div>
-                
-                <h1 >Citas y calendario</h1>
-                
+
+                <h1>Citas y calendario</h1>
+
             </div>
 
             <div class="ag-actions">
@@ -28,12 +28,52 @@
                 [disabled]="cargandoVets"
                 [(ngModel)]="idVeterinario"
                 (ngModelChange)="onVeterinarioChange($event)">
-                <option value="" disabled>-- Selecciona --</option>
+                <option value disabled>-- Selecciona --</option>
                 <option *ngFor="let v of vets" [value]="v.id">
                     {{ v.usuario.nombre_completo }} · {{ v.especialidad }}
                 </option>
             </select>
 
+        </div>
+
+        <div class="ag-schedule" *ngIf="idVeterinario">
+            <div class="ag-schedule-top">
+                <div class="ag-schedule-title">Horarios del veterinario</div>
+                <div class="ag-schedule-sub" *ngIf="vetSeleccionado as v">
+                    {{ v.usuario.nombre_completo }} · {{ v.especialidad }}
+                </div>
+            </div>
+
+            <div class="ag-week">
+                <div class="ag-day" *ngFor="let d of dias">
+                    <div class="ag-day-head">
+                        <span class="ag-day-name">{{ d.nombre }}</span>
+                        <span class="ag-day-badge"
+                            *ngIf="(horariosPorDia[d.id]?.length || 0) > 0">
+                            {{ horariosPorDia[d.id].length }} turno(s)
+                        </span>
+                        <span class="ag-day-badge off"
+                            *ngIf="(horariosPorDia[d.id]?.length || 0) === 0">
+                            Sin horario
+                        </span>
+                    </div>
+
+                    <div class="ag-slots"
+                        *ngIf="(horariosPorDia[d.id]?.length || 0) > 0; else noSlots">
+                        <div class="ag-slot"
+                            *ngFor="let h of horariosPorDia[d.id]">
+                            <span class="ag-slot-time">{{ h.hora_inicio }} - {{
+                                h.hora_fin }}</span>
+                            <span class="ag-slot-dot"></span>
+                            <span class="ag-slot-label">Disponible</span>
+                        </div>
+                    </div>
+
+                    <ng-template #noSlots>
+                        <div class="ag-slots-empty">—</div>
+                    </ng-template>
+                </div>
+            </div>
         </div>
 
         <div class="ag-card">
