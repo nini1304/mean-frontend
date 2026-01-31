@@ -135,7 +135,7 @@ export class ListadoPacientesComponent implements OnInit {
   }
 
   verHistorial(p: UsuarioMascotaDto) {
-    // doble protección (UI + lógica)
+    
     if (!this.puedeVerHistorial) return;
     this.router.navigate(['/historial', p.mascota.id]);
   }

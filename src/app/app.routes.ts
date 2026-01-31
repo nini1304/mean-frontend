@@ -49,7 +49,7 @@ export const routes: Routes = [
 },
 {
   path: 'historial/:idMascota',
-  canActivate: [authGuard, roleGuard(['VETERINARIO'])],
+  // canActivate: [authGuard, roleGuard(['VETERINARIO'])],
   loadComponent: () =>
     import('./historial/historial-clinico/historial-clinico.component')
       .then(m => m.HistorialClinicoComponent),
