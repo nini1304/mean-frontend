@@ -9,7 +9,7 @@ export interface RolDto {
 
 @Injectable({ providedIn: 'root' })
 export class RolesService {
-  private readonly base = 'http://localhost:3000/api/roles';
+  private readonly base = '/api/roles';
 
   constructor(private http: HttpClient) {}
 

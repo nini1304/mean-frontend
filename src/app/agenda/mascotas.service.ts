@@ -24,7 +24,7 @@ export interface MascotaRelacionDto {
 
 @Injectable({ providedIn: 'root' })
 export class MascotasService {
-  private readonly base = 'http://localhost:3000/api/usuario-mascota/mascotas';
+  private readonly base = '/api/usuario-mascota/mascotas';
   constructor(private http: HttpClient) {}
 
   listar() {

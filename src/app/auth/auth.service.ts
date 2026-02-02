@@ -34,7 +34,7 @@ interface ForgotPasswordResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:3000/api/auth';
+  private readonly baseUrl = '/api/auth';
 
   constructor(private http: HttpClient) { }
 

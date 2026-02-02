@@ -60,7 +60,7 @@ export interface CrearCitaDto {
 
 @Injectable({ providedIn: 'root' })
 export class CitasService {
-  private readonly base = 'http://localhost:3000/api/citas';
+  private readonly base = '/api/citas';
 
   constructor(private http: HttpClient) {}
 

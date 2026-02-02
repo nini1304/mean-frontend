@@ -47,10 +47,10 @@ export interface TipoMascotaDto {
 
 @Injectable({ providedIn: 'root' })
 export class PacientesService {
-  private readonly baseUrl = 'http://localhost:3000/api/usuario-mascota';
-  private readonly basePacientes = 'http://localhost:3000/api/pacientes';
-  private readonly baseUsers = 'http://localhost:3000/api/users';
-  private readonly baseTipoMascota = 'http://localhost:3000/api/tipo-mascota';
+  private readonly baseUrl = '/api/usuario-mascota';
+  private readonly basePacientes = '/api/pacientes';
+  private readonly baseUsers = '/api/users';
+  private readonly baseTipoMascota = '/api/tipo-mascota';
 
   constructor(private http: HttpClient) {}
 

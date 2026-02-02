@@ -51,7 +51,7 @@ export interface ActualizarVeterinarioDto {
 
 @Injectable({ providedIn: 'root' })
 export class VeterinariosService {
-  private readonly base = 'http://localhost:3000/api/veterinarios';
+  private readonly base = '/api/veterinarios';
 
   constructor(private http: HttpClient) {}
 

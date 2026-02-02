@@ -173,8 +173,8 @@ export interface ActualizarExamenDto {
 
 @Injectable({ providedIn: 'root' })
 export class HistorialClinicoService {
-    private readonly baseHistorial = 'http://localhost:3000/api/historial';
-    private readonly baseVets = 'http://localhost:3000/api/veterinarios';
+    private readonly baseHistorial = '/api/historial';
+    private readonly baseVets = '/api/veterinarios';
 
     constructor(private http: HttpClient) { }
 

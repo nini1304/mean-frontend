@@ -36,7 +36,7 @@ export interface ActualizarUsuarioDto {
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-  private readonly base = 'http://localhost:3000/api/users';
+  private readonly base = '/api/users';
 
   constructor(private http: HttpClient) {}
 
