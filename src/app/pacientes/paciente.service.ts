@@ -81,7 +81,6 @@ export class PacientesService {
   // Dueño nuevo
   crearPaciente(body: {
     dueno: { nombre_completo: string; correo: string; numero_celular: string };
-    contrasena: string;
     mascotas: Array<{ nombre: string; tipo_mascota: string; edad: number; peso: number; sexo: string; raza: string }>;
   }): Observable<any> {
     return this.http.post<any>(`${this.basePacientes}`, body);

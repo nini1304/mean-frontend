@@ -31,8 +31,7 @@ export class ModalAgregarPacienteComponent implements OnInit {
   clientes: ClienteActivoDto[] = [];
   tiposMascota: TipoMascotaDto[] = [];
 
-  showPassword = false;
-  showPassword2 = false;
+  
 
   filtroCliente = '';
 
@@ -50,13 +49,10 @@ export class ModalAgregarPacienteComponent implements OnInit {
           numero_celular: [''],
         }),
 
-        contrasena: [''],
-        confirmar_contrasena: [''],
 
         cantidadMascotas: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
         mascotas: this.fb.array([]),
-      },
-      { validators: [this.passwordsMatchValidator] }
+      }
     );
 
   }
@@ -84,15 +80,7 @@ export class ModalAgregarPacienteComponent implements OnInit {
     return this.form.get('dueno') as FormGroup;
   }
 
-  private passwordsMatchValidator(group: AbstractControl) {
-    const a = group.get('contrasena')?.value;
-    const b = group.get('confirmar_contrasena')?.value;
-
-    // si aún no escribe, no molestamos
-    if (!a || !b) return null;
-
-    return a === b ? null : { passwordsMismatch: true };
-  }
+  
 
   // Para mostrar checks en UI
   passwordRuleState() {
@@ -137,44 +125,26 @@ export class ModalAgregarPacienteComponent implements OnInit {
     this.form.patchValue({ idUsuario: '' });
 
     const idUsuario = this.form.get('idUsuario');
-    const contrasena = this.form.get('contrasena');
-    const confirmar = this.form.get('confirmar_contrasena');
-
+    
     if (m === 'EXISTENTE') {
       idUsuario?.setValidators([Validators.required]);
 
-      contrasena?.clearValidators();
-      confirmar?.clearValidators();
-
-      // limpiar campos password
-      this.form.patchValue(
-        { contrasena: '', confirmar_contrasena: '' },
-        { emitEvent: false }
-      );
+      
 
       // dueño no requerido
       this.setDuenoValidators(false);
     } else {
       idUsuario?.clearValidators();
 
-      contrasena?.setValidators([
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
-      ]);
-
-      confirmar?.setValidators([Validators.required]);
+      
 
       // dueño requerido
       this.setDuenoValidators(true);
     }
 
     idUsuario?.updateValueAndValidity();
-    contrasena?.updateValueAndValidity();
-    confirmar?.updateValueAndValidity();
-
-    // importante para recalcular el validator de "passwordsMismatch"
-    this.form.updateValueAndValidity({ emitEvent: false });
+    
+   
   });
 
   // aplicar estado inicial
@@ -305,7 +275,6 @@ export class ModalAgregarPacienteComponent implements OnInit {
     } else {
       const body = {
         dueno: this.form.value.dueno,
-        contrasena: this.form.value.contrasena,
         mascotas,
       };
 

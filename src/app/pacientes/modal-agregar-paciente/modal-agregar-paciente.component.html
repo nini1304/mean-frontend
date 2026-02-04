@@ -115,65 +115,6 @@
                 <input type="text" formControlName="numero_celular" placeholder="70000000" />
               </div>
 
-              <div class="vp-field" [formGroup]="form">
-                <label>Contraseña</label>
-
-                <div class="vp-pwd">
-                  <input
-                    [type]="showPassword ? 'text' : 'password'"
-                    formControlName="contrasena"
-                    autocomplete="new-password"
-                    placeholder="Mín. 8, mayús/minús, número y especial"
-                  />
-                  <button
-                    type="button"
-                    class="vp-eye"
-                    (click)="showPassword = !showPassword"
-                    [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-                  >
-                    {{ showPassword ? '🙈' : '👁' }}
-                  </button>
-                </div>
-
-                <div class="vp-rules">
-                  <div class="vp-rule" [class.ok]="passwordRuleState().len">8+ caracteres</div>
-                  <div class="vp-rule" [class.ok]="passwordRuleState().upper">1 mayúscula</div>
-                  <div class="vp-rule" [class.ok]="passwordRuleState().lower">1 minúscula</div>
-                  <div class="vp-rule" [class.ok]="passwordRuleState().num">1 número</div>
-                  <div class="vp-rule" [class.ok]="passwordRuleState().special">1 especial</div>
-                </div>
-
-                <p class="vp-help error"
-                  *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.invalid">
-                  La contraseña no cumple los requisitos.
-                </p>
-              </div>
-
-              <div class="vp-field" [formGroup]="form">
-                <label>Confirmar contraseña</label>
-
-                <div class="vp-pwd">
-                  <input
-                    [type]="showPassword2 ? 'text' : 'password'"
-                    formControlName="confirmar_contrasena"
-                    autocomplete="new-password"
-                    placeholder="Repita la contraseña"
-                  />
-                  <button
-                    type="button"
-                    class="vp-eye"
-                    (click)="showPassword2 = !showPassword2"
-                    [attr.aria-label]="showPassword2 ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-                  >
-                    {{ showPassword2 ? '🙈' : '👁' }}
-                  </button>
-                </div>
-
-                <p class="vp-help error"
-                  *ngIf="form.hasError('passwordsMismatch') && form.get('confirmar_contrasena')?.touched">
-                  Las contraseñas no coinciden.
-                </p>
-              </div>
             </div>
           </div>
         </section>
