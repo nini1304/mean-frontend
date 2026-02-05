@@ -78,7 +78,7 @@ export class AuthService {
 
   changePassword(contrasena_actual: string, contrasena_nueva: string) {
     return this.http.post<{ message: string }>(
-      `http://localhost:3000/api/contrasenas/change-password`,
+      `/api/contrasenas/change-password`,
       { contrasena_actual, contrasena_nueva }
     );
   }
