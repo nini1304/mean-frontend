@@ -53,7 +53,7 @@ export class LoginComponent {
 		});
 
 		this.changePasswordForm = this.fb.group({
-			contrasena_nueva: ['', [Validators.required, Validators.minLength(6)]],
+			contrasena_nueva: ['', [Validators.required, Validators.minLength(8),Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/)]],
 			contrasena_nueva_2: ['', [Validators.required]],
 		},
 			{ validators: this.passwordsMatchValidator }
